@@ -1,0 +1,54 @@
+
+@import url('https://fonts.googleapis.com/css?family=Bangers|Kaushan+Script|Luckiest+Guy&display=swap');
+ /* Color palettte link https://colorhunt.co/palette/136290 */
+
+a{
+  color: #96dae4;
+}
+
+a:hover{
+  text-decoration: none;
+  color: #cdeeaa;
+}
+
+body{
+  background-color: #ffedc6;
+}
+
+header {
+  background-color: #6d70c6;
+}
+.custom{
+  margin: 2rem 0;
+}
+
+.icon{
+  height: 1rem;
+  width: 1rem;
+}
+
+.logo {
+  border: 2px solid #cdeeaa;
+  display: inline-block;
+  height: 10rem;
+  margin-right: 1rem;
+  width: 10rem;
+}
+
+.nav-item{
+  font-size: 1.3rem;
+  font-family: "Luckiest Guy";
+  padding: 0 1rem;
+}
+
+.site-title{
+  font-family: "Kaushan Script";
+  color: #96dae4;
+}
+
+.slogan{
+  color: #6d70c6;
+  font-family: "Bangers";
+  font-weight: lighter;
+  padding-top:10rem;
+}
