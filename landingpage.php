@@ -24,13 +24,14 @@
       <img src="images/bikepass-logo.png" alt="BikePass Logo" class="logo">
       <h1 class="site-title">BikePass</h1>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="true" aria-label="Toggle navigation" style="background-color: #00818a; height:3rem; width:3rem">
+      <button class="navbar-toggler toggler-button" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="true" aria-label="Toggle navigation">
+        <span style="color: #cdeeaa"><i class="fas fa-bicycle fa-2x"></i></span>  
       </button>
 
       <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav ml-auto mr-5">
           <li class="nav-item">
-            <a class="nav-link" href="">How it works?</a>
+            <a class="nav-link" href="#howitworks">How it works?</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="">Features</a>
@@ -49,15 +50,56 @@
 
   <body>
 
-    <img src="images/women-with-bike.png" alt="https://www.freepik.com/free-photos-vectors/people" class="col-lg-6 float-right">
-    <div class="col-lg-6 offset-lg-1">
-      <h1 class="slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis auctor.</h1>
-      <button type="button" name="button" class="btn btn-lg btn-dark custom">
-        <img src="images/google_play.png" alt="Playstore icon" class="icon">
-        <a href=""> Get on Google PlayStore</a>
-      </button>
-    </div>
+    <!-- Catchphrase sectionı -->
+    <section class="creme">
 
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-lg-5 offset-lg-1">
+            <h1 class="slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis auctor.</h1>
+            <button type="button" name="button" class="btn btn-lg btn-dark custom">
+              <img src="images/google_play.png" alt="Playstore icon" class="icon">
+              <a href=""> Get on Google PlayStore</a>
+            </button>
+          </div>
+
+          <div class="col-lg-6">
+            <img src="images/women-with-bike.png" alt="https://www.freepik.com/free-photos-vectors/people" class="col">
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- How it works sectionı -->
+    <section class="green" id="howitworks">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-lg-3 feature">
+            <img src="images/enterphone.png" alt="enterphone" class="col">
+            <h1 class="feature-text">Download our app on your Android phones. Enter your name, e-mail adress and credit card info to sign up</h1>
+          </div>
+
+          <div class="col-lg-3 feature">
+            <img src="images/findbike.png" alt="findbike" class="col">
+            <h1 class="feature-text">Once you signed up, you can look up for available bikes on map</h1>
+          </div>
+
+          <div class="col-lg-3 feature">
+            <img src="images/usebike.png" alt="usebike" class="col">
+            <h1 class="feature-text">Go next to one of our bikes and scan QR code located on them.<br>Enjoy cycling !</h1>
+          </div>
+
+          <div class="col-lg-3 feature">
+            <img src="images/lockbike.png" alt="lockbike" class="col">
+            <h1 class="feature-text">When you decide to conclude your travel, park bike to convenient spot and confirm from you app as well</h1>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
   </body>
 </html>

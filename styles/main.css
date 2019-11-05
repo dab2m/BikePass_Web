@@ -11,15 +11,35 @@ a:hover{
   color: #cdeeaa;
 }
 
-body{
-  background-color: #ffedc6;
-}
-
 header {
   background-color: #6d70c6;
 }
+
+section{
+  padding: 7% 3%;
+}
+
+.creme{
+  background-color: #ffedc6;
+}
+
 .custom{
   margin: 2rem 0;
+}
+
+.feature{
+  padding: 1rem;
+}
+
+.feature-text{
+  color: #6d70c6;
+  font-family: "Bangers";
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
+
+.green{
+ background-color: #cdeeaa;
 }
 
 .icon{
@@ -50,5 +70,10 @@ header {
   color: #6d70c6;
   font-family: "Bangers";
   font-weight: lighter;
-  padding-top:10rem;
+}
+
+.toggler-button{
+  border: 2px solid #cdeeaa;
+  height: 5rem;
+  width: 5rem;
 }
