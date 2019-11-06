@@ -25,7 +25,7 @@
       <h1 class="site-title">BikePass</h1>
 
       <button class="navbar-toggler toggler-button" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="true" aria-label="Toggle navigation">
-        <span style="color: #cdeeaa"><i class="fas fa-bicycle fa-2x"></i></span>  
+        <span style="color: #cdeeaa"><i class="fas fa-bicycle fa-2x"></i></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbar">
@@ -34,7 +34,7 @@
             <a class="nav-link" href="#howitworks">How it works?</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">Features</a>
+            <a class="nav-link" href="#features">Features</a>
             </li>
           <li class="nav-item">
             <a class="nav-link" href="">Sign up</a>
@@ -101,5 +101,52 @@
       </div>
     </section>
 
+    <!-- Features sectionı -->
+    <section class="creme" id="features">
+      <div class="container-fluid">
+        <div class="row text-center m-auto">
+
+          <div class="col-lg-2 col-md-4 offset-lg-1 features">
+            <h1 class="side-title">Easy to signup</h1>
+            <span style="color: #cdeeaa"><i class="fas fa-file-signature fa-5x"></i></span>
+            <p class="feature-text">Enter your name and email address to sign up and start cycling!</p>
+          </div>
+          <div class="col-lg-2 col-md-4 features">
+            <h1 class="side-title">Simple usage</h1>
+            <span style="color: #cdeeaa"><i class="fas fa-biking fa-5x"></i></span>
+            <p class="feature-text">Go next to nearest bike and scan QR code located on it to start using. Payment will be done when you end your session.No need to wait!</p>
+          </div>
+          <div class="col-lg-2 col-md-4 features">
+            <h1 class="side-title">Leaderboard</h1>
+            <span style="color: #cdeeaa"><i class="fas fa-medal fa-5x"></i></span>
+            <p class="feature-text">View how much you cycle this month and compete with other bike enthusiasts globally!</p>
+          </div>
+          <div class="col-lg-2 col-md-4 features">
+            <h1 class="side-title">Active Support</h1>
+            <span style="color: #cdeeaa"><i class="fas fa-phone-square-alt fa-5x"></i></span>
+            <p class="feature-text">A problem occurred? Don't worry, you can reach us through app and report problem</p>
+          </div>
+          <div class="col-lg-2 col-md-4 features">
+            <h1 class="side-title">Eco-Friendly</h1>
+            <span style="color: #cdeeaa"><i class="fab fa-pagelines fa-5x"></i></span>
+            <p class="feature-text">We also believe in action needed to take in environment. So start using BikePass to reduce damage on environment caused by automobiles and traffic!</p>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
   </body>
+
+  <footer>
+    <div class="m-auto text-center" style="padding-top: 1rem">
+      <p class="site-title">
+        Illustrations and images by
+      <a href="https://www.freepik.com">Freepik</a> &
+      <a href="https://www.freepik.com/johndory">Johndory</a> &
+      <a href="https://www.freepik.com/studiogstock">Stduiogstock</a>
+      </p>
+    </div>
+  </footer>
 </html>

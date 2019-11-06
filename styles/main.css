@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css?family=Bangers|Kaushan+Script|Luckiest+Guy&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bangers|Dosis|Kaushan+Script|Luckiest+Guy&display=swap');
  /* Color palettte link https://colorhunt.co/palette/136290 */
 
 a{
@@ -11,8 +11,22 @@ a:hover{
   color: #cdeeaa;
 }
 
+footer {
+  background-color: #6d70c6;
+  bottom: 0;
+  height: 3.625rem;
+  margin-top: 5%;
+  position: absolute;
+  width: 100%;
+}
+
 header {
   background-color: #6d70c6;
+}
+
+html {
+  position: relative;
+  min-height: 100vh
 }
 
 section{
@@ -27,15 +41,15 @@ section{
   margin: 2rem 0;
 }
 
-.feature{
-  padding: 1rem;
+.features{
+  padding: 1.5rem;
 }
 
 .feature-text{
   color: #6d70c6;
-  font-family: "Bangers";
-  font-size: 1.5rem;
-  font-weight: lighter;
+  font-family: "Dosis";
+  font-size: 1.2rem;
+  margin-top: 2rem;
 }
 
 .green{
@@ -45,6 +59,10 @@ section{
 .icon{
   height: 1rem;
   width: 1rem;
+}
+
+.how{
+  padding: 1rem;
 }
 
 .logo {
@@ -59,6 +77,14 @@ section{
   font-size: 1.3rem;
   font-family: "Luckiest Guy";
   padding: 0 1rem;
+}
+
+.side-title{
+  color: #96dae4;
+  font-family: "Luckiest Guy";
+  font-weight: bold;
+  font-size: 1.7rem;
+  margin-bottom: 2rem;
 }
 
 .site-title{
