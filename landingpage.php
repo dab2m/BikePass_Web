@@ -1,3 +1,113 @@
+<?php
+
+include('db_connect.php');
+
+$username = $email = $password = '';
+$errors = array('username' => '', 'email' => '', 'password' => '');
+
+if (isset($_POST['signup'])) {
+
+
+  //check username
+  if (empty($_POST['username'])) {
+    $errors['username'] = 'An username is required <br />';
+  } else {
+    $username = $_POST['username'];
+    if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
+      $errors['username'] = 'Username must be a valid username';
+    }
+  }
+
+  //check email
+  if (empty($_POST['email'])) {
+    $errors['email'] = 'An email is required <br />';
+  } else {
+    $email = $_POST['email'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $errors['email'] = 'Email must be a valid email address';
+    }
+  }
+
+  //check password
+  if (empty($_POST['password'])) {
+    $errors['password'] = 'An password is required <br />';
+  } else {
+    $password = $_POST['password'];
+    if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
+      $errors['password'] = 'The password does not meet the requirements!';
+    }
+  }
+
+  if (array_filter($errors)) {
+    echo 'errors in form';
+    echo '<script type="text/JavaScript">  
+    document.getElementById("signup").addEventListener("click", function(event){
+      event.preventDefault()
+    });
+     </script>';
+  } else {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+    $sql = "SELECT * from user where username='$username'";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_affected_rows($conn) == 1) {
+
+      $errors['username'] = 'Bu kullanıcı adı mevcut';
+    } else {
+
+      $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$password')";
+
+      if (mysqli_query($conn, $sql)) {
+
+        header('Location:deneme.php');
+      } else {
+        echo 'query error:' . mysql_error($conn);
+      }
+    }
+  }
+}
+
+
+$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '' ) ;
+
+if (isset($_POST['signin'])) {
+    $username=$_POST['username'];
+    $password=$_POST['password'];
+    if ($username!='' && $password!='') {
+        $username = mysqli_real_escape_string($conn, $_POST['username']);
+        $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+        $sql = "SELECT * from user where username='$username' and password='$password'";
+
+        $result = mysqli_query($conn, $sql);
+
+        $row = mysqli_fetch_assoc($result);
+
+        if (mysqli_affected_rows($conn) == 1) {
+            session_start();
+            $_SESSION['username'] = $username;
+            $_SESSION['password'] = $password;
+            header('Location:deneme.php');
+        } else if (mysqli_affected_rows($conn) == 0) {
+            $error['userloginerror'] = 'Your username or password is wrong!';
+        } else {
+            echo 'query error';
+        }
+    } else if ($username!='') {
+        $error['password'] = 'Password cant be empty';
+    } else if ($password!='') {
+        $error['username'] = 'Username cant be empty';
+    } 
+}
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -38,10 +148,10 @@
           <a class="nav-link" href="#features">Features</a>
         </li>
         <li class="nav-item">
-          <p class="nav-link likeButton" id="myBtn" href="">Sign up</p>
+          <p class="nav-link likeButton" onclick="showSıgnUp()" href="">Sign up</p>
         </li>
         <li class="nav-item">
-          <p class="nav-link likeButton" href="">Login</p>
+          <p class="nav-link likeButton" onclick="showLogIn()" href="">Login</p>
         </li>
       </ul>
     </div>
@@ -103,71 +213,90 @@
   </section>
 
 
+  <section id="signup">
+    <!-- The Modal -->
+    <div id="myModalSıgnUp" style="display:none;" class="modal">
 
-  <!-- The Modal -->
-  <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div>
+          <span class="close ">&times;</span>
+          <h2 class="welcome">Welcome to BikePass!</h2>
+        </div>
+        <div class="modal-body">
+          <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
 
-    <!-- Modal content -->
-    <div class="modal-content">
-      <div>
-        <span class="close ">&times;</span>
-        <h2 class="welcome">Welcome to BikePass!</h2>
+
+          <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+            <label class="usernamePassword">Username</label>
+            <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+            <div class="red-text"><?php echo $errors['username']; ?></div>
+            <label class="usernamePassword">Email</label>
+            <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>">
+            <div class="red-text"><?php echo $errors['email']; ?></div>
+            <label class="usernamePassword">Password</label>
+            <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+            <div class="red-text"><?php echo $errors['password']; ?></div>
+            <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
+              <p class="infoLocale">You already have an account? <a class="signIn">Log in<a>
+                    <p>
+            </div>
+          </form>
+
+
+        </div>
+        <div>
+        </div>
       </div>
-      <div class="modal-body">
-        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
 
-
-        <form method="POST">
-          <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username">
-          <div class="red-text"></div>
-          <label class="usernamePassword">Email</label>
-          <input class="input m-auto" type="text" name="email">
-          <div class="red-text"></div>
-          <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password">
-          <div class="red-text"></div>
-          <div><input class=" signupButton" type="submit" name="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
-            <p class="infoLocale">You already have an account?  <a class="signIn">Log in<a>
-                  <p>
-          </div>
-        </form>
-
-
-
-      </div>
-      <div>
-      </div>
     </div>
+  </section>
 
-  </div>
+  <section id="login">
+    <!-- The Modal -->
+    <div id="myModalLogIn" style="display:none;" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div>
+          <span class="close ">&times;</span>
+          <h2 class="welcome">Welcome Back!</h2>
+        </div>
+        <div class="modal-body">
+          <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
+
+
+          <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+            <label class="usernamePassword">Username</label>
+            <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+            <div class="red-text"><?php echo $error['username']; ?></div>
+            <label class="usernamePassword">Password</label>
+            <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+            <div class="red-text"><?php echo $error['password']; ?></div>
+            <div class="red-text"><?php echo $error['userloginerror']; ?></div>
+            <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
+              <p class="infoLocale">Dont you have an account? <a class="signIn">Sign up!<a>
+                    <p>
+            </div>
+          </form>
+
+        </div>
+        <div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
 
   <script>
-    // Get the modal
-    var modal = document.getElementById("myModal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks the button, open the modal 
-    btn.onclick = function() {
-      modal.style.display = "block";
+    function showSıgnUp() {
+      document.getElementById('myModalSıgnUp').style.display = "block";
     }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-      modal.style.display = "none";
+    function showLogIn() {
+      document.getElementById('myModalLogIn').style.display = "block";
     }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+    
   </script>
 
   <!-- Features sectionı -->
