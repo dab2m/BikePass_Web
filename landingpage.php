@@ -63,8 +63,7 @@ if (isset($_POST['signup'])) {
         document.getElementById('myModalSıgnUp').style.display = 'block';
       };
       </script>";
-    }
-    else if (mysqli_num_rows($resultEmail) == 1) {
+    } else if (mysqli_num_rows($resultEmail) == 1) {
 
       $errors['email'] = 'This email already exists';
       echo "<script type='text/javascript'>
@@ -83,7 +82,6 @@ if (isset($_POST['signup'])) {
           document.getElementById('myModalLogIn').style.display = 'block';
         };
         </script>";
-        
       } else {
         echo 'query error:' . mysql_error($conn);
       }
@@ -129,7 +127,6 @@ if (isset($_POST['signin'])) {
       };
       </script>";
   }
-  
 }
 
 
@@ -190,18 +187,31 @@ if (isset($_POST['signin'])) {
 
 <body>
 
- <script>
+  <script>
     function showSıgnUp() {
-      document.getElementById('myModalLogIn').style.display = "none";
-      document.getElementById('myModalSıgnUp').style.display = "block";
-      console.log("hello")
+      document.getElementById("myModalLogIn").style.display = "none";
+      document.getElementById("myModalSıgnUp").style.display = "block";
     }
 
     function showLogIn() {
-      document.getElementById('myModalSıgnUp').style.display = "none";
-      document.getElementById('myModalLogIn').style.display = "block";
+      document.getElementById("myModalSıgnUp").style.display = "none";
+      document.getElementById("myModalLogIn").style.display = "block";
     }
-  </script>  
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById("myModalSıgnUp")) {
+        document.getElementById("myModalSıgnUp").style.display = "none";
+      }
+      if (event.target == document.getElementById("myModalLogIn")) {
+        document.getElementById("myModalLogIn").style.display = "none";
+      }
+    }
+
+    function closeModal(modal){
+     document.getElementById(modal).style.display="none";
+    }
+ 
+  </script>
 
   <!-- Catchphrase sectionı -->
   <section class="creme">
@@ -256,78 +266,78 @@ if (isset($_POST['signin'])) {
 
 
 
-    <!-- The Modal -->
-    <div id="myModalSıgnUp" style="display:none;" class="modal">
+  <!-- The Modal -->
+  <div id="myModalSıgnUp" style="display:none;" class="modal">
 
-      <!-- Modal content -->
-      <div class="modal-content">
-        <div>
-          <span class="close ">&times;</span>
-          <h2 class="welcome">Welcome to BikePass!</h2>
-        </div>
-        <div class="modal-body">
-          <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
-
-
-          <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-            <label class="usernamePassword">Username</label>
-            <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
-            <div class="red-text"><?php echo $errors['username']; ?></div>
-            <label class="usernamePassword">Email</label>
-            <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>">
-            <div class="red-text"><?php echo $errors['email']; ?></div>
-            <label class="usernamePassword">Password</label>
-            <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
-            <div class="red-text"><?php echo $errors['password']; ?></div>
-            <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
-              <p class="infoLocale">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
-                    <p>
-            </div>
-          </form>
-
-
-        </div>
-        <div>
-        </div>
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div>
+        <span class="close" onclick=closeModal("myModalSıgnUp")>&times;</span>
+        <h2 class="welcome">Welcome to BikePass!</h2>
       </div>
+      <div class="modal-body">
+        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
 
+
+        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+          <label class="usernamePassword">Username</label>
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+          <div class="red-text"><?php echo $errors['username']; ?></div>
+          <label class="usernamePassword">Email</label>
+          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>">
+          <div class="red-text"><?php echo $errors['email']; ?></div>
+          <label class="usernamePassword">Password</label>
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+          <div class="red-text"><?php echo $errors['password']; ?></div>
+          <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
+            <p class="infoLocale">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
+                  <p>
+          </div>
+        </form>
+
+
+      </div>
+      <div>
+      </div>
     </div>
 
+  </div>
 
 
-    <!-- The Modal -->
-    <div id="myModalLogIn" style="display:none;" class="modal">
 
-      <!-- Modal content -->
-      <div class="modal-content">
-        <div>
-          <span class="close ">&times;</span>
-          <h2 class="welcome">Welcome Back!</h2>
-        </div>
-        <div class="modal-body">
-          <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
+  <!-- The Modal -->
+  <div id="myModalLogIn" style="display:none;" class="modal">
 
-
-          <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-            <label class="usernamePassword">Username</label>
-            <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
-            <div class="red-text"><?php echo $error['username']; ?></div>
-            <label class="usernamePassword">Password</label>
-            <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
-            <div class="red-text"><?php echo $error['password']; ?></div>
-            <div class="red-text"><?php echo $error['userloginerror']; ?></div>
-            <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
-              <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
-                    <p>
-            </div>
-          </form>
-
-        </div>
-        <div>
-        </div>
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div>
+        <span class="close" onclick=closeModal("myModalLogIn")>&times;</span>
+        <h2 class="welcome">Welcome Back!</h2>
       </div>
+      <div class="modal-body">
+        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
 
+
+        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+          <label class="usernamePassword">Username</label>
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+          <div class="red-text"><?php echo $error['username']; ?></div>
+          <label class="usernamePassword">Password</label>
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+          <div class="red-text"><?php echo $error['password']; ?></div>
+          <div class="red-text"><?php echo $error['userloginerror']; ?></div>
+          <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
+            <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
+                  <p>
+          </div>
+        </form>
+
+      </div>
+      <div>
+      </div>
     </div>
+
+  </div>
 
 
 
