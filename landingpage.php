@@ -4,7 +4,6 @@ include('db_connect.php');
 
 $username = $email = $password = '';
 $errors = array('username' => '', 'email' => '', 'password' => '');
-
 if (isset($_POST['signup'])) {
 
 
@@ -39,30 +38,52 @@ if (isset($_POST['signup'])) {
   }
 
   if (array_filter($errors)) {
-    echo 'errors in form';
-    echo '<script type="text/JavaScript">  
-    document.getElementById("signup").addEventListener("click", function(event){
-      event.preventDefault()
-    });
-     </script>';
+    echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalSıgnUp').style.display = 'block';
+      };
+      </script>";
   } else {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    $sql = "SELECT * from user where username='$username'";
-    $result = mysqli_query($conn, $sql);
+    $sqlName = "SELECT * from user where username='$username'";
+    $resultName = mysqli_query($conn, $sqlName);
 
-    if (mysqli_affected_rows($conn) == 1) {
+    $sqlEmail = "SELECT * from user where email='$email'";
+    $resultEmail = mysqli_query($conn, $sqlEmail);
 
-      $errors['username'] = 'Bu kullanıcı adı mevcut';
+
+    if (mysqli_num_rows($resultName) == 1) {
+
+      $errors['username'] = 'This username already exists';
+      echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalSıgnUp').style.display = 'block';
+      };
+      </script>";
+    }
+    else if (mysqli_num_rows($resultEmail) == 1) {
+
+      $errors['email'] = 'This email already exists';
+      echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalSıgnUp').style.display = 'block';
+      };
+      </script>";
     } else {
 
       $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$password')";
 
       if (mysqli_query($conn, $sql)) {
-
-        header('Location:deneme.php');
+        echo "<script type='text/javascript'>
+        window.onload=function(){
+          document.getElementById('myModalSıgnUp').style.display = 'none';
+          document.getElementById('myModalLogIn').style.display = 'block';
+        };
+        </script>";
+        
       } else {
         echo 'query error:' . mysql_error($conn);
       }
@@ -71,36 +92,44 @@ if (isset($_POST['signup'])) {
 }
 
 
-$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '' ) ;
+$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '');
 
 if (isset($_POST['signin'])) {
-    $username=$_POST['username'];
-    $password=$_POST['password'];
-    if ($username!='' && $password!='') {
-        $username = mysqli_real_escape_string($conn, $_POST['username']);
-        $password = mysqli_real_escape_string($conn, $_POST['password']);
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+  if ($username != '' && $password != '') {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-        $sql = "SELECT * from user where username='$username' and password='$password'";
+    $sql = "SELECT * from user where username='$username' and password='$password'";
 
-        $result = mysqli_query($conn, $sql);
+    $result = mysqli_query($conn, $sql);
 
-        $row = mysqli_fetch_assoc($result);
+    $row = mysqli_fetch_assoc($result);
 
-        if (mysqli_affected_rows($conn) == 1) {
-            session_start();
-            $_SESSION['username'] = $username;
-            $_SESSION['password'] = $password;
-            header('Location:deneme.php');
-        } else if (mysqli_affected_rows($conn) == 0) {
-            $error['userloginerror'] = 'Your username or password is wrong!';
-        } else {
-            echo 'query error';
-        }
-    } else if ($username!='') {
-        $error['password'] = 'Password cant be empty';
-    } else if ($password!='') {
-        $error['username'] = 'Username cant be empty';
-    } 
+    if (mysqli_affected_rows($conn) == 1) {
+      session_start();
+      $_SESSION['username'] = $username;
+      $_SESSION['password'] = $password;
+      header('Location:deneme.php');
+    } else if (mysqli_affected_rows($conn) == 0) {
+      $error['userloginerror'] = 'Your username or password is wrong!';
+    } else {
+      echo 'query error';
+    }
+  } else if ($username != '') {
+    $error['password'] = 'Password cant be empty';
+  } else if ($password != '') {
+    $error['username'] = 'Username cant be empty';
+  }
+  if (array_filter($error)) {
+    echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalLogIn').style.display = 'block';
+      };
+      </script>";
+  }
+  
 }
 
 
@@ -161,6 +190,19 @@ if (isset($_POST['signin'])) {
 
 <body>
 
+ <script>
+    function showSıgnUp() {
+      document.getElementById('myModalLogIn').style.display = "none";
+      document.getElementById('myModalSıgnUp').style.display = "block";
+      console.log("hello")
+    }
+
+    function showLogIn() {
+      document.getElementById('myModalSıgnUp').style.display = "none";
+      document.getElementById('myModalLogIn').style.display = "block";
+    }
+  </script>  
+
   <!-- Catchphrase sectionı -->
   <section class="creme">
 
@@ -213,7 +255,7 @@ if (isset($_POST['signin'])) {
   </section>
 
 
-  <section id="signup">
+
     <!-- The Modal -->
     <div id="myModalSıgnUp" style="display:none;" class="modal">
 
@@ -238,7 +280,7 @@ if (isset($_POST['signin'])) {
             <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
             <div class="red-text"><?php echo $errors['password']; ?></div>
             <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
-              <p class="infoLocale">You already have an account? <a class="signIn">Log in<a>
+              <p class="infoLocale">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
                     <p>
             </div>
           </form>
@@ -250,9 +292,9 @@ if (isset($_POST['signin'])) {
       </div>
 
     </div>
-  </section>
 
-  <section id="login">
+
+
     <!-- The Modal -->
     <div id="myModalLogIn" style="display:none;" class="modal">
 
@@ -275,7 +317,7 @@ if (isset($_POST['signin'])) {
             <div class="red-text"><?php echo $error['password']; ?></div>
             <div class="red-text"><?php echo $error['userloginerror']; ?></div>
             <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
-              <p class="infoLocale">Dont you have an account? <a class="signIn">Sign up!<a>
+              <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
                     <p>
             </div>
           </form>
@@ -286,18 +328,8 @@ if (isset($_POST['signin'])) {
       </div>
 
     </div>
-  </section>
 
 
-  <script>
-    function showSıgnUp() {
-      document.getElementById('myModalSıgnUp').style.display = "block";
-    }
-    function showLogIn() {
-      document.getElementById('myModalLogIn').style.display = "block";
-    }
-    
-  </script>
 
   <!-- Features sectionı -->
   <section class="creme" id="features">
