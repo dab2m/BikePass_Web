@@ -8,34 +8,22 @@ if (isset($_POST['signup'])) {
 
 
   //check username
-  if (empty($_POST['username'])) {
-    $errors['username'] = 'An username is required <br />';
-  } else {
-    $username = $_POST['username'];
-    if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
-      $errors['username'] = 'Username must be a valid username';
-    }
+  $username = $_POST['username'];
+  if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
+    $errors['username'] = 'Username must be a valid username';
   }
 
   //check email
-  if (empty($_POST['email'])) {
-    $errors['email'] = 'An email is required <br />';
-  } else {
-    $email = $_POST['email'];
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-      $errors['email'] = 'Email must be a valid email address';
-    }
+  $email = $_POST['email'];
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = 'Email must be a valid email address';
   }
 
-  //check password
-  if (empty($_POST['password'])) {
-    $errors['password'] = 'An password is required <br />';
-  } else {
-    $password = $_POST['password'];
-    if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
-      $errors['password'] = 'The password does not meet the requirements!';
+  //check password{
+  $password = $_POST['password'];
+  if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
+    $errors['password'] = 'The password does not meet the requirements!';
     }
-  }
 
   if (array_filter($errors)) {
     echo "<script type='text/javascript'>
@@ -53,7 +41,6 @@ if (isset($_POST['signup'])) {
 
     $sqlEmail = "SELECT * from user where email='$email'";
     $resultEmail = mysqli_query($conn, $sqlEmail);
-
 
     if (mysqli_num_rows($resultName) == 1) {
 
@@ -210,7 +197,7 @@ if (isset($_POST['signin'])) {
     function closeModal(modal){
      document.getElementById(modal).style.display="none";
     }
- 
+
   </script>
 
   <!-- Catchphrase sectionı -->
@@ -281,16 +268,16 @@ if (isset($_POST['signin'])) {
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
           <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
           <div class="red-text"><?php echo $errors['username']; ?></div>
           <label class="usernamePassword">Email</label>
-          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>">
+          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
           <div class="red-text"><?php echo $errors['email']; ?></div>
           <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
           <div class="red-text"><?php echo $errors['password']; ?></div>
           <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
-            <p class="infoLocale">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
+            <p class="signup-text">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
                   <p>
           </div>
         </form>
@@ -320,10 +307,10 @@ if (isset($_POST['signin'])) {
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
           <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>">
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
           <div class="red-text"><?php echo $error['username']; ?></div>
           <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>">
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
           <div class="red-text"><?php echo $error['password']; ?></div>
           <div class="red-text"><?php echo $error['userloginerror']; ?></div>
           <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />

@@ -103,6 +103,17 @@ section{
   height: 5rem;
   width: 5rem;
 }
+.signup-text{
+  color: #90A4AE;
+  font-weight: 400;
+  font-size: 1rem;
+  margin: 2.5rem;
+  display: block;
+  position: relative;
+  line-height: 1.5rem;
+  top:0;
+  text-align: center;
+}
 .signupButton{
   -webkit-box-pack: center;
   -ms-flex-pack: center;
@@ -217,7 +228,7 @@ cursor: pointer;
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
+  from {top:-300px; opacity:0}
   to {top:0; opacity:1}
 }
 
@@ -247,7 +258,9 @@ cursor: pointer;
   color: white;
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+  padding: 2px 16px;
+}
 
 .modal-footer {
   padding: 2px 16px;
