@@ -202,20 +202,22 @@ if (isset($_POST['signin'])) {
   </script>
 
   <!-- Catchphrase sectionı -->
-  <section class="creme">
+  <section class="dark" style="padding-bottom: 7%">
 
     <div class="container-fluid">
       <div class="row">
 
         <div class="col-lg-5 offset-lg-1">
-          <h1 class="slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis auctor.</h1>
-          <button type="button" name="button" class="btn btn-lg btn-dark custom">
+          <h1 class="slogan">To <span class="green-underline">Reduce</span> traffic, global warming and stress</h1>
+          <h1 class="slogan">Solution <span class="green">for better world</span></h1>
+          <h1 class="slogan after"><span class="blue">BikePass. </span>A new way of transportation</h1>
+          <button type="button" name="button" class="btn btn-lg btn-dark custom after">
             <img src="images/google_play.png" alt="Playstore icon" class="icon">
             <a href=""> Get on Google PlayStore</a>
           </button>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-6 after">
           <img src="images/women-with-bike.png" alt="https://www.freepik.com/free-photos-vectors/people" class="col">
         </div>
       </div>
@@ -224,7 +226,9 @@ if (isset($_POST['signin'])) {
   </section>
 
   <!-- How it works sectionı -->
-  <section class="green" id="howitworks">
+  <section id="howitworks">
+  <h1 class="title text-center">How It Works ?</h1>
+  <div class="rectangle">
     <div class="container-fluid">
       <div class="row">
 
@@ -248,6 +252,7 @@ if (isset($_POST['signin'])) {
           <h1 class="feature-text">When you decide to conclude your travel, park bike to convenient spot and confirm from you app as well</h1>
         </div>
 
+      </div>
       </div>
     </div>
   </section>
@@ -331,6 +336,8 @@ if (isset($_POST['signin'])) {
 
   <!-- Features sectionı -->
   <section class="creme" id="features">
+    <h1 class="title text-center">Features</h1>
+    <div class="rectangle2">
     <div class="container-fluid">
       <div class="row text-center m-auto">
 
@@ -363,6 +370,7 @@ if (isset($_POST['signin'])) {
       </div>
     </div>
     </div>
+  </div>
   </section>
 
 </body>
