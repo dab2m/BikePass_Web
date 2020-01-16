@@ -1,389 +1,156 @@
-<?php
-
-include('db_connect.php');
-
-$username = $email = $password = '';
-$errors = array('username' => '', 'email' => '', 'password' => '');
-if (isset($_POST['signup'])) {
-
-
-  //check username
-  $username = $_POST['username'];
-  if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
-    $errors['username'] = 'Username must be a valid username';
-  }
-
-  //check email
-  $email = $_POST['email'];
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors['email'] = 'Email must be a valid email address';
-  }
-
-  //check password{
-  $password = $_POST['password'];
-  if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
-    $errors['password'] = 'The password does not meet the requirements!';
-    }
-
-  if (array_filter($errors)) {
-    echo "<script type='text/javascript'>
-      window.onload=function(){
-        document.getElementById('myModalSıgnUp').style.display = 'block';
-      };
-      </script>";
-  } else {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-
-    $sqlName = "SELECT * from user where username='$username'";
-    $resultName = mysqli_query($conn, $sqlName);
-
-    $sqlEmail = "SELECT * from user where email='$email'";
-    $resultEmail = mysqli_query($conn, $sqlEmail);
-
-    if (mysqli_num_rows($resultName) == 1) {
-
-      $errors['username'] = 'This username already exists';
-      echo "<script type='text/javascript'>
-      window.onload=function(){
-        document.getElementById('myModalSıgnUp').style.display = 'block';
-      };
-      </script>";
-    } else if (mysqli_num_rows($resultEmail) == 1) {
-
-      $errors['email'] = 'This email already exists';
-      echo "<script type='text/javascript'>
-      window.onload=function(){
-        document.getElementById('myModalSıgnUp').style.display = 'block';
-      };
-      </script>";
-    } else {
-
-      $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$password')";
-
-      if (mysqli_query($conn, $sql)) {
-        echo "<script type='text/javascript'>
-        window.onload=function(){
-          document.getElementById('myModalSıgnUp').style.display = 'none';
-          document.getElementById('myModalLogIn').style.display = 'block';
-        };
-        </script>";
-      } else {
-        echo 'query error:' . mysql_error($conn);
-      }
-    }
-  }
-}
-
-
-$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '');
-
-if (isset($_POST['signin'])) {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
-  if ($username != '' && $password != '') {
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-
-    $sql = "SELECT * from user where username='$username' and password='$password'";
-
-    $result = mysqli_query($conn, $sql);
-
-    $row = mysqli_fetch_assoc($result);
-
-    if (mysqli_affected_rows($conn) == 1) {
-      session_start();
-      $_SESSION['username'] = $username;
-      $_SESSION['password'] = $password;
-      header('Location:deneme.php');
-    } else if (mysqli_affected_rows($conn) == 0) {
-      $error['userloginerror'] = 'Your username or password is wrong!';
-    } else {
-      echo 'query error';
-    }
-  } else if ($username != '') {
-    $error['password'] = 'Password cant be empty';
-  } else if ($password != '') {
-    $error['username'] = 'Username cant be empty';
-  }
-  if (array_filter($error)) {
-    echo "<script type='text/javascript'>
-      window.onload=function(){
-        document.getElementById('myModalLogIn').style.display = 'block';
-      };
-      </script>";
-  }
-}
-
-
+<?php 
+    include 'db.php';
+    session_start();
+    if(!isset($_SESSION['username']))
+        header("location:login.php");
+    $query = "SELECT * FROM `user` WHERE `user_id` = " . $_SESSION['id'];
+    $res = mysqli_query($db, $query);
+    $row = mysqli_fetch_assoc($res);
 ?>
 
-
-
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
 <head>
-  <meta charset="utf-8">
-  <title>BikePass</title>
-  <link rel="icon" type="image/png" href="images/favicon.png">
+<meta charset="utf-8"/>
+<title>Anasayfa</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+
+<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css">
+<link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css">
+<link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css">
+
+<link href="assets/global/css/components-rounded.css" id="style_components" rel="stylesheet" type="text/css">
+<link href="assets/global/css/plugins.css" rel="stylesheet" type="text/css">
+<link href="assets/admin/layout3/css/layout.css" rel="stylesheet" type="text/css">
+<link href="assets/admin/layout3/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color">
+<link href="assets/admin/layout3/css/custom.css" rel="stylesheet" type="text/css">
+<!-- END THEME STYLES -->
+<link rel="shortcut icon" href="favicon.ico"/>
 </head>
-
-<!-- Font Awesome Link -->
-<link rel="stylesheet" href="fontawesome/css/all.css">
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<!-- Bootstrap scripts -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-<link rel="stylesheet" href="styles/main.css">
-<link rel="stylesheet" href="styles/modal.css">
-
-<header>
-  <nav class="navbar navbar-expand-lg" id=navbar-header>
-
-    <img src="images/bikepass-logo.png" alt="BikePass Logo" class="logo">
-    <h1 class="site-title">BikePass</h1>
-
-    <button class="navbar-toggler toggler-button" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="true" aria-label="Toggle navigation">
-      <span style="color: #cdeeaa"><i class="fas fa-bicycle fa-2x"></i></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbar">
-      <ul class="navbar-nav ml-auto mr-5">
-        <li class="nav-item">
-          <a class="nav-link" href="#howitworks">How it works?</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#features">Features</a>
-        </li>
-        <li class="nav-item">
-          <p class="nav-link likeButton" onclick="showSıgnUp()" href="">Sign up</p>
-        </li>
-        <li class="nav-item">
-          <p class="nav-link likeButton" onclick="showLogIn()" href="">Login</p>
-        </li>
-      </ul>
-    </div>
-
-  </nav>
-</header>
-
 <body>
+<div class="page-container">
+	<!-- BEGIN PAGE HEAD -->
+	<div class="page-head">
+		<div class="container">
+			<!-- BEGIN PAGE TITLE -->
+			<div class="page-title">
+				<h1>Anasayfa</h1>
+			</div>
+		</div>
+	</div>
 
-  <script>
-    function showSıgnUp() {
-      document.getElementById("myModalLogIn").style.display = "none";
-      document.getElementById("myModalSıgnUp").style.display = "block";
-    }
-
-    function showLogIn() {
-      document.getElementById("myModalSıgnUp").style.display = "none";
-      document.getElementById("myModalLogIn").style.display = "block";
-    }
-
-    window.onclick = function(event) {
-      if (event.target == document.getElementById("myModalSıgnUp")) {
-        document.getElementById("myModalSıgnUp").style.display = "none";
-      }
-      if (event.target == document.getElementById("myModalLogIn")) {
-        document.getElementById("myModalLogIn").style.display = "none";
-      }
-    }
-
-    function closeModal(modal){
-     document.getElementById(modal).style.display="none";
-    }
-
-  </script>
-
-  <!-- Catchphrase sectionı -->
-  <section class="dark" style="padding-bottom: 7%">
-
-    <div class="container-fluid">
-      <div class="row">
-
-        <div class="col-lg-5 offset-lg-1">
-          <h1 class="slogan">To <span class="green-underline">Reduce</span> traffic, global warming and stress</h1>
-          <h1 class="slogan">Solution <span class="green">for better world</span></h1>
-          <h1 class="slogan after"><span class="blue">BikePass. </span>A new way of transportation</h1>
-          <button type="button" name="button" class="btn btn-lg btn-dark custom after">
-            <img src="images/google_play.png" alt="Playstore icon" class="icon">
-            <a href=""> Get on Google PlayStore</a>
-          </button>
-        </div>
-
-        <div class="col-lg-6 after">
-          <img src="images/women-with-bike.png" alt="https://www.freepik.com/free-photos-vectors/people" class="col">
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- How it works sectionı -->
-  <section id="howitworks">
-  <h1 class="title text-center">How It Works ?</h1>
-  <div class="rectangle">
-    <div class="container-fluid">
-      <div class="row">
-
-        <div class="col-lg-3 feature">
-          <img src="images/enterphone.png" alt="enterphone" class="col">
-          <h1 class="feature-text">Download our app on your Android phones. Enter your name, e-mail adress and credit card info to sign up</h1>
-        </div>
-
-        <div class="col-lg-3 feature">
-          <img src="images/findbike.png" alt="findbike" class="col">
-          <h1 class="feature-text">Once you signed up, you can look up for available bikes on map</h1>
-        </div>
-
-        <div class="col-lg-3 feature">
-          <img src="images/usebike.png" alt="usebike" class="col">
-          <h1 class="feature-text">Go next to one of our bikes and scan QR code located on them.<br>Enjoy cycling !</h1>
-        </div>
-
-        <div class="col-lg-3 feature">
-          <img src="images/lockbike.png" alt="lockbike" class="col">
-          <h1 class="feature-text">When you decide to conclude your travel, park bike to convenient spot and confirm from you app as well</h1>
-        </div>
-
-      </div>
-      </div>
-    </div>
-  </section>
+	<div class="page-content">
+		<div class="container">
 
 
+			<div class="portlet light">
+				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-12">
+							<!-- Google Map -->
+							<div class="row">
+								<div id="map" class="gmaps margin-bottom-40" style="height:400px;">
+								</div>
+							</div>
+							<div class="row margin-bottom-20">
+								<div class="col-md-6">
+									<div class="space20">
+									</div>
+									<h3 class="form-section">Profil</h3>
+									<div class="well">
+									
+										<address>
+										<strong>Kullanici Adi:</strong>
+										<p><?php echo $row['username'] ?></p>
+										</address>
+										
+										<address>
+										<strong>E-Mail:</strong><br>
+										<a href="mailto:#">
+										<?php echo $row['email']; ?> </a>
+										</address>
+										
+										<address>
+										<strong>Mesafe (Km):</strong><br>
+										<p> <?php echo $row['bike_km']; ?> </p>
+										</address>
+									</div>
+								</div>
 
-  <!-- The Modal -->
-  <div id="myModalSıgnUp" style="display:none;" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <div>
-        <span class="close" onclick=closeModal("myModalSıgnUp")>&times;</span>
-        <h2 class="welcome">Welcome to BikePass!</h2>
-      </div>
-      <div class="modal-body">
-        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
-
-
-        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-          <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
-          <div class="red-text"><?php echo $errors['username']; ?></div>
-          <label class="usernamePassword">Email</label>
-          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
-          <div class="red-text"><?php echo $errors['email']; ?></div>
-          <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
-          <div class="red-text"><?php echo $errors['password']; ?></div>
-          <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
-            <p class="signup-text">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
-                  <p>
-          </div>
-        </form>
-
-
-      </div>
-      <div>
-      </div>
-    </div>
-
-  </div>
-
-
-
-  <!-- The Modal -->
-  <div id="myModalLogIn" style="display:none;" class="modal">
-
-    <!-- Modal content -->
-    <div class="modal-content">
-      <div>
-        <span class="close" onclick=closeModal("myModalLogIn")>&times;</span>
-        <h2 class="welcome">Welcome Back!</h2>
-      </div>
-      <div class="modal-body">
-        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
-
-
-        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-          <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
-          <div class="red-text"><?php echo $error['username']; ?></div>
-          <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
-          <div class="red-text"><?php echo $error['password']; ?></div>
-          <div class="red-text"><?php echo $error['userloginerror']; ?></div>
-          <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
-            <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
-                  <p>
-          </div>
-        </form>
-
-      </div>
-      <div>
-      </div>
-    </div>
-
-  </div>
+								<div class="col-md-6">
+									<div class="space20">
+									</div>
+									<h3 class="form-section">Kart Bilgileri</h3>
+									<div class="well">
+									
+										<address>
+										<strong>Kart Numarasi:</strong>
+										<p><?php echo $row['card_num'] ?></p>
+										</address>
+										
+										<address>
+										<strong>Kart CCV:</strong><br>
+										<a href="mailto:#">
+										<?php echo $row['card_ccv']; ?> </a>
+										</address>
+										
+										<address>
+										<strong>Kart Son Kullanma Tarihi:</strong><br>
+										<p> <?php echo $row['card_date']; ?> </p>
+										</address>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
+<div class="page-footer">
+	<div class="container">
+		 
+	</div>
+</div>
+<div class="scroll-to-top">
+	<i class="icon-arrow-up"></i>
+</div>
 
-  <!-- Features sectionı -->
-  <section class="creme" id="features">
-    <h1 class="title text-center">Features</h1>
-    <div class="rectangle2">
-    <div class="container-fluid">
-      <div class="row text-center m-auto">
+<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
 
-        <div class="col-lg-2 col-md-4 offset-lg-1 features">
-          <h1 class="side-title">Easy to signup</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-file-signature fa-5x"></i></span>
-          <p class="feature-text">Enter your name and email address to sign up and start cycling!</p>
-        </div>
-        <div class="col-lg-2 col-md-4 features">
-          <h1 class="side-title">Simple usage</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-biking fa-5x"></i></span>
-          <p class="feature-text">Go next to nearest bike and scan QR code located on it to start using. Payment will be done when you end your session.No need to wait!</p>
-        </div>
-        <div class="col-lg-2 col-md-4 features">
-          <h1 class="side-title">Leaderboard</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-medal fa-5x"></i></span>
-          <p class="feature-text">View how much you cycle this month and compete with other bike enthusiasts globally!</p>
-        </div>
-        <div class="col-lg-2 col-md-4 features">
-          <h1 class="side-title">Active Support</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-phone-square-alt fa-5x"></i></span>
-          <p class="feature-text">A problem occurred? Don't worry, you can reach us through app and report problem</p>
-        </div>
-        <div class="col-lg-2 col-md-4 features">
-          <h1 class="side-title">Eco-Friendly</h1>
-          <span style="color: #cdeeaa"><i class="fab fa-pagelines fa-5x"></i></span>
-          <p class="feature-text">We also believe in action needed to take in environment. So start using BikePass to reduce damage on environment caused by automobiles and traffic!</p>
-        </div>
+<script src="assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
 
-      </div>
-    </div>
-    </div>
-  </div>
-  </section>
-
+<script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
+<script src="assets/global/plugins/gmaps/gmaps.min.js" type="text/javascript"></script>
+<script src="assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="assets/admin/layout3/scripts/layout.js" type="text/javascript"></script>
+<script src="assets/admin/layout3/scripts/demo.js" type="text/javascript"></script>
+<script src="assets/admin/pages/scripts/contact-us.js"></script>
+<script>
+jQuery(document).ready(function() {    
+   Metronic.init(); // init metronic core components
+Layout.init(); // init current layout
+Demo.init(); // init demo features
+   ContactUs.init();
+});
+</script>
 </body>
-
-<footer>
-  <div class="m-auto text-center" style="padding-top: 1rem">
-    <p class="site-title">
-      Illustrations and images by
-      <a href="https://www.freepik.com">Freepik</a> &
-      <a href="https://www.freepik.com/johndory">Johndory</a> &
-      <a href="https://www.freepik.com/studiogstock">Stduiogstock</a>
-    </p>
-  </div>
-</footer>
-
 </html>
