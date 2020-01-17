@@ -1,15 +1,6 @@
 
-@import url('https://fonts.googleapis.com/css?family=Fontdiner+Swanky|Montserrat&display=swap');
- /* Color palettte link https://colorhunt.co/palette/140154 */
-
- /* C O L O R S
-
-  Black: #1b1919;
-  Dark Green: #616f39;
-  Green: #a7d129;
-  Creme: #f8eeb4;
-
- */
+@import url('https://fonts.googleapis.com/css?family=Bangers|Dosis|Kaushan+Script|Luckiest+Guy&display=swap');
+ /* Color palettte link https://colorhunt.co/palette/136290 */
 
 a{
   color: #96dae4;
@@ -17,15 +8,11 @@ a{
 
 a:hover{
   text-decoration: none;
-  color: #a7d129;
-}
-
-body {
-  font-family: "Montserrat";
+  color: #cdeeaa;
 }
 
 footer {
-  background-color: #1b1919;
+  background-color: #6d70c6;
   bottom: 0;
   height: 3.625rem;
   margin-top: 5%;
@@ -34,45 +21,24 @@ footer {
 }
 
 header {
-  background-color: #1b1919;
+  background-color: #6d70c6;
 }
 
 html {
   position: relative;
-  min-height: 100vh;
-  scroll-behavior: smooth;
+  min-height: 100vh
 }
 
 section{
-  padding: 3% 0;
-  background-color: #f8eeb4;
+  padding: 7% 3%;
 }
 
-.after {
-  animation: moveUp 5s ease;
-}
-
-.blue{
-  color: #96dae4;
-}
-
-.container-fluid {
-  overflow: hidden;
+.creme{
+  background-color: #ffedc6;
 }
 
 .custom{
   margin: 2rem 0;
-}
-
-.dark {
-  background-image: linear-gradient(
-    to top,
-    rgba(55, 54, 54, 0.97),
-    rgba(0, 0, 0, 0.93)),
-    url(../images/traffic-hotspots.jpg);
-  background-repeat: no-repeat;
-  background-size: 100%;
-  height: 90vh;
 }
 
 .features{
@@ -80,17 +46,14 @@ section{
 }
 
 .feature-text{
-  color: #a7d129;
-  font-size: 1.3rem;
-  margin: 2rem 0;
+  color: #6d70c6;
+  font-family: "Dosis";
+  font-size: 1.2rem;
+  margin-top: 2rem;
 }
 
 .green{
- color: #a7d129;
-}
-
-.green-underline{
-  border-bottom: 3px solid #a7d129;
+ background-color: #cdeeaa;
 }
 
 .icon{
@@ -103,6 +66,7 @@ section{
 }
 
 .logo {
+  border: 2px solid #cdeeaa;
   display: inline-block;
   height: 10rem;
   margin-right: 1rem;
@@ -111,80 +75,31 @@ section{
 
 .nav-item{
   font-size: 1.3rem;
-  padding-top: 0.5rem;
-  margin: 0.5rem;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.nav-item:hover {
-  box-shadow: #FFF 0 -1px 4px,
-  #ff0 0 -2px 10px,
-  #69ff00 0 -10px 20px,
-  green 0 -18px 40px,
-  5px 5px 15px 5px rgba(0,0,0,0);
-}
-
-.rectangle {
-  background-image: linear-gradient(
-    to right top,
-    rgba(105, 125, 46, 0.78),
-    rgba(141, 168, 60, 0.78)
-    );
-  clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
-  padding: 10vh 0;
-}
-
-.rectangle2 {
-  background-image: linear-gradient(
-    to right top,
-    rgba(105, 125, 46, 0.78),
-    rgba(141, 168, 60, 0.78)
-    );
-  clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 80%);
-  padding: 10vh 0;
+  font-family: "Luckiest Guy";
+  padding: 0 1rem;
 }
 
 .side-title{
   color: #96dae4;
+  font-family: "Luckiest Guy";
   font-weight: bold;
   font-size: 1.7rem;
   margin-bottom: 2rem;
 }
 
 .site-title{
-  font-family: "Fontdiner Swanky";
+  font-family: "Kaushan Script";
   color: #96dae4;
 }
 
 .slogan{
   color: #6d70c6;
-}
-
-.title {
-  color: #6d70c6;
-  font-size: 4rem;
-  font-weight: bold;
-  text-shadow: 0.2rem 0.2rem #6264af;
+  font-family: "Bangers";
+  font-weight: lighter;
 }
 
 .toggler-button{
   border: 2px solid #cdeeaa;
   height: 5rem;
   width: 5rem;
-}
-
-@keyframes moveUp {
-  0% {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  50% {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
