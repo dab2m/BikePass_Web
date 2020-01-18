@@ -144,7 +144,7 @@
 								<div class="col-md-4">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 Distance:</h3>
+									<h3 class="form-section">Top 10 List (Distance):</h3>
 									<div class="well">
 									
 										<address>
