@@ -6,6 +6,62 @@
     $query = "SELECT * FROM `user` WHERE `user_id` = " . $_SESSION['id'];
     $res = mysqli_query($db, $query);
     $row = mysqli_fetch_assoc($res);
+    
+    
+    if (isset($_POST['username'])) {
+        $errors = [];
+        //check username
+        $username = $_POST['username'];
+        if (!preg_match('/^[a-z\d_]{2,20}$/', $username) && $username != $row['username']) {
+            $errors['username'] = 'Username must be a valid username';
+            echo "<script> alert('Username must be a valid username'); </script>";
+        }
+        
+        //check email
+        $email = $_POST['email'];
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) && $username != $row['email']) {
+            $errors['email'] = 'Email must be a valid email address';
+            echo "<script> alert('Email must be a valid email address'); </script>";
+        }
+        
+        //check password{
+        $password = $_POST['password'];
+        if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
+            $errors['password'] = 'The password does not meet the requirements!';
+            echo "<script> alert('The password does not meet the requirements!'); </script>";
+        }
+        
+        if (count($errors) > 0) {
+
+        }
+        else {
+            $username = mysqli_real_escape_string($db, $_POST['username']);
+            $email = mysqli_real_escape_string($db, $_POST['email']);
+            $password = mysqli_real_escape_string($db, $_POST['password']);
+            
+            $sqlName = "SELECT * from user where username='$username'";
+            $resultName = mysqli_query($db, $sqlName);
+            
+            $sqlEmail = "SELECT * from user where email='$email'";
+            $resultEmail = mysqli_query($db, $sqlEmail);
+            
+            if (mysqli_num_rows($resultName) == 1 && $username != $row['username']) {
+                $errors['username'] = 'This username already exists';
+                echo "<script> alert('This Username already exists'); </script>";
+            } else if (mysqli_num_rows($resultEmail) == 1 && $email != $row['email']) {
+                    $errors['email'] = 'This email already exists';
+                    echo "<script> alert('This email already exists'); </script>";
+            } else {
+                $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."' WHERE user_id = '".$_SESSION['id']."'";
+                if (mysqli_query($db, $sql)) {
+                   echo "<script> alert('Profile Updated'); </script>";
+                   header("location:main.php");
+                } else {
+                    echo "<script> alert('Something went wrong...'); </script>";
+                }
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -64,116 +120,58 @@
 
 			
 			<div class="portlet light">
-				<div class="portlet-body">
-					
+			<div class="portlet box blue-hoki">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-gift"></i>Profile Credentials
+					</div>
+				</div>
+				<div class="portlet-body form">
+					<!-- BEGIN FORM-->
+					<form action="edit_profile.php" class="form-horizontal" name="signup" method="post">
 
-					
-					<div class="row">
-						<div class="col-md-12">
-							<!-- Google Map -->
-							<div class="row">
-								<div id="map" class="gmaps margin-bottom-40" style="height:400px;">
+						<div class="form-body">
+							<div class="form-group">
+								<label class="col-md-3 control-label">Username</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control" placeholder="Enter text" value="<?php echo $row['username']; ?>" name="username">
 								</div>
 							</div>
-							<div class="row margin-bottom-20">
+							<div class="form-group">
+								<label class="col-md-3 control-label">Email Address</label>
 								<div class="col-md-4">
-									<div class="space20">
-									</div>
-									<h3 class="form-section">Profile</h3>
-									<div class="well">
-										<address>
-    										<strong>
-    											<button type="button" class="btn blue" style="float:right;" onclick="location.href='edit_profile.php';">Edit</button>
-    										</strong>
-										</address>
-										
-										<address>
-										<strong>User Name:</strong>
-										<p><?php echo $row['username'] ?></p>
-										</address>
-										
-										<address>
-										<strong>E-Mail:</strong><br>
-										<a href="mailto:#">
-										<?php echo $row['email']; ?> </a>
-										</address>
-										
-										<address>
-										<strong>Distance (Km):</strong><br>
-										<p> <?php echo $row['bike_km']; ?> </p>
-										</address>
-										
-										<address>
-										<strong>Bike Using Time:</strong><br>
-										<p> <?php echo $row['bike_using_time']; ?> </p>
-										</address>
-										
+									<div class="input-group">
+										<span class="input-group-addon">
+										<i class="fa fa-envelope"></i>
+										</span>
+										<input type="email" class="form-control" placeholder="Email Address" value="<?php echo $row['email']; ?>" name="email">
 									</div>
 								</div>
-
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label">Password</label>
 								<div class="col-md-4">
-									<div class="space20">
-									</div>
-									<h3 class="form-section">Credit Card Info</h3>
-									<div class="well">
-										<address>
-    										<strong>
-    											<button type="button" class="btn blue" style="float:right;" onclick="location.href='edit_card.php';">Edit</button>
-    										</strong>
-										</address>
-										
-										<address>
-										<strong>Card Number:</strong>
-										<p><?php echo $row['card_num'] ?></p>
-										</address>
-										
-										<address>
-										<strong>Card CCV:</strong><br>
-										<a href="mailto:#">
-										<?php echo $row['card_ccv']; ?> </a>
-										</address>
-										
-										<address>
-										<strong>Card Expiration Date:</strong><br>
-										<p> <?php echo $row['card_date']; ?> </p>
-										</address>
-
-									</div>
-								</div>
-								
-								<div class="col-md-4">
-									<div class="space20">
-									</div>
-									<h3 class="form-section">Top 10 Distance:</h3>
-									<div class="well">
-									
-										<address>
-											<ol>
-												<?php 
-												    $topsql = "SELECT * FROM `user` ORDER BY `bike_km` DESC";
-												    $topres = mysqli_query($db, $topsql);
-												    $count = 0;
-												    while ($toprow = mysqli_fetch_assoc($topres))
-												    {
-												        if($count > 9)
-												            break;
-												        echo "<li><strong>" . $toprow['username'] .  "</strong>: " . $toprow['bike_km'] . "</li>";
-												        $count++;
-												    }
-												    while ($count < 10)
-												    {
-												        echo "<li> - </li>";
-												        $count++;
-												    }
-                                                ?>
-											</ol>
-										</address>
+									<div class="input-group">
+										<input type="password" class="form-control" placeholder="Password" value="<?php echo $row['password']; ?>" name="password">
+										<span class="input-group-addon">
+										<i class="fa fa-user"></i>
+										</span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+						<div class="form-actions top">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<button type="submit" class="btn blue">Submit</button>
+									<button type="button" class="btn default" onclick="location.href='main.php';">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- END FORM-->
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>
