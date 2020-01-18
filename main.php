@@ -60,7 +60,7 @@
 								</div>
 							</div>
 							<div class="row margin-bottom-20">
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Profile</h3>
@@ -84,7 +84,7 @@
 									</div>
 								</div>
 
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Credit Card Info</h3>
@@ -104,6 +104,36 @@
 										<address>
 										<strong>Card Expiration Date:</strong><br>
 										<p> <?php echo $row['card_date']; ?> </p>
+										</address>
+									</div>
+								</div>
+								
+								<div class="col-md-4">
+									<div class="space20">
+									</div>
+									<h3 class="form-section">Top 10 Distance:</h3>
+									<div class="well">
+									
+										<address>
+											<ol>
+												<?php 
+												    $topsql = "SELECT * FROM `user` ORDER BY `bike_km`";
+												    $topres = mysqli_query($db, $topsql);
+												    $count = 0;
+												    while ($toprow = mysqli_fetch_assoc($topres))
+												    {
+												        if($count > 9)
+												            break;
+												        echo "<li><strong>" . $toprow['username'] .  "</strong>: " . $toprow['bike_km'] . "</li>";
+												        $count++;
+												    }
+												    while ($count < 10)
+												    {
+												        echo "<li> - </li>";
+												        $count++;
+												    }
+                                                ?>
+											</ol>
 										</address>
 									</div>
 								</div>
