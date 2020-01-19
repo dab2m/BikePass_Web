@@ -138,7 +138,7 @@
 								<div class="col-md-3">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 Distance:</h3>
+									<h3 class="form-section">Top 10 Users by Distance:</h3>
 									<div class="well">
 									
 										<address>
@@ -168,7 +168,7 @@
 								<div class="col-md-3">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 Using Time:</h3>
+									<h3 class="form-section">Top 10 Users by Using Time:</h3>
 									<div class="well">
 									
 										<address>
