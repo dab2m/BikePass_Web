@@ -59,24 +59,18 @@
 	</div>
 
 	<div class="page-content">
-	
-		<div class="container">
-
-			
+		<div class="container">	
 			<div class="portlet light">
 				<div class="portlet-body">
-					
-
-					
 					<div class="row">
 						<div class="col-md-12">
 							<!-- Google Map -->
 							<div class="row">
-								<div id="map" class="gmaps margin-bottom-40" style="height:400px;">
+								<div id="map" class="gmaps margin-bottom-40" style="height:400px;" lang="23" >
 								</div>
 							</div>
 							<div class="row margin-bottom-20">
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Profile</h3>
@@ -111,7 +105,7 @@
 									</div>
 								</div>
 
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Credit Card Info</h3>
@@ -141,10 +135,10 @@
 									</div>
 								</div>
 								
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 List (Distance):</h3>
+									<h3 class="form-section">Top 10 Distance:</h3>
 									<div class="well">
 									
 										<address>
@@ -158,6 +152,36 @@
 												        if($count > 9)
 												            break;
 												        echo "<li><strong>" . $toprow['username'] .  "</strong>: " . $toprow['bike_km'] . "</li>";
+												        $count++;
+												    }
+												    while ($count < 10)
+												    {
+												        echo "<li> - </li>";
+												        $count++;
+												    }
+                                                ?>
+											</ol>
+										</address>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="space20">
+									</div>
+									<h3 class="form-section">Top 10 Using Time:</h3>
+									<div class="well">
+									
+										<address>
+											<ol>
+												<?php 
+												    $topsql = "SELECT * FROM `user` ORDER BY `bike_using_time` DESC";
+												    $topres = mysqli_query($db, $topsql);
+												    $count = 0;
+												    while ($toprow = mysqli_fetch_assoc($topres))
+												    {
+												        if($count > 9)
+												            break;
+												        echo "<li><strong>" . $toprow['username'] .  "</strong>: " . $toprow['bike_using_time'] . "</li>";
 												        $count++;
 												    }
 												    while ($count < 10)

@@ -7,58 +7,26 @@
     $res = mysqli_query($db, $query);
     $row = mysqli_fetch_assoc($res);
     
-    
-    if (isset($_POST['username'])) {
-        $errors = [];
-        //check username
-        $username = $_POST['username'];
-        if (!preg_match('/^[a-z\d_]{2,20}$/', $username) && $username != $row['username']) {
-            $errors['username'] = 'Username must be a valid username';
-            echo "<script> alert('Username must be a valid username'); </script>";
-        }
+    $cardnum = "";
+    $ccv = "";
+    if (isset($_POST['creditcard'])) {
+        $cardnum = $_POST['creditcard'];
+        $ccv = $_POST['digits'];
+        $expdate = $_POST['expirationdate'];
         
-        //check email
-        $email = $_POST['email'];
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL) && $username != $row['email']) {
-            $errors['email'] = 'Email must be a valid email address';
-            echo "<script> alert('Email must be a valid email address'); </script>";
-        }
-        
-        //check password{
-        $password = $_POST['password'];
-        if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
-            $errors['password'] = 'The password does not meet the requirements!';
-            echo "<script> alert('The password does not meet the requirements!'); </script>";
-        }
-        
-        if (count($errors) > 0) {
-
-        }
+        if (strlen($ccv) != 3)
+            echo "<script> alert('CCV is not correct: ".strlen($ccv)."'); </script>";
+        else if(strlen($cardnum) != 16)
+            echo "<script> alert('Card Number is not correct ".strlen($cardnum)."'); </script>";
+        else if(strlen($expdate) == 0)
+            echo "<script> alert('Card Exp. Date is not correct ".strlen($expdate)."'); </script>";
         else {
-            $username = mysqli_real_escape_string($db, $_POST['username']);
-            $email = mysqli_real_escape_string($db, $_POST['email']);
-            $password = mysqli_real_escape_string($db, $_POST['password']);
-            
-            $sqlName = "SELECT * from user where username='$username'";
-            $resultName = mysqli_query($db, $sqlName);
-            
-            $sqlEmail = "SELECT * from user where email='$email'";
-            $resultEmail = mysqli_query($db, $sqlEmail);
-            
-            if (mysqli_num_rows($resultName) == 1 && $username != $row['username']) {
-                $errors['username'] = 'This username already exists';
-                echo "<script> alert('This Username already exists'); </script>";
-            } else if (mysqli_num_rows($resultEmail) == 1 && $email != $row['email']) {
-                    $errors['email'] = 'This email already exists';
-                    echo "<script> alert('This email already exists'); </script>";
+            $sql = "UPDATE user SET card_num = ".$cardnum.",card_ccv = ".$ccv.", card_date = '".$expdate."' WHERE user_id = '".$_SESSION['id']."'";
+            if (mysqli_query($db, $sql)) {
+                echo "<script> alert('Profile Updated'); </script>";
+                header("location:main.php");
             } else {
-                $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."' WHERE user_id = '".$_SESSION['id']."'";
-                if (mysqli_query($db, $sql)) {
-                   echo "<script> alert('Profile Updated'); </script>";
-                   header("location:main.php");
-                } else {
-                    echo "<script> alert('Something went wrong...'); </script>";
-                }
+                echo "<script> alert('Something went wrong...'); </script>";
             }
         }
     }
@@ -91,6 +59,7 @@
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
 </head>
+
 <body>
 <div class="page-container">
 	<!-- BEGIN PAGE HEAD -->
@@ -142,7 +111,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-										<label class="control-label col-md-3">CVC <span class="required" aria-required="true">
+										<label class="control-label col-md-3">CCV <span class="required" aria-required="true">
 										* </span>
 										</label>
 										<div class="col-md-4">
@@ -153,7 +122,7 @@
 										<label class="control-label col-md-3">Expiration Date</label>
 										<div class="col-md-4">
 											<div class="input-group date date-picker" data-date-format="dd-mm-yyyy">
-												<input type="text" class="form-control" readonly="" name="datepicker">
+												<input type="date" class="form-control" name="expirationdate" value="<?php echo $row['card_date']?>">
 												<span class="input-group-btn">
 												<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
 												</span>
