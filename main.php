@@ -58,6 +58,8 @@
 		</div>
 	</div>
 
+
+
 	<div class="page-content">
 		<div class="container">	
 			<div class="portlet light">
@@ -66,8 +68,17 @@
 						<div class="col-md-12">
 							<!-- Google Map -->
 							<div class="row">
-								<div id="map" class="gmaps margin-bottom-40" style="height:400px;" lang="23" >
-								</div>
+								<div id="map" style="height:400px;"></div>
+								<script>
+                                    function initMap() {
+                                    	  // The location of Uluru
+                                    	  var ankara = {lat: 39.933365, lng: 32.859741};
+                                    	  // The map, centered at Uluru
+                                    	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: ankara});
+                                    	  // The marker, positioned at Uluru
+                                    	  var marker = new google.maps.Marker({position: ankara, map: map});
+                                    	}  
+                                </script>
 							</div>
 							<div class="row margin-bottom-20">
 								<div class="col-md-3">
@@ -138,7 +149,7 @@
 								<div class="col-md-3">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 Users by Distance:</h3>
+									<h3 class="form-section">Top 10 Distance:</h3>
 									<div class="well">
 									
 										<address>
@@ -168,7 +179,7 @@
 								<div class="col-md-3">
 									<div class="space20">
 									</div>
-									<h3 class="form-section">Top 10 Users by Using Time:</h3>
+									<h3 class="form-section">Top 10 Using Time:</h3>
 									<div class="well">
 									
 										<address>
@@ -202,6 +213,9 @@
 		</div>
 	</div>
 </div>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgSrYhr1zDnhNG5YonEuXrOWHyIVTYxxs&callback=initMap">
+</script>
 
 
 <div class="page-footer">
