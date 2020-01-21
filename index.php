@@ -267,28 +267,18 @@ if (isset($_POST['signin'])) {
         <h2 class="welcome">Welcome to BikePass!</h2>
       </div>
       <div class="modal-body">
+        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
+
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-        <div class="inputdiv">
-          <input class="input" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
-            <label class="usernamePassword">
-              <span class="form-span">Username</span>
-            </label>
-        </div>
+          <label class="usernamePassword">Username</label>
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
           <div class="red-text"><?php echo $errors['username']; ?></div>
-        <div class="inputdiv">
-          <input class="input" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
-          <label class="usernamePassword">
-            <span class="form-span">Email</span>
-          </label>
-        </div>
+          <label class="usernamePassword">Email</label>
+          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
           <div class="red-text"><?php echo $errors['email']; ?></div>
-        <div class="inputdiv">
-        <input class="input" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
-          <label class="usernamePassword">
-            <span class="form-span">Password</span>
-          </label>  
-        </div>
+          <label class="usernamePassword">Password</label>
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
           <div class="red-text"><?php echo $errors['password']; ?></div>
           <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
             <p class="signup-text">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
@@ -316,21 +306,15 @@ if (isset($_POST['signin'])) {
         <h2 class="welcome">Welcome Back!</h2>
       </div>
       <div class="modal-body">
+        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
+
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-        <div class="inputdiv">
-          <input class="input" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
-            <label class="usernamePassword">
-             <span class="form-span">Username</span>
-            </label>
-        </div>
+          <label class="usernamePassword">Username</label>
+          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
           <div class="red-text"><?php echo $error['username']; ?></div>
-          <div class="inputdiv">
-            <input class="input" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
-            <label class="usernamePassword">
-              <span class="form-span">Password</span>
-          </label>
-          </div>
+          <label class="usernamePassword">Password</label>
+          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
           <div class="red-text"><?php echo $error['password']; ?></div>
           <div class="red-text"><?php echo $error['userloginerror']; ?></div>
           <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
