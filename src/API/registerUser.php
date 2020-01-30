@@ -21,6 +21,4 @@ if (mysqli_affected_rows($db) > 0) {
     $sqlAddUSer = "INSERT INTO user (username,password,email) values ('$username','$password','$email')";
     $resultAddUser = mysqli_query($db, $sqlAddUSer);
     echo 1;
-    var_dump($sqlAddUSer);
-    var_dump($resultAddUser);
 }
