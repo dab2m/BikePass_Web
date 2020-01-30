@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>BikePass Private API</title>
+    <link rel="icon" type="image/png" href="../images/favicon.png">
+    <link rel="stylesheet" href="api.css">
+    <link href="https://fonts.googleapis.com/css?family=Jura|Titillium+Web&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <h1 class="header__title">
+            BikePass Private API Documentation
+        </h1>
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar__list">
+            <li class="siderbar__list--item">
+                <a href="#intro">Intro</a>
+            </li>
+            <li class="siderbar__list--item">
+                <a href="#register">Register User</a>
+            </li>
+            <li class="siderbar__list--item">
+                <a href="#login">Login User</a>
+            </li>
+        </ul>
+    </div>
+    <section class="page">
+        <div class="intro" id="intro">
+          <h1 class="intro--header">
+             JSON syntax and responses for API
+         </h1>
+         <p class="intro--text">
+            For Android App <span class="highlight">GET</span> and <span class="highlight">POST</span> request should be targeted to <span class="code">app.php</span> file<br>
+            For Bikes <span class="highlight">GET</span> and <span class="highlight">POST</span> request should be targeted to <span class="code">bike.php</span> file<br>
+         </p>
+        </div>
+        <div class="json" id="register">
+            <h2 class="json--header">
+                Register a new User            
+            </h2>
+            <button class="copy" data-clipboard-text="{username:mustafa,password:sEcreTp@ssW0rd,email:mustafa@bestcompany.com}">Copy</button>
+            <div class="json__code">
+                {
+                <p class="json__code--item">username<span class="semic">:</span> mustafa<span class="semic">,</span></span></p>
+                <p class="json__code--item">password<span class="semic">:</span> sEcreTp@ssW0rd<span class="semic">,</span></p>
+                <p class="json__code--item">email<span class="semic">:</span> mustafa@bestcompany.com<span class="semic">,</span></p>
+                }
+            </div>
+            <p class="json--text">
+                To register a new user three parameters are required. <span class="code">username</span>, <span class="code">email</span> and <span class="code">password</span>.<br>
+                Username and email should be exclusive to each user<br>
+                Username should be between 2-20 lowercase letters<br>
+                Password should be between 8-12 characters with upper and lowercase letters and numbers.Password can alson include !@#%$ characters
+            </p>
+        </div>
+        <div class="json" id="login">
+            <h2 class="json--header">
+                Login            
+            </h2>
+            <button class="copy" data-clipboard-text="{username:mustafa,password:sEcreTp@ssW0rd}">Copy</button>
+            <div class="json__code">
+                {
+                <p class="json__code--item">username<span class="semic">:</span> mustafa<span class="semic">,</span></span></p>
+                <p class="json__code--item">password<span class="semic">:</span> sEcreTp@ssW0rd<span class="semic">,</span></p>
+                }
+            </div>
+            <p class="json--text">
+                To login two parameters are required. <span class="code">username</span> and <span class="code">password</span>.<br>
+            </p>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script>
+        new ClipboardJS('.copy');
+    </script>
+
+</body>
+</html>

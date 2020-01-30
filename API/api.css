@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    background-color: #ffedc6;
+    font-family: "Tillium Web";
+    color: #6d70c6;
+}
+
+body {
+    height: 100%;
+}
+
+/* Multiple used classes */
+.code {
+    font-family: "Jura";
+    color: black;
+}
+
+.highlight {
+    color: #6a9ca3;
+}
+
+.semic {
+    color: #6a9ca3;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.header {
+    height: 10vh;
+    background-color: #6d70c6;
+    color: #ffedc6;
+    width: 100%;
+}
+
+.header__title {
+    font-size: 2rem;
+    padding: 2rem 0 0 2rem;
+}
+
+.sidebar {
+    position: absolute;
+    min-height: 125vh;
+    width: 10vw;
+    padding: 10vh 0 0 2rem;
+    background-color: #ffde98;
+    border-right: 20px dotted #ffedc6;
+}
+
+.siderbar__list--item {
+    list-style: none;
+    padding: 0.5rem 0;
+}
+
+.siderbar__list--item>a {
+    color: #6d70c6;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-decoration: none;
+}
+
+.siderbar__list--item>a:hover {
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+    border-bottom: 2px #6d70c6 solid;
+}
+
+.page {
+    font-size: 1.2rem;
+    padding: 10vh 0 0 15vw;
+}
+
+.intro--header {
+    text-decoration: underline;
+    margin-bottom: 4rem;
+}
+
+.json {
+    margin-top: 10rem;
+}
+
+.json__code {
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #6a9ca3;
+    font-weight: bold;
+}
+
+.json__code--item {
+    font-family: "Jura";
+    color: rgb(117, 116, 116);
+    display: block;
+    padding-left: 1rem;
+}
+
+.copy {
+    position: relative;
+    top: 6rem;
+    right: 6rem;
+    background-color: #6d70c6;
+    color: #ffedc6;
+    border: none;
+    height: 2rem;
+    width: 4rem;
+    border: none;
+    box-shadow:  2px 2px 10px 2px #393a58,
+                 -2px -2px 10px 2px #dbdcff;
+    transition: all 0.1s ease;
+}
+
+.copy:hover, .copy:focus {
+    outline: none;
+    box-shadow:  inset 2px 2px 2px 2px #8385c7,
+                 inset -2px -2px 2px 2px #adb0fd;
+    transform: translateY(2px);
+}
+
