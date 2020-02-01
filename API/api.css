@@ -8,6 +8,7 @@ html{
     background-color: #ffedc6;
     font-family: "Tillium Web";
     color: #6d70c6;
+    user-select: none;
 }
 
 body {
@@ -44,7 +45,7 @@ body {
 
 .sidebar {
     position: absolute;
-    min-height: 125vh;
+    min-height: 140vh;
     width: 10vw;
     padding: 10vh 0 0 2rem;
     background-color: #ffde98;
@@ -79,10 +80,6 @@ body {
     margin-bottom: 4rem;
 }
 
-.json {
-    margin-top: 10rem;
-}
-
 .json__code {
     padding-left: 1rem;
     margin: 1rem 0;
@@ -99,6 +96,7 @@ body {
 
 .copy {
     position: relative;
+    cursor: pointer;
     top: 6rem;
     right: 6rem;
     background-color: #6d70c6;
@@ -119,3 +117,29 @@ body {
     transform: translateY(2px);
 }
 
+.example{
+    display: flex;
+    padding-top: 10rem;
+    justify-content: space-around;
+}
+
+.example>div{
+    flex-basis: 35vw;
+}
+
+.status__list--item{
+    list-style: none;
+    color: black;
+    margin-top: 0.5rem;
+}
+
+.status--code{
+    color: #6a9ca3;
+    font-size: 1.4rem;
+}
+
+.status--code::after {
+    content: "->";
+    font-size: 1.2rem;
+    color: #6d70c6;
+}
