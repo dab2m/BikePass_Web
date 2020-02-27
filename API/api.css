@@ -33,9 +33,11 @@ body {
 
 .header {
     height: 10vh;
+    position: absolute;
     background-color: #6d70c6;
     color: #ffedc6;
     width: 100%;
+    z-index: 5;
 }
 
 .header__title {
@@ -44,10 +46,10 @@ body {
 }
 
 .sidebar {
-    position: absolute;
-    min-height: 140vh;
+    height: 100vh;
+    position: fixed;
     width: 10vw;
-    padding: 10vh 0 0 2rem;
+    padding: 20vh 0 0 2rem;
     background-color: #ffde98;
     border-right: 20px dotted #ffedc6;
 }
@@ -72,7 +74,7 @@ body {
 
 .page {
     font-size: 1.2rem;
-    padding: 10vh 0 0 15vw;
+    padding: 20vh 0 20vh 15vw;
 }
 
 .intro--header {

@@ -2,6 +2,7 @@
 include('../db.php');
 $status = "";
 $message = "";
+$bikes;
 $post_json = json_decode(file_get_contents("php://input"), true);
 
 //Register User
@@ -22,9 +23,9 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && isset($pos
         $status = "3";
     } else {
 
-        $sql = "SELECT email from user where email='$email'";
+        $sql = "SELECT email FROM user WHERE email='$email'";
         $email_result = mysqli_query($db, $sql);
-        $sql = "SELECT username from user where username='$username'";
+        $sql = "SELECT username FROM user WHERE username='$username'";
         $username_result = mysqli_query($db, $sql);
         if (mysqli_num_rows($email_result) == 1) {
             $message = "Email already exists";
@@ -46,7 +47,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 
     $username = $post_json["username"];
     $password = $post_json["password"];
-    $sql = "SELECT username,password from user where username='$username'";
+    $sql = "SELECT username,password FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) == 1) {
         $login = mysqli_fetch_assoc($result);
@@ -63,15 +64,37 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
     }
 }
 
+if (isset($post_json["lat"]) && isset($post_json["long"])) {
+
+    $sql = "SELECT * FROM bikes WHERE status='0'";
+    $result = mysqli_query($db, $sql);
+    $bikes_array = array();
+    $i = 0;
+    if (mysqli_num_rows($result) > 1) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $bikes_array[$i]['name'] = 'bike' . $row['id'];
+            $bikes_array[$i]['lat'] = $row['lat'];
+            $bikes_array[$i]['long'] = $row['long'];
+            $i++;
+        }
+        $status = "0";
+        $bikes = $bikes_array;
+    } else {
+        $status = "1";
+        $message = "No available bikes near user";
+    }
+}
+
 //Image
 
 if (isset($_FILES['myFile'])) {
     $message = "successful";
     $status = 1;
-} else {
-    $message = "no";
-    $status = 0;
 }
 
-$json = array("status" => $status, "message" => $message);
+if(!empty($bikes)){
+    $json = array("status" => $status, "bikes" => $bikes);
+    //$json = array_merge($json_temp,$bikes);
+} else 
+    $json = array("status" => $status, "message" => $message);
 echo json_encode($json, JSON_FORCE_OBJECT);
