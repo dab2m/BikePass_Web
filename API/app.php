@@ -92,9 +92,8 @@ if (isset($_FILES['myFile'])) {
     $status = 1;
 }
 
-if(!empty($bikes)){
-    $json = array("status" => $status, "bikes" => $bikes);
-    //$json = array_merge($json_temp,$bikes);
-} else 
+if(!empty($bikes))
+    $json = array("status" => $status, "message"=> "Returned array of bikes", "bikes" => $bikes);
+else 
     $json = array("status" => $status, "message" => $message);
 echo json_encode($json, JSON_FORCE_OBJECT);
