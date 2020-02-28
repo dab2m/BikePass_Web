@@ -210,7 +210,7 @@ if (isset($_POST['signin'])) {
 
         <div class="col-lg-5 offset-lg-1">
           <h1 class="slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis auctor.</h1>
-          <button type="button" name="button" class="btn btn-lg btn-dark custom">
+          <button type="button" name="button" class="btn btn-lg custom">
             <img src="images/google_play.png" alt="Playstore icon" class="icon">
             <a href=""> Get on Google PlayStore</a>
           </button>
@@ -226,6 +226,8 @@ if (isset($_POST['signin'])) {
 
   <!-- How it works sectionı -->
   <section class="green" id="howitworks">
+
+    <h1 class="text-center small-title">How it works ?</h1>
     <div class="container-fluid">
       <div class="row">
 
@@ -265,18 +267,28 @@ if (isset($_POST['signin'])) {
         <h2 class="welcome">Welcome to BikePass!</h2>
       </div>
       <div class="modal-body">
-        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
-
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-          <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
+        <div class="inputdiv">
+          <input class="input" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
+            <label class="usernamePassword">
+              <span class="form-span">Username</span>
+            </label>
+        </div>
           <div class="red-text"><?php echo $errors['username']; ?></div>
-          <label class="usernamePassword">Email</label>
-          <input class="input m-auto" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
+        <div class="inputdiv">
+          <input class="input" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
+          <label class="usernamePassword">
+            <span class="form-span">Email</span>
+          </label>
+        </div>
           <div class="red-text"><?php echo $errors['email']; ?></div>
-          <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
+        <div class="inputdiv">
+        <input class="input" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
+          <label class="usernamePassword">
+            <span class="form-span">Password</span>
+          </label>  
+        </div>
           <div class="red-text"><?php echo $errors['password']; ?></div>
           <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
             <p class="signup-text">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
@@ -304,15 +316,21 @@ if (isset($_POST['signin'])) {
         <h2 class="welcome">Welcome Back!</h2>
       </div>
       <div class="modal-body">
-        <p class="infoLocale">Customize forms, save time and effort and collect online payments easily.</p>
-
 
         <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-          <label class="usernamePassword">Username</label>
-          <input class="input m-auto" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
+        <div class="inputdiv">
+          <input class="input" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
+            <label class="usernamePassword">
+             <span class="form-span">Username</span>
+            </label>
+        </div>
           <div class="red-text"><?php echo $error['username']; ?></div>
-          <label class="usernamePassword">Password</label>
-          <input class="input m-auto" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
+          <div class="inputdiv">
+            <input class="input" type="password" name="password" value="<?php echo htmlspecialchars($password) ?>" required>
+            <label class="usernamePassword">
+              <span class="form-span">Password</span>
+          </label>
+          </div>
           <div class="red-text"><?php echo $error['password']; ?></div>
           <div class="red-text"><?php echo $error['userloginerror']; ?></div>
           <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
@@ -332,32 +350,33 @@ if (isset($_POST['signin'])) {
 
   <!-- Features sectionı -->
   <section class="creme" id="features">
+  <h1 class="text-center small-title">Features</h1>
     <div class="container-fluid">
       <div class="row text-center m-auto">
 
         <div class="col-lg-2 col-md-4 offset-lg-1 features">
           <h1 class="side-title">Easy to signup</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-file-signature fa-5x"></i></span>
+          <span style="color: #97bd6f"><i class="fas fa-file-signature fa-5x"></i></span>
           <p class="feature-text">Enter your name and email address to sign up and start cycling!</p>
         </div>
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Simple usage</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-biking fa-5x"></i></span>
+          <span style="color: #97bd6f"><i class="fas fa-biking fa-5x"></i></span>
           <p class="feature-text">Go next to nearest bike and scan QR code located on it to start using. Payment will be done when you end your session.No need to wait!</p>
         </div>
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Leaderboard</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-medal fa-5x"></i></span>
+          <span style="color: #97bd6f"><i class="fas fa-medal fa-5x"></i></span>
           <p class="feature-text">View how much you cycle this month and compete with other bike enthusiasts globally!</p>
         </div>
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Active Support</h1>
-          <span style="color: #cdeeaa"><i class="fas fa-phone-square-alt fa-5x"></i></span>
+          <span style="color: #97bd6f"><i class="fas fa-phone-square-alt fa-5x"></i></span>
           <p class="feature-text">A problem occurred? Don't worry, you can reach us through app and report problem</p>
         </div>
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Eco-Friendly</h1>
-          <span style="color: #cdeeaa"><i class="fab fa-pagelines fa-5x"></i></span>
+          <span style="color: #97bd6f"><i class="fab fa-pagelines fa-5x"></i></span>
           <p class="feature-text">We also believe in action needed to take in environment. So start using BikePass to reduce damage on environment caused by automobiles and traffic!</p>
         </div>
 

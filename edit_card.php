@@ -9,9 +9,8 @@
     
     $cardnum = "";
     $ccv = "";
-    $expdate = "";
-    if (isset($_POST['credit'])) {
-        $cardnum = $_POST['credit'];
+    if (isset($_POST['creditcard'])) {
+        $cardnum = $_POST['creditcard'];
         $ccv = $_POST['digits'];
         $expdate = $_POST['expirationdate'];
         
@@ -22,7 +21,7 @@
         else if(strlen($expdate) == 0)
             echo "<script> alert('Card Exp. Date is not correct ".strlen($expdate)."'); </script>";
         else {
-            $sql = "UPDATE `user` SET card_ccv = '".$ccv."', `card_num` = '".$cardnum."', card_date = '".$expdate."' WHERE `user_id` = ".$_SESSION['id'];
+            $sql = "UPDATE user SET card_num = ".$cardnum.",card_ccv = ".$ccv.", card_date = '".$expdate."' WHERE user_id = '".$_SESSION['id']."'";
             if (mysqli_query($db, $sql)) {
                 echo "<script> alert('Profile Updated'); </script>";
                 header("location:main.php");
@@ -106,7 +105,7 @@
 								* </span>
 								</label>
 								<div class="col-md-4">
-									<input name="credit" type="text" class="form-control" value="<?php echo $row['card_num']?>">
+									<input name="creditcard" type="text" class="form-control" value="<?php echo $row['card_num']?>">
 									<span class="help-block">
 									e.g: 5500 0000 0000 0004 </span>
 								</div>
