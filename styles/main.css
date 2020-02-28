@@ -1,24 +1,14 @@
 
-@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Indie+Flower|Mali:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bangers|Dosis|Kaushan+Script|Luckiest+Guy&display=swap');
  /* Color palettte link https://colorhunt.co/palette/136290 */
- /* COLORS 
-  Creme: #ffedc6
-  Green: #cdeeaa
-  Blue: #96dae4
-  Purple: #6d70c6
- */
- 
+
 a{
   color: #96dae4;
 }
 
 a:hover{
   text-decoration: none;
-  color: #96dae4;
-}
-
-body{
-  background-color: #ffedc6;
+  color: #cdeeaa;
 }
 
 footer {
@@ -31,19 +21,16 @@ footer {
 }
 
 header {
-  background-color: inherit;
-  transition: all 0.5s ease;
+  background-color: #6d70c6;
 }
 
 html {
   position: relative;
-  min-height: 100vh;
-  scroll-behavior: smooth;
+  min-height: 100vh
 }
 
 section{
   padding: 7% 3%;
-  height: 100vh;
 }
 
 .creme{
@@ -52,16 +39,6 @@ section{
 
 .custom{
   margin: 2rem 0;
-  background-color: #6d70c6;
-  border-radius: 20px;
-  border: 5px solid #6d70c6;
-  box-shadow: 7px 6px 8px 2px #3f3a2d;
-  transition: all 0.2s ease;
-}
-
-.custom:hover{
-  box-shadow: 3px 2px 2px 2px #3f3a2d;
-  transform: translateY(2px);
 }
 
 .features{
@@ -70,19 +47,13 @@ section{
 
 .feature-text{
   color: #6d70c6;
-  font-family: "Mali";
+  font-family: "Dosis";
   font-size: 1.2rem;
   margin-top: 2rem;
 }
 
-footer .m-auto p{
-  color: #96dae4;
-  font-family: "Indie Flower";
-  font-size: 1.1rem;
-}
-
 .green{
- background-color:#cdeeaa;
+ background-color: #cdeeaa;
 }
 
 .icon{
@@ -95,54 +66,36 @@ footer .m-auto p{
 }
 
 .logo {
+  border: 2px solid #cdeeaa;
   display: inline-block;
-  height: 7rem;
-  margin: 1rem 1.5rem;
-  width: 7rem;
+  height: 10rem;
+  margin-right: 1rem;
+  width: 10rem;
 }
 
 .nav-item{
-  font-size: 2rem;
-  font-family: "Indie Flower";
+  font-size: 1.3rem;
+  font-family: "Luckiest Guy";
   padding: 0 1rem;
-  transition: all 0.2s ease-in;
-}
-
-.nav-item a{
-  color: #6d70c6;
-}
-
-.nav-item p{
-  color: #6d70c6;
-}
-
-.nav-item:hover{
-  font-size: 2.3rem;
 }
 
 .side-title{
   color: #96dae4;
-  font-family: "Mali";
+  font-family: "Luckiest Guy";
   font-weight: bold;
   font-size: 1.7rem;
   margin-bottom: 2rem;
 }
 
 .site-title{
-  font-family: "Gloria Hallelujah";
-  color: #6d70c6;
+  font-family: "Kaushan Script";
+  color: #96dae4;
 }
 
 .slogan{
   color: #6d70c6;
-  font-family: "Gloria Hallelujah";
-}
-
-.small-title{
-  color: #6d70c6;
-  font-family: "Gloria Hallelujah";
-  margin-bottom: 5vh;
-  text-decoration: underline;
+  font-family: "Bangers";
+  font-weight: lighter;
 }
 
 .toggler-button{
