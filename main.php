@@ -72,76 +72,28 @@
 								<?php 
     								$bikequery = "SELECT * FROM `bikes` WHERE `user_id` = " . $_SESSION['id'];
     								$bikeres = mysqli_query($db, $bikequery);
-    								$lat = "";
-    								$lng = "";
-    								$icons = "";
-    								$count = 0;
-                                    while($bikerow = mysqli_fetch_assoc($bikeres))
-                                    {
-                                        $lat = $lat . "" . $bikerow['lat'] . ",";
-                                        $lng = $lng . "" . $bikerow['lng'] . ",";
-                                        if($bikerow['status'] == 0)
-                                            $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/red-dot.png,";
-                                        else
-                                            $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/blue-dot.png,";
-                                        $count++;
-                                    }
+                                    $bikerow = mysqli_fetch_assoc($bikeres);
                                     
-
-                                        $lat = substr($lat, 0, -1);
-
-                                        $lng = substr($lng, 0, -1);
-                                        $icons = substr($icons, 0, -1);
-                                    
-                                    
+                                    $icon = "";
+                                    if($bikerow['status'] == 0)
+                                        $icon = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                                    else
+                                        $icon = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
 								?>
 								<script>
                                     function initMap() {
-
-                                    	  var lat = '<?php echo $lat; ?>'
-										  lat = lat.split(",")
-										  var lng = '<?php echo $lng; ?>'
-										  lng = lng.split(",")
-										  var icons = '<?php echo $icons; ?>'
-
-										  icons = icons.split(",")
-										  var count = '<?php echo $count; ?>'
-										  count = parseInt(count)
-										  if(count != 0)
-										  {  
-    										  let infowindow
-    										  var location = {lat: parseInt(lat[0]), lng: parseInt(lng[0])};
-                                        	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: location});
-    
-    
-                                        	  for(var i = 0 ; i < count ; i++)
-                                        	  {
-                                            	location = {lat: parseInt(lat[i]), lng: parseInt(lng[i])};
-                                        	  	let marker = new google.maps.Marker({position: location, map: map, title: 'Bike' + i, icon: icons[i]});
-    
-                                          	  	
-        	                               	  
-                                          		infowindow = new google.maps.InfoWindow({
-                                          			content: '<strong>Bike</strong>' + (i+1)
-                                          		});
-                                        	  	
-                                          	  	google.maps.event.addListener(marker, 'click', function() {
-                                              	  	if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/red-dot.png')
-                                              	  		alert('Status: On maintenance...')
-                                              	  	else
-                                              	  		alert('Status: Working...')
-                                      				//infowindow.open(map,marker);
-                                      	  		});
-                                        	  }
-                                    		}
-										  else
-										  {
-    										  var location = {lat: 36.234, lng: 38.123};
-                                        	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: location});
-                                        	  alert('No bikes detected...')
-										  }
-                                      	}
-                                  		  
+                                    	  // The location of Uluru
+                                    	  var ankara = {lat: <?php echo $bikerow['lat']; ?>, lng: <?php echo $bikerow['lng']; ?>};
+                                    	  var ankara2 = {lat: 40.933365, lng: 33.859741};
+                                    	  // The map, centered at Uluru
+                                    	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: ankara});
+                                    	  // The marker, positioned at Uluru
+                                    	  
+                                    	  
+                                    	  var marker = new google.maps.Marker({position: ankara, map: map,title: 'Bike', label: '<?php echo $row['username']; ?>',icon: '<?php echo $icon; ?>'});
+                                    	  
+  										
+                                      	}  
                                 </script>
 							</div>
 							<div class="row margin-bottom-20">
