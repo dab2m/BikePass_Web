@@ -64,6 +64,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
     }
 }
 
+//Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"])) {
 
     $sql = "SELECT * FROM bikes WHERE status='0'";
@@ -72,6 +73,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     $i = 0;
     if (mysqli_num_rows($result) > 1) {
         while ($row = mysqli_fetch_assoc($result)) {
+            // Uzaklık hesabı yapılacak yer
             $bikes_array[$i]['name'] = 'bike' . $row['id'];
             $bikes_array[$i]['lat'] = $row['lat'];
             $bikes_array[$i]['long'] = $row['long'];
@@ -85,8 +87,56 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     }
 }
 
-//Image
+//Data send
+if(isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])){
+    $username = $post_json["username"];
+    $sql = "SELECT user_id from user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) == 1) {
+        $user_id = mysqli_fetch_assoc($result);
+        $user_id = $user_id['user_id'];
+        $bike_id = $post_json["bike_id"];
+        $sql = "SELECT status from bikes WHERE id=$bike_id";
+        $result = mysqli_query($db, $sql);
+        if(mysqli_num_rows($result) == 1) {
+            //Meşgul bike status kodu 1 olarak varsayılan yer
+            $status = mysqli_fetch_assoc($result);
+            if($status["status"] == 1){
+                $date = date('Y-m-d');
+                $bike_km = $post_json['bike_km'];
+                $bike_time = $post_json['bike_time'];
+                $sql = "INSERT INTO data (user_id,bike_id,bike_km,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_km,$bike_time,'$date')";
+                $result = mysqli_query($db, $sql);
+                if ($result){
+                    $sql = "UPDATE bikes SET status=0 WHERE id=$bike_id";
+                    $result = mysqli_query($db, $sql);
+                    if ($result){
+                        $status = "0";
+                        $message = "Data stored and bike" . $bike_id . " is available again";
+                    }else{
+                        $status = "5";
+                        $message = "Can't update bikes status!";
+                    }
+                }else{
+                    $status = "4";
+                    $message = $result;
+                    //$message = "Can't add bike using data!";
+                }
+            }else{
+                $status = "3";
+                $message = "Non-busy bike detected!";
+            }
+        }else{
+            $status = "2";
+            $message = "Invalid bike id!";
+        }
+    }else{
+        $status = "1";
+        $message = "Can't find user with username " . $username;
+    }
+}
 
+//Image
 if (isset($_FILES['myFile'])) {
     $message = "successful";
     $status = 1;

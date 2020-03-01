@@ -9,6 +9,7 @@ html{
     font-family: "Tillium Web";
     color: #6d70c6;
     user-select: none;
+    scroll-behavior: smooth;
 }
 
 body {
