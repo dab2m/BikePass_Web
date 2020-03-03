@@ -70,7 +70,7 @@
 							<div class="row">
 								<div id="map" style="height:400px;"></div>
 								<?php 
-    								$bikequery = "SELECT * FROM `bikes` WHERE `user_id` = " . $_SESSION['id'];
+    								$bikequery = "SELECT * FROM `bikes` ";
     								$bikeres = mysqli_query($db, $bikequery);
     								$lat = "";
     								$lng = "";
