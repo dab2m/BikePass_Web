@@ -71,7 +71,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     $result = mysqli_query($db, $sql);
     $bikes_array = array();
     $i = 0;
-    if (mysqli_num_rows($result) > 1) {
+    if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
             // Uzaklık hesabı yapılacak yer
             $bikes_array[$i]['name'] = 'bike' . $row['id'];
@@ -134,6 +134,43 @@ if(isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_
         $status = "1";
         $message = "Can't find user with username " . $username;
     }
+}
+
+// Unlock bike
+if (isset($post_json["bike_id"]) && isset($post_json["user_id"])) {
+
+    $bike_id = $post_json["bike_id"];
+    $user_id = $post_json["user_id"];
+    $sql = "SELECT * FROM bikes WHERE user_id='$user_id'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0){
+        $sql = "SELECT status FROM bikes WHERE id=$bike_id";
+        $result = mysqli_query($db, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            $status = mysqli_fetch_assoc($result);
+            if($status["status"] == "0"){
+                $sql = "UPDATE bikes SET status=1,user_id='$user_id' WHERE id=$bike_id";
+                $result = mysqli_query($db, $sql);
+                if($result){
+                    $status = "0";
+                    $message = "Bike is unlocked";
+                }else{
+                    $status = "4";
+                    $message = "Database error! Couldn't update bike's status";
+                } 
+            }else{
+                $status = "3";
+                $message = "Bike is not available";
+            }    
+        } else {
+            $status = "1";
+            $message = "Unidentified bike_id";
+        }
+    }else{
+        $status = "2";
+        $message = "Unidentified user_id";
+    }
+    
 }
 
 //Image
