@@ -137,13 +137,15 @@ if(isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_
 }
 
 // Unlock bike
-if (isset($post_json["bike_id"]) && isset($post_json["user_id"])) {
+if (isset($post_json["bike_id"]) && isset($post_json["username"])) {
 
     $bike_id = $post_json["bike_id"];
-    $user_id = $post_json["user_id"];
-    $sql = "SELECT * FROM bikes WHERE user_id='$user_id'";
+    $username = $post_json["username"];
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) > 0){
+        $user = mysqli_fetch_assoc($result);
+        $user_id = $user["user_id"];
         $sql = "SELECT status FROM bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
@@ -168,9 +170,40 @@ if (isset($post_json["bike_id"]) && isset($post_json["user_id"])) {
         }
     }else{
         $status = "2";
-        $message = "Unidentified user_id";
+        $message = "Unkown username " . $username;
+    } 
+}
+
+// Weekly data (from monday to today)
+if (isset($post_json["username"]) && isset($post_json["type"])) {
+
+    $username = $post_json["username"];
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0){
+        $user = mysqli_fetch_assoc($result);
+        $user_id = $user["user_id"];
+        $select = ($post_json["type"] == "time") ? 'bike_using_time' : 'bike_km';
+        $start = date("Y-m-d", strtotime("this week"));
+        $end = date("Y-m-d");
+
+        $sql = "SELECT $select FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
+        $result = mysqli_query($db, $sql);
+        if(mysqli_num_rows($result) > 0){
+            $data = 0;
+            while ($row = mysqli_fetch_assoc($result))
+                //SPLIT days for graph 
+                $data += $row[$select];
+            $status = 0;
+            $message = $data;
+        }else{
+            $status = 2;
+            $message = "No data between " . $start . " - " . $end;
+        }
+    }else{
+        $status = "1";
+        $message = "Unkown username " . $username;
     }
-    
 }
 
 //Image
