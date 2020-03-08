@@ -39,6 +39,7 @@ html {
   position: relative;
   min-height: 100vh;
   scroll-behavior: smooth;
+  user-select: none;
 }
 
 section{
@@ -50,18 +51,51 @@ section{
   background-color: #ffedc6;
 }
 
-.custom{
+.custom { 
   margin: 2rem 0;
-  background-color: #6d70c6;
-  border-radius: 20px;
-  border: 5px solid #6d70c6;
-  box-shadow: 7px 6px 8px 2px #3f3a2d;
-  transition: all 0.2s ease;
+  background-color: #6d70c6; 
+  border: 5px solid #6d70c6; 
+  border-radius: 0;
+  position: absolute; 
 }
 
-.custom:hover{
-  box-shadow: 3px 2px 2px 2px #3f3a2d;
-  transform: translateY(2px);
+.custom::before { 
+  content: ""; 
+  position: absolute; 
+  left: -1.1rem; 
+  top: 0; 
+  height: 3.8rem; 
+  width: 0.8rem; 
+  transform: skewY(-40deg); 
+  background-color: #575a9b; 
+} 
+
+.custom::after { 
+  content: ""; 
+  position: absolute; 
+  left: -0.7rem; 
+  bottom: -1.2rem; 
+  height: 1rem; 
+  width: 19.4rem; 
+  transform: skewX(-40deg); 
+  background-color: #575a9b; 
+} 
+
+.custom:hover { 
+  margin-top: 2.5rem; 
+}
+
+.custom:hover::after {  
+  left: -0.4rem; 
+  bottom: -0.7rem; 
+  height: 0.5rem; 
+} 
+
+.custom:hover::before { 
+  top: -0.25rem; 
+  width: 0.3rem; 
+  height: 3.65rem; 
+  left: -0.6rem; 
 }
 
 .features{

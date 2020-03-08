@@ -206,7 +206,7 @@ if (isset($_POST['signin'])) {
       <div class="row">
 
         <div class="col-lg-5 offset-lg-1">
-          <h1 class="slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer quis auctor.</h1>
+          <h1 class="slogan">Better transportation for Nature and You</h1>
           <button type="button" name="button" class="btn btn-lg custom">
             <img src="images/google_play.png" alt="Playstore icon" class="icon">
             <a href=""> Get on Google PlayStore</a>
@@ -359,7 +359,7 @@ if (isset($_POST['signin'])) {
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Simple usage</h1>
           <span style="color: #97bd6f"><i class="fas fa-biking fa-5x"></i></span>
-          <p class="feature-text">Go next to nearest bike and scan QR code located on it to start using. Payment will be done when you end your session.No need to wait!</p>
+          <p class="feature-text">Go next to nearest bike and scan QR code located on it to start using.No need to wait!</p>
         </div>
         <div class="col-lg-2 col-md-4 features">
           <h1 class="side-title">Leaderboard</h1>
