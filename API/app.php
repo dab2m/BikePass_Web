@@ -2,7 +2,9 @@
 include('../db.php');
 $status = "";
 $message = "";
-$bikes;
+$bikes = "";
+$bike_usage = [];
+$json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
 
 //Register User
@@ -40,6 +42,8 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && isset($pos
             $message = "Account is created! Welcome to BikePass " . $username;
         }
     }
+
+    create_response($status, $message, null);
 }
 
 //Login User
@@ -62,6 +66,8 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
         $message = "No user found for username " . $username;
         $status = "2";
     }
+
+    create_response($status, $message, null);
 }
 
 //Sending Location and Getting bikes
@@ -85,10 +91,11 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
         $status = "1";
         $message = "No available bikes near user";
     }
+    create_response($status, $message, $bikes);
 }
 
 //Data send
-if(isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])){
+if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])) {
     $username = $post_json["username"];
     $sql = "SELECT user_id from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -98,42 +105,44 @@ if(isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_
         $bike_id = $post_json["bike_id"];
         $sql = "SELECT status from bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
-        if(mysqli_num_rows($result) == 1) {
+        if (mysqli_num_rows($result) == 1) {
             //Meşgul bike status kodu 1 olarak varsayılan yer
             $status = mysqli_fetch_assoc($result);
-            if($status["status"] == 1){
+            if ($status["status"] == 1) {
                 $date = date('Y-m-d');
                 $bike_km = $post_json['bike_km'];
                 $bike_time = $post_json['bike_time'];
                 $sql = "INSERT INTO data (user_id,bike_id,bike_km,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_km,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
-                if ($result){
+                if ($result) {
                     $sql = "UPDATE bikes SET status=0 WHERE id=$bike_id";
                     $result = mysqli_query($db, $sql);
-                    if ($result){
+                    if ($result) {
                         $status = "0";
                         $message = "Data stored and bike" . $bike_id . " is available again";
-                    }else{
+                    } else {
                         $status = "5";
                         $message = "Can't update bikes status!";
                     }
-                }else{
+                } else {
                     $status = "4";
                     $message = $result;
                     //$message = "Can't add bike using data!";
                 }
-            }else{
+            } else {
                 $status = "3";
                 $message = "Non-busy bike detected!";
             }
-        }else{
+        } else {
             $status = "2";
             $message = "Invalid bike id!";
         }
-    }else{
+    } else {
         $status = "1";
         $message = "Can't find user with username " . $username;
     }
+
+    create_response($status, $message, null);
 }
 
 // Unlock bike
@@ -143,35 +152,37 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"])) {
     $username = $post_json["username"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($result) > 0){
+    if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user["user_id"];
         $sql = "SELECT status FROM bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
             $status = mysqli_fetch_assoc($result);
-            if($status["status"] == "0"){
+            if ($status["status"] == "0") {
                 $sql = "UPDATE bikes SET status=1,user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
-                if($result){
+                if ($result) {
                     $status = "0";
                     $message = "Bike is unlocked";
-                }else{
+                } else {
                     $status = "4";
                     $message = "Database error! Couldn't update bike's status";
-                } 
-            }else{
+                }
+            } else {
                 $status = "3";
                 $message = "Bike is not available";
-            }    
+            }
         } else {
             $status = "1";
             $message = "Unidentified bike_id";
         }
-    }else{
+    } else {
         $status = "2";
         $message = "Unkown username " . $username;
-    } 
+    }
+
+    create_response($status, $message, null);
 }
 
 // Weekly data (from monday to today)
@@ -180,7 +191,7 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
     $username = $post_json["username"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($result) > 0){
+    if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user["user_id"];
         $select = ($post_json["type"] == "time") ? 'bike_using_time' : 'bike_km';
@@ -189,31 +200,68 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
 
         $sql = "SELECT $select FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
         $result = mysqli_query($db, $sql);
-        if(mysqli_num_rows($result) > 0){
+        if (mysqli_num_rows($result) > 0) {
             $data = 0;
             while ($row = mysqli_fetch_assoc($result))
                 //SPLIT days for graph 
                 $data += $row[$select];
             $status = 0;
             $message = $data;
-        }else{
+        } else {
             $status = 2;
             $message = "No data between " . $start . " - " . $end;
         }
-    }else{
+    } else {
         $status = "1";
         $message = "Unkown username " . $username;
     }
+
+    create_response($status, $message, null);
 }
 
 //Image
 if (isset($_FILES['myFile'])) {
     $message = "successful";
     $status = 1;
+
+    create_response($status, $message, null);
 }
 
-if(!empty($bikes))
-    $json = array("status" => $status, "message"=> "Returned array of bikes", "bikes" => $bikes);
-else 
-    $json = array("status" => $status, "message" => $message);
-echo json_encode($json, JSON_FORCE_OBJECT);
+//Location
+
+if (isset($post_json["location"])) {
+
+    $location = $post_json["location"];
+
+    $sql = "SELECT * from user where location='$location'";
+    $result = mysqli_query($db, $sql);
+
+
+    if (mysqli_affected_rows($db) > 0) {
+
+        while ($row = mysqli_fetch_assoc($result)) {
+
+            $myObj = new stdClass();
+            $myObj->user_name = $row["username"];
+            $myObj->bike_using_time = $row["bike_using_time"];
+            $bike_usage[] = $myObj;
+        }
+    }
+
+
+    $json  = array(
+
+        'bike_users' => $bike_usage,
+    );
+
+    echo json_encode($json);
+}
+
+function create_response($status, $message, $bikes)
+{
+    if (!empty($bikes))
+        $json = array("status" => $status, "message" => "Returned array of bikes", "bikes" => $bikes);
+    else
+        $json = array("status" => $status, "message" => $message);
+    echo json_encode($json, JSON_FORCE_OBJECT);
+}
