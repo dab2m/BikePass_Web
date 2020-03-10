@@ -146,7 +146,7 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
 }
 
 // Unlock bike
-if (isset($post_json["bike_id"]) && isset($post_json["username"])) {
+if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post_json["bike_time"])) {
 
     $bike_id = $post_json["bike_id"];
     $username = $post_json["username"];
