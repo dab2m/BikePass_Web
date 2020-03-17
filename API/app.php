@@ -8,7 +8,7 @@ $json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
 
 //Register User
-if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"])) {
+if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"])) {
 
     $email = $post_json["email"];
     $username = $post_json["username"];
@@ -220,13 +220,14 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
 }
 
 //Return settings
-if(isset($post_json["username"]) && empty($post_json["type"])) {
+if(isset($post_json["username"]) && empty($post_json["type"]) && empty($post_json["id"])) {
 
     $username = $post_json["username"];
     $sql = "SELECT * FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
+        $id = $user["user_id"];
         $email = $user["email"];
         $password = $user["password"];
         $card_hash = $user["card_hash"];
@@ -235,6 +236,7 @@ if(isset($post_json["username"]) && empty($post_json["type"])) {
         $json  = array(
             'status' => 0,
             'message' => 'User settings for ' . $username,
+            'user id' => $id,
             'email' => $email,
             'password' => $password,
             'card digest' => $card_hash,
@@ -247,6 +249,47 @@ if(isset($post_json["username"]) && empty($post_json["type"])) {
         $message = "Unkown username " . $username;
         create_response($status, $message, null);
     }
+}
+
+//Send settings
+if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json["email"]) && isset($post_json["password"])){
+    $id = $post_json["id"];
+    $username = $post_json["username"];
+    $email = $post_json["email"];
+    $password = $post_json["password"];
+    $sql = "SELECT * FROM user WHERE user_id='$id'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+        if (preg_match('/^[a-z\d_]{2,20}$/', $username)) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
+                    $sql = "UPDATE user SET username = '$username', email = '$email', password = '$password' WHERE user_id=$id";
+                    $result = mysqli_query($db, $sql);
+                    if($result){
+                        $message = "Updated user with id " . $id;
+                        $status = "0";
+                    }else{
+                        $message = mysqli_error($db);
+                        $status = "5";
+                    }
+                }else{
+                    $message = "Invalid password";
+                    $status = "4";
+                }
+            }else{
+                $message = "Invalid email address";
+                $status = "3";
+            }
+        }else{
+            $message = "Invalid username";
+            $status = "2";
+        }
+    }else{
+        $message = "Unknown user id";
+        $status = "1";
+    }
+    create_response($status, $message, null);
 }
 
 //Image
