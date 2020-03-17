@@ -292,6 +292,30 @@ if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json
     create_response($status, $message, null);
 }
 
+//Credit Card details
+if (isset($post_json["id"]) && isset($post_json["card digest"]) && isset($post_json["last digits"])) {
+    $id = $post_json["id"];
+    $card_digest = $post_json["card digest"];
+    $card_last_digits = $post_json["last digits"];
+    $sql = "SELECT * FROM user WHERE user_id='$id'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $sql = "UPDATE user SET card_hash = '$card_digest', card_last4 = '$card_last_digits' WHERE user_id=$id";
+        $result = mysqli_query($db, $sql);
+        if($result){
+            $message = "Updated card details for user with id " . $id;
+            $status = "0";
+        }else{
+            $message = mysqli_error($db);
+            $status = "2";
+        }
+    }else{
+        $message = "Unknown user id";
+        $status = "1";
+    }
+    create_response($status, $message, null);
+}
+
 //Image
 if (isset($_FILES['myFile'])) {
     $message = "successful";
