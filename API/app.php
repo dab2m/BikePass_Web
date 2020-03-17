@@ -219,6 +219,36 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
     create_response($status, $message, null);
 }
 
+//Return settings
+if(isset($post_json["username"]) && empty($post_json["type"])) {
+
+    $username = $post_json["username"];
+    $sql = "SELECT * FROM user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+        $email = $user["email"];
+        $password = $user["password"];
+        $card_hash = $user["card_hash"];
+        $card_last_digits = $user["card_last4"];
+
+        $json  = array(
+            'status' => 0,
+            'message' => 'User settings for ' . $username,
+            'email' => $email,
+            'password' => $password,
+            'card digest' => $card_hash,
+            'card last four digits' => $card_last_digits
+        );
+        echo json_encode($json);
+
+    }else{
+        $status = "1";
+        $message = "Unkown username " . $username;
+        create_response($status, $message, null);
+    }
+}
+
 //Image
 if (isset($_FILES['myFile'])) {
     $message = "successful";

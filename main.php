@@ -193,18 +193,7 @@
 										
 										<address>
 										<strong>Card Number:</strong>
-										<p><?php echo $row['card_num'] ?></p>
-										</address>
-										
-										<address>
-										<strong>Card CCV:</strong><br>
-										<a href="mailto:#">
-										<?php echo $row['card_ccv']; ?> </a>
-										</address>
-										
-										<address>
-										<strong>Card Expiration Date:</strong><br>
-										<p> <?php echo $row['card_date']; ?> </p>
+										<p><?php echo "**** **** **** " . $row["card_last4"] ?></p>
 										</address>
 
 									</div>
