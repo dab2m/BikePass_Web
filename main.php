@@ -79,7 +79,7 @@
                                     while($bikerow = mysqli_fetch_assoc($bikeres))
                                     {
                                         $lat = $lat . "" . $bikerow['lat'] . ",";
-                                        $lng = $lng . "" . $bikerow['long'] . ",";
+                                        $lng = $lng . "" . $bikerow['lng'] . ",";
                                         if($bikerow['status'] == 0)
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/red-dot.png,";
                                         elseif($bikerow['status'] == 1)
