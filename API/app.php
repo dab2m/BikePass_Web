@@ -329,7 +329,7 @@ if (isset($post_json["location"])) {
 
     $location = $post_json["location"];
 
-    $sql = "SELECT * from user where location='$location'  ORDER BY bike_using_time DESC";
+    $sql = "SELECT * from user ORDER BY bike_using_time DESC";
     $result = mysqli_query($db, $sql);
 
 
@@ -340,6 +340,7 @@ if (isset($post_json["location"])) {
             $myObj = new stdClass();
             $myObj->user_name = $row["username"];
             $myObj->bike_using_time = $row["bike_using_time"];
+            $myObj->location = $row["location"];
             $bike_usage[] = $myObj;
         }
     }
