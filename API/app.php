@@ -82,7 +82,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
             // Uzaklık hesabı yapılacak yer
             $bikes_array[$i]['name'] = 'bike' . $row['id'];
             $bikes_array[$i]['lat'] = $row['lat'];
-            $bikes_array[$i]['long'] = $row['long'];
+            $bikes_array[$i]['long'] = $row['lng'];
             $i++;
         }
         $status = "0";
