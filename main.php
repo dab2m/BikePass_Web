@@ -84,8 +84,8 @@
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/red-dot.png,";
                                         elseif($bikerow['status'] == 1)
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/blue-dot.png,";
-										else //status = 2
-											$icons = NULL;
+										else //status = 2, so bike is busy or greather than 2
+											$icons = "";
                                         $count++;
                                     }
                                     
