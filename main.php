@@ -82,9 +82,9 @@
                                         $lng = $lng . "" . $bikerow['long'] . ",";
                                         if($bikerow['status'] == 0)
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/red-dot.png,";
-                                        if($bikerow['status'] == 1)
+                                        elseif($bikerow['status'] == 1)
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/blue-dot.png,";
-										if($bikerow['status'] == 2)
+										else //status = 2
 											$icons = NULL;
                                         $count++;
                                     }
