@@ -85,6 +85,7 @@
                                         if($bikerow['status'] == 1)
                                             $icons = $icons . "http://maps.google.com/mapfiles/ms/icons/blue-dot.png,";
 										if($bikerow['status'] == 2)
+											$icons = NULL;
                                         $count++;
                                     }
                                     
