@@ -220,7 +220,7 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
 }
 
 //Return settings
-if(isset($post_json["username"]) && empty($post_json["type"]) && empty($post_json["id"])) {
+if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_json["id"])) {
 
     $username = $post_json["username"];
     $sql = "SELECT * FROM user WHERE username='$username'";
@@ -243,8 +243,7 @@ if(isset($post_json["username"]) && empty($post_json["type"]) && empty($post_jso
             'card last four digits' => $card_last_digits
         );
         echo json_encode($json);
-
-    }else{
+    } else {
         $status = "1";
         $message = "Unkown username " . $username;
         create_response($status, $message, null);
@@ -252,7 +251,7 @@ if(isset($post_json["username"]) && empty($post_json["type"]) && empty($post_jso
 }
 
 //Send settings
-if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json["email"]) && isset($post_json["password"])){
+if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json["email"]) && isset($post_json["password"])) {
     $id = $post_json["id"];
     $username = $post_json["username"];
     $email = $post_json["email"];
@@ -266,26 +265,26 @@ if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json
                 if (preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
                     $sql = "UPDATE user SET username = '$username', email = '$email', password = '$password' WHERE user_id=$id";
                     $result = mysqli_query($db, $sql);
-                    if($result){
+                    if ($result) {
                         $message = "Updated user with id " . $id;
                         $status = "0";
-                    }else{
+                    } else {
                         $message = mysqli_error($db);
                         $status = "5";
                     }
-                }else{
+                } else {
                     $message = "Invalid password";
                     $status = "4";
                 }
-            }else{
+            } else {
                 $message = "Invalid email address";
                 $status = "3";
             }
-        }else{
+        } else {
             $message = "Invalid username";
             $status = "2";
         }
-    }else{
+    } else {
         $message = "Unknown user id";
         $status = "1";
     }
@@ -302,14 +301,14 @@ if (isset($post_json["id"]) && isset($post_json["card digest"]) && isset($post_j
     if (mysqli_num_rows($result) > 0) {
         $sql = "UPDATE user SET card_hash = '$card_digest', card_last4 = '$card_last_digits' WHERE user_id=$id";
         $result = mysqli_query($db, $sql);
-        if($result){
+        if ($result) {
             $message = "Updated card details for user with id " . $id;
             $status = "0";
-        }else{
+        } else {
             $message = mysqli_error($db);
             $status = "2";
         }
-    }else{
+    } else {
         $message = "Unknown user id";
         $status = "1";
     }
@@ -330,7 +329,7 @@ if (isset($post_json["location"])) {
 
     $location = $post_json["location"];
 
-    $sql = "SELECT * from user where location='$location'";
+    $sql = "SELECT * from user where location='$location'  ORDER BY bike_using_time DESC";
     $result = mysqli_query($db, $sql);
 
 
