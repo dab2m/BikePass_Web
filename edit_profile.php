@@ -52,6 +52,8 @@
                     $errors['email'] = 'This email already exists';
                     echo "<script> alert('This email already exists'); </script>";
             } else {
+                $_SESSION['password'] = $password;
+                $password = substr(md5($password), 0, 20);
                 $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."' WHERE user_id = '".$_SESSION['id']."'";
                 if (mysqli_query($db, $sql)) {
                    echo "<script> alert('Profile Updated'); </script>";
@@ -152,7 +154,7 @@
 								<label class="col-md-3 control-label">Password</label>
 								<div class="col-md-4">
 									<div class="input-group">
-										<input type="password" class="form-control" placeholder="Password" value="<?php echo $row['password']; ?>" name="password">
+										<input type="password" class="form-control" placeholder="Password" value="<?php echo $_SESSION['password']; ?>" name="password">
 										<span class="input-group-addon">
 										<i class="fa fa-user"></i>
 										</span>

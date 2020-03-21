@@ -35,6 +35,7 @@ if (isset($_POST['signup'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $email = mysqli_real_escape_string($db, $_POST['email']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
+    $password = substr(md5($password),0,20);
 
     $sqlName = "SELECT * from user where username='$username'";
     $resultName = mysqli_query($db, $sqlName);
@@ -86,7 +87,9 @@ if (isset($_POST['signin'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
 
-    $sql = "SELECT * from user where username='$username' and password='$password'";
+    $hashedpassword = substr(md5($password),0,20);
+    
+    $sql = "SELECT * from user where username='$username' and password='$hashedpassword'";
 
     $result = mysqli_query($db, $sql);
 
