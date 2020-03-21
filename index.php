@@ -35,8 +35,8 @@ if (isset($_POST['signup'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $email = mysqli_real_escape_string($db, $_POST['email']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
-    $password = substr(md5($password),0,20);
-
+    $hashedpassword = substr(md5($password),0,20);
+    
     $sqlName = "SELECT * from user where username='$username'";
     $resultName = mysqli_query($db, $sqlName);
 
@@ -61,7 +61,7 @@ if (isset($_POST['signup'])) {
       </script>";
     } else {
 
-      $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$password')";
+        $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$hashedpassword')";
 
       if (mysqli_query($db, $sql)) {
         echo "<script type='text/javascript'>
