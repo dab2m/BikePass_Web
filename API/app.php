@@ -73,7 +73,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 //Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"])) {
 
-    $sql = "SELECT * FROM bikes WHERE status='0'";
+    $sql = "SELECT * FROM bikes ";
     $result = mysqli_query($db, $sql);
     $bikes_array = array();
     $i = 0;
@@ -83,13 +83,11 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
             $bikes_array[$i]['name'] = 'bike' . $row['id'];
             $bikes_array[$i]['lat'] = $row['lat'];
             $bikes_array[$i]['long'] = $row['lng'];
+            $bikes_array[$i]['status'] = $row['status'];
             $i++;
         }
         $status = "0";
         $bikes = $bikes_array;
-    } else {
-        $status = "1";
-        $message = "No available bikes near user";
     }
     create_response($status, $message, $bikes);
 }
