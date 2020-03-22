@@ -130,8 +130,10 @@
                                           	  	google.maps.event.addListener(marker, 'click', function() {
                                               	  	if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/red-dot.png')
                                               	  		alert('Status: On maintenance...')
-                                              	  	else
+                                              	  	if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
                                               	  		alert('Status: Working...')
+													if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+                                              	  		alert('Status: This bike is busy or reserved')
                                       				//infowindow.open(map,marker);
                                       	  		});
                                         	  }
