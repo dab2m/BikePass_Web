@@ -2,8 +2,8 @@
 
 include('db.php');
 
-$username = $email = $password = '';
-$errors = array('username' => '', 'email' => '', 'password' => '');
+$username = $email = $password = $question = $answer = '';
+$errors = array('username' => '', 'email' => '', 'password' => '', 'question' => '', 'answer' => '');
 if (isset($_POST['signup'])) {
 
 
@@ -35,6 +35,10 @@ if (isset($_POST['signup'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $email = mysqli_real_escape_string($db, $_POST['email']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
+    
+    $question = mysqli_real_escape_string($db, $_POST['question']);
+    $answer = mysqli_real_escape_string($db, $_POST['answer']);
+    
     $hashedpassword = substr(md5($password),0,20);
     
     $sqlName = "SELECT * from user where username='$username'";
@@ -61,7 +65,7 @@ if (isset($_POST['signup'])) {
       </script>";
     } else {
 
-        $sql = "INSERT INTO user(username,email,password) VALUES ('$username','$email','$hashedpassword')";
+        $sql = "INSERT INTO user(username,email,password,question,answer) VALUES ('$username','$email','$hashedpassword','$question','$answer')";
 
       if (mysqli_query($db, $sql)) {
         echo "<script type='text/javascript'>
@@ -78,7 +82,7 @@ if (isset($_POST['signup'])) {
 }
 
 
-$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '');
+$error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '', 'email' => '');
 
 if (isset($_POST['signin'])) {
   $username = $_POST['username'];
@@ -118,6 +122,50 @@ if (isset($_POST['signin'])) {
       };
       </script>";
   }
+}
+
+if (isset($_POST['forgotpassword'])) {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+
+    if ($username != '' && $email != '') {
+
+        $username = mysqli_real_escape_string($db, $_POST['username']);
+        $email = mysqli_real_escape_string($db, $_POST['email']);
+        
+        $sql = "SELECT * from user where username = '$username' and email = '$email'";
+        
+        $result = mysqli_query($db, $sql);
+        
+        $row = mysqli_fetch_assoc($result);
+        
+        if (mysqli_affected_rows($db) == 1) {
+
+            session_start();
+            $_SESSION['username'] = $username;
+            $_SESSION['id'] = $row['user_id'];
+            $_SESSION['question'] = $row['question'];
+            $_SESSION['answer'] = $row['answer'];
+            
+            header('Location:forgotpassword.php');
+            
+        } else if (mysqli_affected_rows($db) == 0) {
+            $error['userloginerror'] = 'Your username or email is wrong!';
+        } else {
+            echo 'query error';
+        }
+    } else if ($username != '') {
+        $error['password'] = 'Password cant be empty';
+    } else if ($email != '') {
+        $error['email'] = 'Mail cant be empty';
+    }
+    if (array_filter($error)) {
+        echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalLogIn').style.display = 'block';
+      };
+      </script>";
+    }
 }
 
 
@@ -187,6 +235,12 @@ if (isset($_POST['signin'])) {
       document.getElementById("myModalLogIn").style.display = "block";
     }
 
+    function showForgotPassword() {
+        document.getElementById("myModalLogIn").style.display = "none";
+        document.getElementById("myModalForgotPassword").style.display = "block";
+      }
+    
+
     window.onclick = function(event) {
       if (event.target == document.getElementById("myModalSıgnUp")) {
         document.getElementById("myModalSıgnUp").style.display = "none";
@@ -194,6 +248,9 @@ if (isset($_POST['signin'])) {
       if (event.target == document.getElementById("myModalLogIn")) {
         document.getElementById("myModalLogIn").style.display = "none";
       }
+      if (event.target == document.getElementById("myModalForgotPassword")) {
+          document.getElementById("myModalForgotPassword").style.display = "none";
+        }
     }
 
     function closeModal(modal){
@@ -259,7 +316,6 @@ if (isset($_POST['signin'])) {
 
   <!-- The Modal -->
   <div id="myModalSıgnUp" style="display:none;" class="modal">
-
     <!-- Modal content -->
     <div class="modal-content">
       <div>
@@ -289,19 +345,30 @@ if (isset($_POST['signin'])) {
             <span class="form-span">Password</span>
           </label>  
         </div>
+        <div class="inputdiv">
+        <input class="input" type="text" name="question" value="<?php echo htmlspecialchars($question) ?>" required>
+          <label class="usernamePassword">
+            <span class="form-span">Security Question</span>
+          </label>  
+        </div>
+        
+        <div class="inputdiv">
+        <input class="input" type="text" name="answer" value="<?php echo htmlspecialchars($answer) ?>" required>
+          <label class="usernamePassword">
+            <span class="form-span">Security Answer</span>
+          </label>  
+        </div>
+        
           <div class="red-text"><?php echo $errors['password']; ?></div>
           <div><input class=" signupButton" type="submit" name="signup" id="signup" value="SIGN UP" class="btn brand z-depth-0"><br />
             <p class="signup-text">You already have an account? <a class="signIn" onclick="showLogIn()">Log in<a>
                   <p>
           </div>
         </form>
-
-
       </div>
       <div>
       </div>
     </div>
-
   </div>
 
 
@@ -331,10 +398,12 @@ if (isset($_POST['signin'])) {
               <span class="form-span">Password</span>
           </label>
           </div>
-          <div class="red-text"><?php echo $error['password']; ?></div>
+          <div class="red-text"><?php echo $error['email']; ?></div>
           <div class="red-text"><?php echo $error['userloginerror']; ?></div>
           <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
             <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
+                  <p>
+            <p class="infoLocale">Forgot Password? <a class="signIn" onclick="showForgotPassword()">Restore!<a>
                   <p>
           </div>
         </form>
@@ -343,7 +412,47 @@ if (isset($_POST['signin'])) {
       <div>
       </div>
     </div>
+  </div>
+  
+  
+  
+    <!-- The Modal -->
+  <div id="myModalForgotPassword" style="display:none;" class="modal">
 
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div>
+        <span class="close" onclick=closeModal("myModalForgotPassword")>&times;</span>
+        <h2 class="welcome">Forgot Password?</h2>
+      </div>
+      <div class="modal-body">
+
+        <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+        <div class="inputdiv">
+          <input class="input" type="text" name="username" value="<?php echo htmlspecialchars($username) ?>" required>
+            <label class="usernamePassword">
+             <span class="form-span">Username</span>
+            </label>
+        </div>
+          <div class="red-text"><?php echo $error['username']; ?></div>
+
+
+        <div class="inputdiv">
+          <input class="input" type="text" name="email" value="<?php echo htmlspecialchars($email) ?>" required>
+          <label class="usernamePassword">
+            <span class="form-span">Email</span>
+          </label>
+        </div>
+          <div class="red-text"><?php echo $error['email']; ?></div>
+
+          <div class="red-text"><?php echo $error['userloginerror']; ?></div>
+          <div><input class=" signupButton" type="submit" name="forgotpassword" id="sign in" value="SUBMIT" class="btn brand z-depth-0"><br /></div>
+        </form>
+
+      </div>
+      <div>
+      </div>
+    </div>
   </div>
 
 
