@@ -137,7 +137,7 @@ if(!isset($_SESSION['username']))
 							<div class="row">
 								<div class="col-md-offset-3 col-md-9">
 									<button type="submit" class="btn blue">Submit</button>
-									<button type="button" class="btn default" onclick="location.href='main.php';">Cancel</button>
+									<button type="button" class="btn default" onclick="location.href='index.php';">Cancel</button>
 								</div>
 							</div>
 						</div>
