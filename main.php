@@ -98,6 +98,7 @@
                                     
 								?>
 								<script>
+
                                     function initMap() {
 
                                     	  var lat = '<?php echo $lat; ?>'
@@ -114,29 +115,47 @@
     										  let infowindow
     										  var location = {lat: parseInt(lat[0]), lng: parseInt(lng[0])};
                                         	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: location});
-    
-    
+    										  var geolocation = 'Something'
+
+    										var geolocation = 'Something'
+    										 if (navigator.geolocation) {
+        										 
+  											    navigator.geolocation.getCurrentPosition(function(position) {
+  											      var pos = {
+  											        lat: position.coords.latitude,
+  											        lng: position.coords.longitude
+  											      };
+  												  geolocation = new google.maps.Marker({position: pos, map: map, title: 'Your Location', icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'});
+
+  											    });
+  											 }
+
+
                                         	  for(var i = 0 ; i < count ; i++)
                                         	  {
                                             	location = {lat: parseInt(lat[i]), lng: parseInt(lng[i])};
                                         	  	let marker = new google.maps.Marker({position: location, map: map, title: 'Bike' + i, icon: icons[i]});
     
                                           	  	
-        	                               	  
+        	                               	   
                                           		infowindow = new google.maps.InfoWindow({
                                           			content: '<strong>Bike</strong>' + (i+1)
                                           		});
                                         	  	
                                           	  	google.maps.event.addListener(marker, 'click', function() {
+                                              	  	
                                               	  	if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/red-dot.png')
                                               	  		alert('Status: On maintenance...')
-                                              	  	if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png')
+                                              	  	else if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+                                                  	  	alert('Your Location')
+                                              	  	else
                                               	  		alert('Status: Working...')
-													if(marker.icon == 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
-                                              	  		alert('Status: This bike is busy or reserved')
                                       				//infowindow.open(map,marker);
+													
+
                                       	  		});
                                         	  }
+                                        	  
                                     		}
 										  else
 										  {
@@ -144,6 +163,9 @@
                                         	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: location});
                                         	  alert('No bikes detected...')
 										  }
+
+										  /* For finding geolocation */
+
                                       	}
                                   		  
                                 </script>
