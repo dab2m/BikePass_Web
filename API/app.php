@@ -210,15 +210,17 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
         $start = date("Y-m-d", strtotime("this week"));
         $end = date("Y-m-d");
 
-        $sql = "SELECT $select FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
+        $sql = "SELECT $select,date FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
-            $data = 0;
-            while ($row = mysqli_fetch_assoc($result))
-                //SPLIT days for graph 
-                $data += $row[$select];
+            while ($row = mysqli_fetch_assoc($result)){
+                $myObj = new stdClass();
+                $myObj->day = strftime('%A',strtotime($row['date']));
+                $myObj->$select = $row[$select];
+                $bike_usage[] = $myObj;
+            }
             $status = 0;
-            $message = $data;
+            $message = "Returned data";
         } else {
             $status = 2;
             $message = "No data between " . $start . " - " . $end;
@@ -228,7 +230,13 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
         $message = "Unkown username " . $username;
     }
 
-    create_response($status, $message, null);
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'data' => $bike_usage
+    );
+
+    echo json_encode($json);
 }
 
 //Return settings

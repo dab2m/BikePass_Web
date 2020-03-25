@@ -261,7 +261,7 @@
             <h2 class="json--header">
                 Get Weekly Data      
             </h2>
-            <button class="copy" data-clipboard-text='{"username":"mustafa","type":"km"}'>Copy</button>
+            <button class="copy" data-clipboard-text='{"username":"mustafa","type":"distance"}'>Copy</button>
             <div class="json__code">
                 {
                 <p class="json__code--item">"username"<span class="semic">:</span> "mustafa"<span class="semic">,</span></p>
@@ -276,15 +276,16 @@
             <h2 class="json--header">Response for Login</h2>
             <div class="json__code">
                 {
-                <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></span></p>
-                <p class="json__code--item">"message"<span class="semic">:</span> "1200"</p>
+                <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></p>
+                <p class="json__code--item">"message"<span class="semic">:</span> "Returned data"<span class="semic">,</span></p>
+                <p class="json__code--item">"data"<span class="semic">:</span> [<br>&nbsp;&nbsp;{"day":"Tuesday","bike_km":"5"}<span class="semic">,</span><br>&nbsp;&nbsp;{"day":"Wednesday","bike_km":"5"}<br>]</p>
                 }
             </div>
             <h3 class="response--header">Status Codes</h3>
             <ul class="status__list">
-                <li class="status__list--item"><span class="status--code">"0"</span> Total time in seconds / Total distance in kilometers</li>
+                <li class="status__list--item"><span class="status--code">"0"</span> "Returned data"</li>
                 <li class="status__list--item"><span class="status--code">"1"</span> "Unknown username mustafa"</li>
-                <li class="status__list--item"><span class="status--code">"2"</span> "No data between 2020-03-02 - 2020-03-03"</li>
+                <li class="status__list--item"><span class="status--code">"2"</span> "No data between 2020-03-23 - 2020-03-25"</li>
             </ul>
         </div>
     </div>
