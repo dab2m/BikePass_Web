@@ -91,6 +91,20 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     }
     create_response($status, $message, $bikes);
 }
+//Rezerve bike
+if (isset($post_json["bike_id"])) {
+    $bike_id = $post_json["bike_id"];
+    $sql = "UPDATE bikes SET status=3 WHERE id=$bike_id ";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) == 1) {
+        $status = "1";
+        $message = "Bike status updated";
+    } else {
+        $status = "0";
+        $message = "Can't update bikes status!";
+    }
+    create_response($status, $message, null);
+}
 
 //Data send
 if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])) {
