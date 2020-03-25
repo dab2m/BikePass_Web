@@ -92,7 +92,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     create_response($status, $message, $bikes);
 }
 //Rezerve bike
-if (isset($post_json["bike_id"])) {
+if (isset($post_json["bike_id"]) && empty($post_json["username"])) {
     $bike_id = $post_json["bike_id"];
     $sql = "UPDATE bikes SET status=3 WHERE id=$bike_id ";
     $result = mysqli_query($db, $sql);
@@ -232,7 +232,7 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
 }
 
 //Return settings
-if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_json["id"])) {
+if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_json["id"]) && empty($post_json["bike_id"])) {
 
     $username = $post_json["username"];
     $sql = "SELECT * FROM user WHERE username='$username'";
@@ -338,14 +338,13 @@ if (isset($_FILES['myFile'])) {
 //Location
 
 if (isset($post_json["location"])) {
-
     $location = $post_json["location"];
-
     $sql = "SELECT * from user ORDER BY bike_using_time DESC";
     $result = mysqli_query($db, $sql);
 
-
     if (mysqli_affected_rows($db) > 0) {
+        $status = 0;
+        $message = "Returned users";
 
         while ($row = mysqli_fetch_assoc($result)) {
 
@@ -355,12 +354,54 @@ if (isset($post_json["location"])) {
             $myObj->location = $row["location"];
             $bike_usage[] = $myObj;
         }
+    }else{
+        $status = 1;
+        $message = "Database error";
     }
 
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'bike_users' => $bike_usage
+    );
+
+    echo json_encode($json);
+}
+
+//Today
+if (isset($post_json["username_today"])) {
+    $bike_km = 0;
+    $bike_time = 0;
+    $username = $post_json["username_today"];
+    $sql = "SELECT * from user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if(mysqli_num_rows($result) > 0){
+        $user = mysqli_fetch_assoc($result);
+        $user_id = $user["user_id"];
+        $today = date('Y-m-d');
+        $sql = "SELECT * from data WHERE user_id='$user_id' AND date='$today'";
+        $result = mysqli_query($db, $sql);
+        if(mysqli_num_rows($result) > 0){
+            while ($row = mysqli_fetch_assoc($result)) {
+                $bike_km += $row['bike_km'];
+                $bike_time += $row['bike_using_time'];
+            }
+            $status = 0;
+            $message = "Returned data for today";
+        }else{
+            $status = 2;
+            $message = "No data for today";
+        }
+    }else{
+        $status = 1;
+        $message = "No user with username " . $username;
+    }
 
     $json  = array(
-
-        'bike_users' => $bike_usage,
+        'status' => $status,
+        'message' => $message,
+        'bike_km' => $bike_km,
+        'bike_time' => $bike_time
     );
 
     echo json_encode($json);

@@ -33,7 +33,7 @@ body {
 }
 
 .header {
-    height: 10vh;
+    height: 100px;
     position: absolute;
     background-color: #6d70c6;
     color: #ffedc6;
@@ -69,7 +69,6 @@ body {
 
 .siderbar__list--item>a:hover {
     transition: all 0.2s ease;
-    font-size: 1.2rem;
     border-bottom: 2px #6d70c6 solid;
 }
 

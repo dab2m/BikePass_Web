@@ -47,6 +47,12 @@
             <li class="siderbar__list--item">
                 <a href="#card">Card Details</a>
             </li>
+            <li class="siderbar__list--item">
+                <a href="#reserve">Reserve Bike</a>
+            </li>
+            <li class="siderbar__list--item">
+                <a href="#leader">LeaderBoard</a>
+            </li>
         </ul>
     </div>
     <section class="page">
@@ -384,6 +390,67 @@
                 <li class="status__list--item"><span class="status--code">"0"</span> "Updated card details for user with id 31"</li>
                 <li class="status__list--item"><span class="status--code">"1"</span> "Unknown user id"</li>
                 <li class="status__list--item"><span class="status--code">"2"</span> "Update error"</li>
+            </ul>
+        </div>
+    </div>
+    <div class="example">
+        <div class="json" id="reserve">
+            <h2 class="json--header">
+                Reserve Bike   
+            </h2>
+            <button class="copy" data-clipboard-text='{"bike_id": 51}'>Copy</button>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"bike_id"<span class="semic">:</span> "51"</p>
+                }
+            </div>
+            <p class="json--text">
+                Send valid bike id to reserve it. Currently unlimited reservation
+            </p>
+        </div>
+        <div class="response">
+            <h2 class="json--header">Response for Reserve</h2>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></span></p>
+                <p class="json__code--item">"message"<span class="semic">:</span> "Bike status updated"</p>
+                }
+            </div>
+            <h3 class="response--header">Status Codes</h3>
+            <ul class="status__list">
+                <li class="status__list--item"><span class="status--code">"0"</span> "Bike status updated"</li>
+                <li class="status__list--item"><span class="status--code">"1"</span> "Can't update bikes status!"</li>
+            </ul>
+        </div>
+    </div>
+    <div class="example">
+        <div class="json" id="leader">
+            <h2 class="json--header">
+                LeaderBoard   
+            </h2>
+            <button class="copy" data-clipboard-text='{"location": "Ankara"}'>Copy</button>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"location"<span class="semic">:</span> "Ankara"</p>
+                }
+            </div>
+            <p class="json--text">
+                Return all users total bike using time. No location control now.
+            </p>
+        </div>
+        <div class="response">
+            <h2 class="json--header">Response for Reserve</h2>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></p>
+                <p class="json__code--item">"message"<span class="semic">:</span> "Returned users"<span class="semic">,</span></p>
+                <p class="json__code--item">"bike_users"<span class="semic">:</span> [<br>&nbsp;&nbsp;{"user_name":"deneme123","bike_using_time":"0","location":"Ankara"}<span class="semic">,</span><br>&nbsp;&nbsp;{"user_name":"hashmash","bike_using_time":"0","location":"Ankara"}<br>]</p>
+                }
+            </div>
+            <h3 class="response--header">Status Codes</h3>
+            <ul class="status__list">
+                <li class="status__list--item"><span class="status--code">"0"</span> "Returned users"</li>
+                <li class="status__list--item"><span class="status--code">"1"</span> "Database error"</li>
             </ul>
         </div>
     </div>
