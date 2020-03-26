@@ -180,9 +180,12 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post
         if (mysqli_num_rows($result) > 0) {
             $status = mysqli_fetch_assoc($result);
             if ($status["status"] == "1") {
+                $sql = "UPDATE bikes SET status=2,user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
+                if($status != "0"){
+                  $sql = "UPDATE bikes SET status=1,user_id='0' WHERE id=$bike_id";
+                }
                 if ($result) {
-                    $sql = "UPDATE bikes SET status=2,user_id='$user_id' WHERE id=$bike_id";
                     $status = "0";
                     $message = "Bike is unlocked";
                 } else {
