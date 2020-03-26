@@ -1,4 +1,10 @@
 <?php
+// Bike statusleri
+//0 : servis dışı
+//1 : uygun
+//2 : meşgul
+//3 : rezerve
+
 include('../db.php');
 $status = "";
 $message = "";
@@ -118,16 +124,16 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
         $sql = "SELECT status from bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) == 1) {
-            //Meşgul bike status kodu 1 olarak varsayılan yer
+            //Meşgul bike status kodu 2 olarak varsayılan yer
             $status = mysqli_fetch_assoc($result);
-            if ($status["status"] == 1) {
+            if ($status["status"] == 2) {
                 $date = date('Y-m-d');
                 $bike_km = $post_json['bike_km'];
                 $bike_time = $post_json['bike_time'];
                 $sql = "INSERT INTO data (user_id,bike_id,bike_km,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_km,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
-                    $sql = "UPDATE bikes SET status=0 WHERE id=$bike_id";
+                    $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
                     $result = mysqli_query($db, $sql);
                     if ($result) {
                         $status = "0";
@@ -171,8 +177,8 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
             $status = mysqli_fetch_assoc($result);
-            if ($status["status"] == "0") {
-                $sql = "UPDATE bikes SET status=1,user_id='$user_id' WHERE id=$bike_id";
+            if ($status["status"] == "1") {
+                $sql = "UPDATE bikes SET status=2,user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
                     $status = "0";
