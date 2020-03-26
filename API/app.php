@@ -154,7 +154,6 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                 $message = "Non-busy bike detected!";
             }
         } else {
-            $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
             $status = "2";
             $message = "Invalid bike id!";
         }
