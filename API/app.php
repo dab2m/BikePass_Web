@@ -154,6 +154,7 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                 $message = "Non-busy bike detected!";
             }
         } else {
+            $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
             $status = "2";
             $message = "Invalid bike id!";
         }
@@ -182,9 +183,6 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post
             if ($status["status"] == "1") {
                 $sql = "UPDATE bikes SET status=2,user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
-                if($status != "0"){
-                  $sql = "UPDATE bikes SET status=1,user_id='0' WHERE id=$bike_id";
-                }
                 if ($result) {
                     $status = "0";
                     $message = "Bike is unlocked";
