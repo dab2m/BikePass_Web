@@ -42,7 +42,8 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && isset($pos
             $message = "Username already exists";
             $status = "5";
         } else {
-            $sql = "INSERT INTO user(username,password,email) VALUES ('$username','$password','$email')";
+            $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO user(username,password,email) VALUES ('$username','$hashedPwd','$email')";
             $register = mysqli_query($db, $sql);
             $status = "0";
             $message = "Account is created! Welcome to BikePass " . $username;
@@ -61,10 +62,11 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) == 1) {
         $login = mysqli_fetch_assoc($result);
-        if ($login["password"] == $password) {
+        $pwdCheck = password_verify($password, $login['password']);
+        if ($pwdCheck == true) {
             $message = "Login succesful. Welcome back " . $username;
             $status = "0";
-        } else {
+        } else if ($pwdCheck == false) {
             $message = "Wrong username/password!";
             $status = "1";
         }
@@ -219,9 +221,9 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
         $sql = "SELECT $select,date FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)){
+            while ($row = mysqli_fetch_assoc($result)) {
                 $myObj = new stdClass();
-                $myObj->day = strftime('%A',strtotime($row['date']));
+                $myObj->day = strftime('%A', strtotime($row['date']));
                 $myObj->$select = $row[$select];
                 $bike_usage[] = $myObj;
             }
@@ -368,7 +370,7 @@ if (isset($post_json["location"])) {
             $myObj->location = $row["location"];
             $bike_usage[] = $myObj;
         }
-    }else{
+    } else {
         $status = 1;
         $message = "Database error";
     }
@@ -389,24 +391,24 @@ if (isset($post_json["username_today"])) {
     $username = $post_json["username_today"];
     $sql = "SELECT * from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if(mysqli_num_rows($result) > 0){
+    if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user["user_id"];
         $today = date('Y-m-d');
         $sql = "SELECT * from data WHERE user_id='$user_id' AND date='$today'";
         $result = mysqli_query($db, $sql);
-        if(mysqli_num_rows($result) > 0){
+        if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $bike_km += $row['bike_km'];
                 $bike_time += $row['bike_using_time'];
             }
             $status = 0;
             $message = "Returned data for today";
-        }else{
+        } else {
             $status = 2;
             $message = "No data for today";
         }
-    }else{
+    } else {
         $status = 1;
         $message = "No user with username " . $username;
     }
