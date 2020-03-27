@@ -5,7 +5,7 @@
 //2 : meşgul
 //3 : rezerve
 
-include('db.php');
+include('../db.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
