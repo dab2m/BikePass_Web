@@ -5,13 +5,22 @@
 //2 : meşgul
 //3 : rezerve
 
-include('../db.php');
+include('db.php');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer\src\Exception.php';
+require 'PHPMailer\src\PHPMailer.php';
+require 'PHPMailer\src\SMTP.php';
+
 $status = "";
 $message = "";
 $bikes = "";
 $bike_usage = [];
 $json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
+
 
 //Register User
 if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"])) {
@@ -421,6 +430,38 @@ if (isset($post_json["username_today"])) {
     );
 
     echo json_encode($json);
+}
+//Recover Email
+if (isset($post_json["recovery_email"])) {
+    $email = $post_json["recovery_email"];
+    $mail = new PHPMailer(true);
+    try {
+        //Server settings
+        $mail->isSMTP();                                            // Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';                    // Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+        $mail->Username   = 'bikepass496@gmail.com';                     // SMTP username
+        $mail->Password   = 'bil496graduationproject';                               // SMTP password
+        $mail->SMTPSecure = 'tls';         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+        $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+        //Recipients
+        $mail->setFrom('recovery@bikepass.com', 'BikePass');
+        $mail->addAddress($email, 'Joe User');     // Add a recipient
+        $mail->addReplyTo('no-reply@bikepass.com', 'No reply');
+
+
+        // Content
+        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->Subject = 'Here is the subject';
+        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+        $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+        $mail->send();
+        echo 'Message has been sent';
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
 }
 
 function create_response($status, $message, $bikes)
