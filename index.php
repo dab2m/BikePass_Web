@@ -346,10 +346,13 @@ if (isset($_POST['forgotpassword'])) {
           </label>  
         </div>
         <div class="inputdiv">
-        <input class="input" type="text" name="question" value="<?php echo htmlspecialchars($question) ?>" required>
-          <label class="usernamePassword">
-            <span class="form-span">Security Question</span>
-          </label>  
+        <select class="input" name="question" value="<?php echo htmlspecialchars($question) ?>" required>
+            <option value="What is your Mother's maiden name?">What is your Mother's maiden name?</option>
+            <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+            <option value="What was the first record/CD you first bought?">What was the first record/CD you first bought?</option>
+            <option value="What is your favourite place?">What is your favourite place?</option>
+            <option value="What is the name of your first school?">What is the name of your first school?</option>
+         </select>
         </div>
         
         <div class="inputdiv">
