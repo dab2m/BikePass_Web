@@ -36,6 +36,7 @@ if (isset($post_json["usernamerec"])) {
             $myObj = new stdClass();
             $myObj->question = $row['question'];
             $myObj->email = $row['email'];
+            $myObj->answer = $row['answer'];
             $recovery_data[] = $myObj;
         }
     } else {
