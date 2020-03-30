@@ -38,6 +38,8 @@
             $username = mysqli_real_escape_string($db, $_POST['username']);
             $email = mysqli_real_escape_string($db, $_POST['email']);
             $password = mysqli_real_escape_string($db, $_POST['password']);
+            $question = mysqli_real_escape_string($db, $_POST['question']);
+            $answer = mysqli_real_escape_string($db, $_POST['answer']);
             
             $sqlName = "SELECT * from user where username='$username'";
             $resultName = mysqli_query($db, $sqlName);
@@ -51,10 +53,12 @@
             } else if (mysqli_num_rows($resultEmail) == 1 && $email != $row['email']) {
                     $errors['email'] = 'This email already exists';
                     echo "<script> alert('This email already exists'); </script>";
+            } else if (strlen($question) == 0 || strlen($answer) == 0) {
+                    echo "<script> alert('Security Question or Answer cannot be empty'); </script>";
             } else {
                 $_SESSION['password'] = $password;
                 $password = substr(md5($password), 0, 20);
-                $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."' WHERE user_id = '".$_SESSION['id']."'";
+                $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."', question = '".$question."', answer = '".$answer."' WHERE user_id = '".$_SESSION['id']."'";
                 if (mysqli_query($db, $sql)) {
                    echo "<script> alert('Profile Updated'); </script>";
                    header("location:main.php");
@@ -154,13 +158,52 @@
 								<label class="col-md-3 control-label">Password</label>
 								<div class="col-md-4">
 									<div class="input-group">
-										<input type="password" class="form-control" placeholder="Password" value="<?php echo $_SESSION['password']; ?>" name="password">
+										<input type="password" class="form-control" placeholder="Question" value="<?php echo $_SESSION['password']; ?>" name="password">
 										<span class="input-group-addon">
 										<i class="fa fa-user"></i>
 										</span>
 									</div>
 								</div>
 							</div>
+							
+							<div class="form-group">
+								<label class="col-md-3 control-label">Security Question</label>
+								<div class="col-md-4">
+									<div class="input-group">
+											<select class="form-control" name="question" value="<?php echo $row['question']; ?>" required>
+    											<?php 
+    											$questions = ["What is your Mother's maiden name?",
+                											  "What was the name of your first pet?",
+                											  "What was the first record/CD you first bought?",
+                											  "What is your favourite place?",
+                											  "What is the name of your first school?"];
+    											
+    											     foreach ($questions as $question)
+    											         if ($question == $row['question'])
+    											             echo "<option selected value='$question'>$question</option>";
+    											         else
+    											             echo "<option value='$question'>$question</option>";
+    											?>
+                                             </select>
+										<span class="input-group-addon">
+										<i class="fa fa-question"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-md-3 control-label">Security Answer</label>
+								<div class="col-md-4">
+									<div class="input-group">
+										<input type="password" class="form-control" placeholder="Password" value="<?php echo $row['answer']; ?>" name="answer">
+										<span class="input-group-addon">
+										<i class="fa fa-key"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+							
 						</div>
 						<div class="form-actions top">
 							<div class="row">
