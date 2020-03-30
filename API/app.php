@@ -467,7 +467,7 @@ if (isset($post_json["username_today"])) {
     echo json_encode($json);
 }
 //Recover Email
-/*if (isset($post_json["recovery_email"])) {
+if (isset($post_json["recovery_email"])) {
     $email = $post_json["recovery_email"];
     $mail = new PHPMailer(true);
     try {
@@ -488,16 +488,20 @@ if (isset($post_json["username_today"])) {
 
         // Content
         $mail->isHTML(true);                                  // Set email format to HTML
-        $mail->Subject = 'Here is the subject';
-        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-        $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+        $mail->Subject = 'Recovery mail from BikePass';
+        $mail->Body    = '<b>Please click the link below to reset your password!</b><br>bikepass.herokuapp.com/changepassword.php';
 
         $mail->send();
-        echo 'Message has been sent';
+        $status = 1;
+        $message = "Message has been sent";
+        // echo 'Message has been sent';
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        $status = 0;
+        $message = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
-} */
+    create_response($status, $message, null);
+}
 
 function create_response($status, $message, $bikes)
 {
