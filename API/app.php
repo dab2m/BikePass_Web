@@ -21,6 +21,36 @@ $bike_usage = [];
 $json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
 
+//Recovery question
+if (isset($post_json["usernamerec"])) {
+
+    $username = $post_json["usernamerec"];
+    $sql = "SELECT * FROM user WHERE username='$username'";
+    $username_result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($username_result) > 0) {
+
+        if ($row = mysqli_fetch_assoc($username_result)) {
+
+            $message = "User exist";
+            $status = "1";
+            $myObj = new stdClass();
+            $myObj->question = $row['question'];
+            $myObj->email = $row['email'];
+            $recovery_data[] = $myObj;
+        }
+    } else {
+        $message = "There is no such a user";
+        $status = "0";
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'data' => $recovery_data
+    );
+
+    echo json_encode($json);
+}
 
 //Register User
 if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"]) && isset($post_json["question"]) && isset($post_json["answer"])) {
