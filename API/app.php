@@ -23,11 +23,13 @@ $post_json = json_decode(file_get_contents("php://input"), true);
 
 
 //Register User
-if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"])) {
+if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"]) && isset($post_json["question"]) && isset($post_json["answer"])) {
 
     $email = $post_json["email"];
     $username = $post_json["username"];
     $password = $post_json["password"];
+    $question = $post_json["question"];
+    $answer = $post_json["answer"];
 
     if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
         $message = "Username includes non letter characters or not between 2-20 characters";
@@ -52,7 +54,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && isset($pos
             $status = "5";
         } else {
             $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO user(username,password,email) VALUES ('$username','$hashedPwd','$email')";
+            $sql = "INSERT INTO user(username,password,email,question,answer) VALUES ('$username','$hashedPwd','$email','$question','$answer')";
             $register = mysqli_query($db, $sql);
             $status = "0";
             $message = "Account is created! Welcome to BikePass " . $username;
