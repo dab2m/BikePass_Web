@@ -494,9 +494,9 @@ if (isset($post_json["username_today"])) {
     echo json_encode($json);
 }
 //Recover Email
-if (isset($post_json["recovery_email"]) && isset($post_json["usernamerec"])) {
+if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"])) {
     $email = $post_json["recovery_email"];
-    $username = $post_json["usernamerec"];
+    $username = $post_json["recovery_username"];
     $mail = new PHPMailer(true);
     try {
         //Server settings
