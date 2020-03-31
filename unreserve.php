@@ -1,5 +1,5 @@
 <?php
-include('../db.php');
+include 'db.php';
 date_default_timezone_set('Europe/Istanbul');
 $now_s = date("H:i");
 $now = strtotime($now_s);
