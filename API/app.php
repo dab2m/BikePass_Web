@@ -153,11 +153,11 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
         $row = mysqli_fetch_assoc($result);
         $user_id = $row["user_id"];
         $sql = "SELECT status FROM bikes WHERE id='$bike_id'";
-        $result = mysqli_query($db,$sql);
-        if(mysqli_num_rows($result) == 1){
+        $result = mysqli_query($db, $sql);
+        if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
             $status = $row["status"];
-            if($status == 1){
+            if ($status == 1) {
                 $sql = "UPDATE bikes SET status=3,timestamp='$timestamp',reserve_user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
@@ -167,19 +167,19 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
                     $status = "4";
                     $message = "Can't update bikes status!";
                 }
-            }else{
+            } else {
                 $status = "3";
                 $message = "Bike is not available for reserving";
             }
-        }else{
+        } else {
             $status = "2";
             $message = "Unidentified bike_id";
         }
-    }else{
+    } else {
         $status = "1";
         $message = "No user found with username " . $username;
     }
-    
+
     create_response($status, $message, null);
 }
 
@@ -494,8 +494,9 @@ if (isset($post_json["username_today"])) {
     echo json_encode($json);
 }
 //Recover Email
-if (isset($post_json["recovery_email"])) {
+if (isset($post_json["recovery_email"]) && isset($post_json["usernamerec"])) {
     $email = $post_json["recovery_email"];
+    $username = $post_json["usernamerec"];
     $mail = new PHPMailer(true);
     try {
         //Server settings
@@ -509,7 +510,7 @@ if (isset($post_json["recovery_email"])) {
 
         //Recipients
         $mail->setFrom('recovery@bikepass.com', 'BikePass');
-        $mail->addAddress($email, 'Joe User');     // Add a recipient
+        $mail->addAddress($email, ' User ' . $username);     // Add a recipient
         $mail->addReplyTo('no-reply@bikepass.com', 'No reply');
 
 
