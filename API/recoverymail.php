@@ -3,6 +3,8 @@ include('../db.php');
 
 $status = "";
 $message = "";
+$json = array();
+$post_json = json_decode(file_get_contents("php://input"), true);
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
