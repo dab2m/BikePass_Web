@@ -142,17 +142,44 @@ if (isset($post_json["lat"]) && isset($post_json["long"])) {
     create_response($status, $message, $bikes);
 }
 //Rezerve bike
-if (isset($post_json["bike_id"]) && empty($post_json["username"])) {
+if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
     $bike_id = $post_json["bike_id"];
-    $sql = "UPDATE bikes SET status=3 WHERE id=$bike_id ";
+    $username = $post_json["usernameres"];
+    date_default_timezone_set('Europe/Istanbul');
+    $timestamp = date("H:i");
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_assoc($result);
+        $user_id = $row["user_id"];
+        $sql = "SELECT status FROM bikes WHERE id='$bike_id'";
+        $result = mysqli_query($db,$sql);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            $status = $row["status"];
+            if($status == 1){
+                $sql = "UPDATE bikes SET status=3,timestamp='$timestamp',reserve_user_id='$user_id' WHERE id=$bike_id";
+                $result = mysqli_query($db, $sql);
+                if ($result) {
+                    $status = "0";
+                    $message = "Bike status updated";
+                } else {
+                    $status = "4";
+                    $message = "Can't update bikes status!";
+                }
+            }else{
+                $status = "3";
+                $message = "Bike is not available for reserving";
+            }
+        }else{
+            $status = "2";
+            $message = "Unidentified bike_id";
+        }
+    }else{
         $status = "1";
-        $message = "Bike status updated";
-    } else {
-        $status = "0";
-        $message = "Can't update bikes status!";
+        $message = "No user found with username " . $username;
     }
+    
     create_response($status, $message, null);
 }
 
