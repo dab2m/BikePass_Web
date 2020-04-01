@@ -58,11 +58,11 @@ if (isset($post_json["usernamerecovery"]) && isset($post_json["passwordrecovery"
     $sql = "UPDATE user SET password=$hashedPwd WHERE username=$username ";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) == 1) {
-        $status = "1";
+        $status = "0";
         $message = "Password updated";
     } else {
-        $status = "0";
-        $message = "Password couldnt updated!";
+        $status = "1";
+        $message = "Password couldn't updated!";
     }
     create_response($status, $message, null);
 }
@@ -198,6 +198,7 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
 
 //Data send
 if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])) {
+    // User creditten düşürme ekle
     $username = $post_json["username"];
     $sql = "SELECT user_id from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -506,6 +507,40 @@ if (isset($post_json["username_today"])) {
         'bike_time' => $bike_time
     );
 
+    echo json_encode($json);
+}
+
+//Return bike status
+if (isset($post_json["bike_id"])) {
+    $bike_id = $post_json["bike_id"];
+    $sql = "SELECT * FROM bikes WHERE id='$bike_id'";
+    $result = mysqli_query($db, $sql);
+    $username = "";
+    if(mysqli_num_rows($result) == 1){
+        $row = mysqli_fetch_assoc($result);
+        $user_id = $row["reserve_user_id"];
+        if($user_id != "0"){
+            $sql = "SELECT * FROM user WHERE user_id='$user_id'";
+            $username_result = mysqli_query($db, $sql);
+            $user = mysqli_fetch_assoc($username_result);
+            $username = $user["username"];
+        }
+        switch($row["status"]) {
+            case "0":   $message = "Bike is unavailable";
+                        break;
+            case "1":   $message = "Bike is available";
+                        break;
+            case "2":   $message = "Bike is busy";
+                        break;
+            case "3":   $message = "Bike is reserved for user " . $username;
+                        break;
+        }
+        $status = $row["status"];
+    }
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
     echo json_encode($json);
 }
 
