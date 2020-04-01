@@ -205,6 +205,11 @@
 										<p> <?php echo $row['bike_using_time']; ?> </p>
 										</address>
 										
+										<address>
+										<strong>Total Credit:</strong><br>
+										<p> <?php echo $row['total_credit']; ?> </p>
+										</address>
+										
 									</div>
 								</div>
 
