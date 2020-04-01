@@ -22,9 +22,11 @@ require 'vendor/autoload.php';
 
 
 //Recover Email
-if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"])) {
+if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"]) && isset($post_json["recovery_code"])) {
+
 	$email = $post_json["recovery_email"];
 	$username = $post_json["recovery_username"];
+	$code = $post_json["recovery_code"];
 	$mail = new PHPMailer(true);
 	try {
 		//Server settings
@@ -45,7 +47,7 @@ if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"]
 		// Content
 		$mail->isHTML(true);                                  // Set email format to HTML
 		$mail->Subject = 'Recovery mail from BikePass';
-		$mail->Body    = '<b>Please click the link below to reset your password!</b><br>bikepass.herokuapp.com/changepassword.php';
+		$mail->Body    = "Please use code <b> $code </b> to reset your password!";
 
 		$mail->send();
 
