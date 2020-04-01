@@ -65,7 +65,7 @@ if (isset($_POST['signup'])) {
       </script>";
     } else {
 
-        $sql = "INSERT INTO user(username,email,password,question,answer) VALUES ('$username','$email','$hashedpassword','$question','$answer')";
+        $sql = "INSERT INTO user(username,email,password,question,answer,total_credit) VALUES ('$username','$email','$hashedpassword','$question','$answer',600)";
 
       if (mysqli_query($db, $sql)) {
         echo "<script type='text/javascript'>
