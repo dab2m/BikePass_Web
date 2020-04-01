@@ -321,6 +321,7 @@ if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_js
         $email = $user["email"];
         $password = $user["password"];
         $bike_using_time = $user['bike_using_time'];
+        $total_credit = $user['total_credit'];
         $card_hash = $user["card_hash"];
         $card_last_digits = $user["card_last4"];
 
@@ -331,6 +332,7 @@ if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_js
             'email' => $email,
             'password' => $password,
             'bike using time' => $bike_using_time,
+            'total_credit' => $total_credit,
             'card digest' => $card_hash,
             'card last four digits' => $card_last_digits
         );
