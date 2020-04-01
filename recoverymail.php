@@ -34,7 +34,7 @@ if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"]
 		$mail->Host       = "smtp.gmail.com";                    // Set the SMTP server to send through
 		$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
 		$mail->Username   = "bikepass496@gmail.com";                     // SMTP username
-		$mail->Password   = "bil496graduationproject";                               // SMTP password
+		$mail->Password   = "Abc123Cde456";                               // SMTP password
 		$mail->SMTPSecure = "tls";         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
 		$mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 		$mail->SMTPOptions = array(
