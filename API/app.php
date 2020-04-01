@@ -46,6 +46,26 @@ if (isset($post_json["usernamerec"])) {
     echo json_encode($json);
 }
 
+//Reset password
+
+if (isset($post_json["usernamerecovery"]) && isset($post_json["passwordrecovery"])) {
+
+    $username = $post_json["usernamerecovery"];
+    $password = $post_json["passwordrecovery"];
+
+    $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
+
+    $sql = "UPDATE user SET password=$hashedPwd WHERE username=$username ";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) == 1) {
+        $status = "1";
+        $message = "Password updated";
+    } else {
+        $status = "0";
+        $message = "Password couldnt updated!";
+    }
+    create_response($status, $message, null);
+}
 //Register User
 if (isset($post_json["username"]) && isset($post_json["password"]) && isset($post_json["email"]) && empty($post_json["id"]) && isset($post_json["question"]) && isset($post_json["answer"])) {
 
