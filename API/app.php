@@ -197,7 +197,7 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
 }
 
 //Data send
-if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["bike_km"])) {
+if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"])) {
     // User creditten düşürme ekle
     $username = $post_json["username"];
     $sql = "SELECT user_id from user WHERE username='$username'";
@@ -212,10 +212,10 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
             //Meşgul bike status kodu 2 olarak varsayılan yer
             $status = mysqli_fetch_assoc($result);
             if ($status["status"] == 2) {
-                $date = date('Y-m-d');
-                $bike_km = $post_json['bike_km'];
+                date_default_timezone_set('Europe/Istanbul');
+                $date = date('Y-m-d H:i');
                 $bike_time = $post_json['bike_time'];
-                $sql = "INSERT INTO data (user_id,bike_id,bike_km,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_km,$bike_time,'$date')";
+                $sql = "INSERT INTO data (user_id,bike_id,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
                     $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
@@ -511,7 +511,7 @@ if (isset($post_json["username_today"])) {
 }
 
 //Return bike status
-if (isset($post_json["bike_id"])) {
+if (isset($post_json["bike_id"]) && empty($post_json["bike_time"])) {
     $bike_id = $post_json["bike_id"];
     $sql = "SELECT * FROM bikes WHERE id='$bike_id'";
     $result = mysqli_query($db, $sql);
