@@ -43,6 +43,9 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["b
 
 		        $update_user_sql = "UPDATE user SET bike_km = '$km', bike_using_time = '$time' WHERE user_id = $user_id"; /* UPDATE USER KM & TIME SQL */
 		        $sql_status = mysqli_query($db, $update_user_sql);
+				
+				$update_user_sql_2 = "UPDATE data SET bike_km = '$km' WHERE user_id = $user_id"; 
+		        $sql_status_2 = mysqli_query($db, $update_user_sql_2);
 		    }
 		}
 
