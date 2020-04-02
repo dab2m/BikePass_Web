@@ -55,9 +55,10 @@ if (isset($post_json["usernamerecovery"]) && isset($post_json["passwordrecovery"
 
     $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "UPDATE user SET password=$hashedPwd WHERE username=$username ";
+    $sql = "UPDATE user SET password='$hashedPwd' WHERE username='$username' ";
     $result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($result) == 1) {
+
+    if (mysqli_affected_rows($db) > 0) {
         $status = "0";
         $message = "Password updated";
     } else {
@@ -516,24 +517,28 @@ if (isset($post_json["bike_id"]) && empty($post_json["bike_time"])) {
     $sql = "SELECT * FROM bikes WHERE id='$bike_id'";
     $result = mysqli_query($db, $sql);
     $username = "";
-    if(mysqli_num_rows($result) == 1){
+    if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
         $user_id = $row["reserve_user_id"];
-        if($user_id != "0"){
+        if ($user_id != "0") {
             $sql = "SELECT * FROM user WHERE user_id='$user_id'";
             $username_result = mysqli_query($db, $sql);
             $user = mysqli_fetch_assoc($username_result);
             $username = $user["username"];
         }
-        switch($row["status"]) {
-            case "0":   $message = "Bike is unavailable";
-                        break;
-            case "1":   $message = "Bike is available";
-                        break;
-            case "2":   $message = "Bike is busy";
-                        break;
-            case "3":   $message = "Bike is reserved for user " . $username;
-                        break;
+        switch ($row["status"]) {
+            case "0":
+                $message = "Bike is unavailable";
+                break;
+            case "1":
+                $message = "Bike is available";
+                break;
+            case "2":
+                $message = "Bike is busy";
+                break;
+            case "3":
+                $message = "Bike is reserved for user " . $username;
+                break;
         }
         $status = $row["status"];
     }
