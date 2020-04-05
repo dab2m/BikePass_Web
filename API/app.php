@@ -135,7 +135,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 }
 
 //Sending Location and Getting bikes
-if (isset($post_json["lat"]) && isset($post_json["long"])) {
+if (isset($post_json["lat"]) && isset($post_json["long"]) && empty($post_json["usernameloc"])) {
 
     $sql = "SELECT * FROM bikes ";
     $result = mysqli_query($db, $sql);
@@ -541,6 +541,36 @@ if (isset($post_json["bike_id"]) && empty($post_json["bike_time"])) {
                 break;
         }
         $status = $row["status"];
+    }
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
+// Location initalize
+if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernameloc"])){
+    //$api_key = getenv("API_KEY");
+    $api_key = "AIzaSyBBylVHYC4gfgaXjR5pH-p4dDMY1EfDBVY";
+
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
+    $username = $post_json["usernameloc"];
+
+    $parameters = "latlng=" . $lat . "," . $long . "&sensor=true&key=" . $api_key . "&result_type=locality";
+    $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
+    $data = json_decode($location,true);
+    $city =  $data["results"][0]["address_components"]["0"]["long_name"];
+
+    $sql = "UPDATE user SET location='$city' WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if($result){
+        $status = "0";
+        $message = "Location set to " . $city;
+    }else{
+        $status = "1";
+        $message = "Unable to set location";
     }
     $json  = array(
         'status' => $status,
