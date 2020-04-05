@@ -53,8 +53,15 @@ body {
     padding: 10vh 0 0 2rem;
     background-color: #ffde98;
     border-right: 20px dotted #ffedc6;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-x: hidden;
+    text-align: center;
+    z-index: 2;
+}
+
+.sidebar:hover {
+    width: 20vw;
+    overflow-y: scroll;
 }
 
 .siderbar__list--item {
@@ -72,6 +79,7 @@ body {
 .siderbar__list--item>a:hover {
     transition: all 0.2s ease;
     border-bottom: 2px #6d70c6 solid;
+    font-size: 1.6rem;
 }
 
 .page {

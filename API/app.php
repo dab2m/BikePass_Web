@@ -578,6 +578,48 @@ if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernamel
     echo json_encode($json);
 }
 
+//Return Credit
+if(isset($post_json["usernamecredit"]) && empty($post_json["credit"])){
+    $username = $post_json["usernamecredit"];
+    $sql = "SELECT * from user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $status = "0";
+        $message = $row["total_credit"];
+    }else{
+        $status = "1";
+        $message = "Database error";
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
+//Update Credit
+if(isset($post_json["usernamecredit"]) && isset($post_json["credit"])){
+    $username = $post_json["usernamecredit"];
+    $credit = $post_json["credit"];
+    $sql = "UPDATE user SET total_credit='$credit' WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if ($result) {
+        $status = "0";
+        $message = "Updated Credit";
+    }else{
+        $status = "1";
+        $message = "Database error";
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
 function create_response($status, $message, $bikes)
 {
     if (!empty($bikes))
