@@ -551,8 +551,7 @@ if (isset($post_json["bike_id"]) && empty($post_json["bike_time"])) {
 
 // Location initalize
 if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernameloc"])){
-    //$api_key = getenv("API_KEY");
-    $api_key = "AIzaSyBBylVHYC4gfgaXjR5pH-p4dDMY1EfDBVY";
+    $api_key = getenv("API_KEY");
 
     $lat = $post_json["lat"];
     $long = $post_json["long"];
