@@ -292,6 +292,15 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post
 // Weekly data (from monday to today)
 if (isset($post_json["username"]) && isset($post_json["type"])) {
 
+    $isWeekly = true;
+    $dayNames = true;
+    if(isset($post_json["all"])){
+        $isWeekly = false;
+    }
+    if(isset($post_json["date"])){
+        $dayNames = false;
+    }
+
     $username = $post_json["username"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -301,13 +310,20 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
         $select = ($post_json["type"] == "time") ? 'bike_using_time' : 'bike_km';
         $start = date("Y-m-d", strtotime("this week"));
         $end = date("Y-m-d");
-
-        $sql = "SELECT $select,date FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
+        if($isWeekly){
+            $sql = "SELECT $select,date FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
+        }else{
+            $sql = "SELECT $select,date FROM data WHERE user_id='$user_id'";
+        }
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $myObj = new stdClass();
-                $myObj->day = strftime('%A', strtotime($row['date']));
+                if($dayNames){
+                    $myObj->day = strftime('%A', strtotime($row['date']));
+                }else{
+                    $myObj->day = strftime('%B %d %Y', strtotime($row['date']));
+                }
                 $myObj->$select = $row[$select];
                 $bike_usage[] = $myObj;
             }
