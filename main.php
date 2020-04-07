@@ -120,15 +120,18 @@
     										  var geolocation = 'Something'
 
         										 if (navigator.geolocation) {
-            										 
+        											
       											    navigator.geolocation.getCurrentPosition(function(position) {
       											      var pos = {
       											        lat: position.coords.latitude,
       											        lng: position.coords.longitude
       											      };
+      											      
       												  geolocation = new google.maps.Marker({position: pos, map: map, title: 'Your Location', icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'});
-    
+      												  map.setCenter({lat:position.coords.latitude, lng:position.coords.longitude });
+      												  map.setZoom(11);
       											    });
+      											  
       											 }
    											 
 
