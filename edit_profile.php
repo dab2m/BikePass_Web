@@ -53,12 +53,20 @@
             } else if (mysqli_num_rows($resultEmail) == 1 && $email != $row['email']) {
                     $errors['email'] = 'This email already exists';
                     echo "<script> alert('This email already exists'); </script>";
-            } else if (strlen($question) == 0 || strlen($answer) == 0) {
+            } else if (strlen($question) == 0) {
                     echo "<script> alert('Security Question or Answer cannot be empty'); </script>";
             } else {
                 $_SESSION['password'] = $password;
                 $password = substr(md5($password), 0, 20);
-                $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."', question = '".$question."', answer = '".$answer."' WHERE user_id = '".$_SESSION['id']."'";
+                if($answer != "")
+                {
+                    $answer = substr(md5($answer), 0, 20);
+                    $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."', question = '".$question."', answer = '".$answer."' WHERE user_id = '".$_SESSION['id']."'";
+                }
+                else
+                {
+                    $sql = "UPDATE user SET username = '".$username."',password = '".$password."', email = '".$email."', question = '".$question."' WHERE user_id = '".$_SESSION['id']."'";
+                }
                 if (mysqli_query($db, $sql)) {
                    echo "<script> alert('Profile Updated'); </script>";
                    header("location:main.php");
@@ -196,7 +204,7 @@
 								<label class="col-md-3 control-label">Security Answer</label>
 								<div class="col-md-4">
 									<div class="input-group">
-										<input type="password" class="form-control" placeholder="Password" value="<?php echo $row['answer']; ?>" name="answer">
+										<input type="password" class="form-control" name="answer">
 										<span class="input-group-addon">
 										<i class="fa fa-key"></i>
 										</span>

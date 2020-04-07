@@ -10,7 +10,7 @@
     
     if (isset($_POST['username'])) {
         $answer = $_POST['answer'];
-        
+        $answer = substr(md5($answer), 0, 20);
         if ($answer == $_SESSION['answer'])
             header("location:changepassword.php");
     }
