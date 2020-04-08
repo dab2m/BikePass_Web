@@ -761,6 +761,35 @@ if (isset($post_json["hotpoints"])) {
     echo json_encode($json);
 }
 
+// Delete Request
+if(isset($post_json["deletereq"])){
+    $username = $post_json["deletereq"];
+    $sql = "SELECT user_id from user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_assoc($result);
+        $user_id = $row["user_id"];
+        $sql = "DELETE FROM requests WHERE user_id='$user_id'";
+        $result = mysqli_query($db, $sql);
+        if($result){
+            $status = "0";
+            $message = "Removed request";
+        }else{
+            $status = "2";
+            $message = "Database error";
+        }
+    }else{
+        $status = "1";
+        $message = "No user with username " . $username;
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
 function create_response($status, $message, $bikes)
 {
     if (!empty($bikes))
