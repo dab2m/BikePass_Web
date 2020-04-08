@@ -68,6 +68,12 @@
             <li class="siderbar__list--item">
                 <a href="#setcredit">Set Credit</a>
             </li>
+            <li class="siderbar__list--item">
+                <a href="#request">Request Bike</a>
+            </li>
+            <li class="siderbar__list--item">
+                <a href="#returnspots">Return Hotpoints and Requests</a>
+            </li>
         </ul>
     </div>
     <section class="page">
@@ -171,15 +177,16 @@
             <h2 class="json--header">
                 Send Location            
             </h2>
-            <button class="copy" data-clipboard-text='{"lat":39.9210241,"long":32.7974713}'>Copy</button>
+            <button class="copy" data-clipboard-text='{"lat":39.9210241,"long":32.7974713,"usernamebikes":"mustafa"}'>Copy</button>
             <div class="json__code">
                 {
-                <p class="json__code--item">lat<span class="semic">:</span> 39.9210241<span class="semic">,</span></p>
-                <p class="json__code--item">long<span class="semic">:</span> 32.7974713</p>
+                <p class="json__code--item">"lat"<span class="semic">:</span> 39.9210241<span class="semic">,</span></p>
+                <p class="json__code--item">"long"<span class="semic">:</span> 32.7974713<span class="semic">,</span></p>
+                <p class="json__code--item">"usernamebikes"<span class="semic">:</span> "mustafa</p>
                 }
             </div>
             <p class="json--text">
-                To receive array of available bikes, two parameters are required. <span class="code">latitude</span> and <span class="code">longtitude</span>.<br>bikes is a json object not a json array!
+                To receive array of available bikes, three parameters are required. <span class="code">latitude</span> <span class="code">longtitude</span> and <span class="code">usernamebikes</span>.<br>Checks if usernamebikes has a request if so returns latitude longtitude values of it
             </p>
         </div>
         <div class="response">
@@ -188,13 +195,14 @@
                 {
                 <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></p>
                 <p class="json__code--item">"message"<span class="semic">:</span> "Returned object of bikes"<span class="semic">,</span></p>
-                <p class="json__code--item">"bikes"<span class="semic">:</span>{<br>&nbsp;&nbsp;"0"<span class="semic">:</span>{"name": "bike1"<span class="semic">,</span> "lat":40.1231234<span class="semic">,</span>"long": 33.8211234 } <span class="semic">,</span><br>&nbsp;&nbsp;"1"<span class="semic">:</span>{"name": "bike2"<span class="semic">,</span> "lat":41.1231234<span class="semic">,</span>"long": 34.8211234 }<br>}</p>
+                <p class="json__code--item">"bikes"<span class="semic">:</span>[<br>{"name"<span class="semic">:</span>"bike51"<span class="semic">,</span>"lat"<span class="semic">:</span>"39.9249"<span class="semic">,</span>"long"<span class="semic">:</span>"32.8047"<span class="semic">,</span>"status"<span class="semic">:</span>"1"}<span class="semic">,</span>{"name"<span class="semic">:</span>"bike61"<span class="semic">,</span>"lat"<span class="semic">:</span>"39.9173"<span class="semic">,</span>"long"<span class="semic">:</span>"32.8009"<span class="semic">,</span>"status"<span class="semic">:</span>"1"}]<span class="semic">,</span><br>"lat"<span class="semic">:</span>"39.921"<span class="semic">,<br></span>"long"<span class="semic">:</span>"32.7975"</p>
                 }
             </div>
             <h3 class="response--header">Status Codes</h3>
             <ul class="status__list">
                 <li class="status__list--item"><span class="status--code">"0"</span> "Returned object of bikes"</li>
-                <li class="status__list--item"><span class="status--code">"1"</span> "No available bike near user"</li>
+                <li class="status__list--item"><span class="status--code">"1"</span> "No user found with username mustafa"</li>
+                <li class="status__list--item"><span class="status--code">"2"</span> "Returned object of bikes with no request"</li>
             </ul>
         </div>
     </div>
@@ -660,6 +668,44 @@
                 <li class="status__list--item"><span class="status--code">"0"</span> "Request created"</li>
                 <li class="status__list--item"><span class="status--code">"1"</span> "Database error"</li>
                 <li class="status__list--item"><span class="status--code">"1"</span> "No user found with usename mustafa"</li>
+            </ul>
+        </div>
+    </div>
+    <div class="example">
+        <div class="json" id="returnspots">
+            <h2 class="json--header">
+                Return Hotpoints and Requests     
+            </h2>
+            <button class="copy" data-clipboard-text='{"hotpoints": true}'>Copy</button>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"hotpoints"<span class="semic">:</span> true</p>
+                }
+            </div>
+            <p class="json--text">
+                Only send hotpoints to receive all hotpoints and requests on the map. Order of the array elements may differ
+            </p>
+        </div>
+        <div class="response">
+            <h2 class="json--header">Response for Set Credit</h2>
+            <div class="json__code">
+                {
+                <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></p>
+                <p class="json__code--item">"message"<span class="semic">:</span> "Returned hotpoints and requests"<span class="semic">,</span></p>
+                <p class="json__code--item">"hotpoints"<span class="semic">:</span> [<br>
+                    {"point_name"<span class="semic">:</span>"firstpoint"<span class="semic">,</span>"lat"<span class="semic">:</span>"45"<span class="semic">,</span>"long"<span class="semic">:</span>"45"<span class="semic">,</span><br>"radius"<span class="semic">:</span>"2000"<span class="semic">,</span>"frequency"<span class="semic">:</span>"3"}<span class="semic">,</span><br>{"point_name"<span class="semic">:</span>"secondpoint"<span class="semic">,</span>"lat"<span class="semic">:</span>"45"<span class="semic">,</span>"long"<span class="semic">:</span>"45"<span class="semic">,</span><br>"radius"<span class="semic">:</span>"2000"<span class="semic">,</span>"frequency"<span class="semic">:</span>"2"}
+                <br>]<span class="semic">,</span></p>
+                <p class="json__code--item">"requests"<span class="semic">:</span> [<br>
+                    {"username"<span class="semic">:</span>"mustafa"<span class="semic">,</span>"lat"<span class="semic">:</span>"45"<span class="semic">,</span>"long"<span class="semic">:</span>"45"<span class="semic">,</span>"radius"<span class="semic">:</span>"2000"<span class="semic">,</span><br>"request_time<span class="semic">:</span>"09:07:00"}
+                <br>]</p>
+                }
+            </div>
+            <h3 class="response--header">Status Codes</h3>
+            <ul class="status__list">
+                <li class="status__list--item"><span class="status--code">"0"</span> "Returned hotpoints and
+                    requests"</li>
+                <li class="status__list--item"><span class="status--code">"1"</span> "No hotpoints"</li>
+                <li class="status__list--item"><span class="status--code">"1"</span> "No requests"</li>
             </ul>
         </div>
     </div>

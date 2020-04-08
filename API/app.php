@@ -9,7 +9,9 @@ include('../db.php');
 
 $status = "";
 $message = "";
-$bikes = "";
+$bikes = [];
+$spots = [];
+$requests = [];
 $bike_usage = [];
 $json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
@@ -135,25 +137,54 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 }
 
 //Sending Location and Getting bikes
-if (isset($post_json["lat"]) && isset($post_json["long"]) && empty($post_json["usernameloc"])) {
-
-    $sql = "SELECT * FROM bikes ";
+if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["usernamebikes"])) {
+    $lat = 0; $long = 0;
+    $username = $post_json["usernamebikes"];
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    $bikes_array = array();
-    $i = 0;
-    if (mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            // Uzaklık hesabı yapılacak yer
-            $bikes_array[$i]['name'] = 'bike' . $row['id'];
-            $bikes_array[$i]['lat'] = $row['lat'];
-            $bikes_array[$i]['long'] = $row['lng'];
-            $bikes_array[$i]['status'] = $row['status'];
-            $i++;
+    if(mysqli_num_rows($result) > 0){
+        $user = mysqli_fetch_assoc($result);
+        $user_id = $user["user_id"];
+        $sql = "SELECT * FROM bikes ";
+        $result = mysqli_query($db, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $bike = new stdClass();
+                $bike->name = 'bike' . $row['id'];
+                $bike->lat = $row['lat'];
+                $bike->long = $row['lng'];
+                $bike->status = $row['status'];
+                $bikes[] = $bike;
+
+            }
+
+            $sql = "SELECT * FROM requests WHERE user_id='$user_id'";
+            $result = mysqli_query($db, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                $request = mysqli_fetch_assoc($result);
+                $lat = $request["lat"];
+                $long = $request["lng"];
+                $status = "0";
+                $message = "Returned array of bikes";
+            }else{
+                $status = "2";
+                $message = "Returned array of bikes with no request";
+            }
         }
-        $status = "0";
-        $bikes = $bikes_array;
+    }else{
+        $status = "1";
+        $message = "No user found with name " . $username;
     }
-    create_response($status, $message, $bikes);
+
+    $json = array(
+        "status" => $status,
+        "message" => "Returned array of bikes", 
+        "bikes" => $bikes,
+        "lat" => $lat,
+        "long" => $long
+    );
+    echo json_encode($json);
+
 }
 //Rezerve bike
 if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
@@ -674,6 +705,58 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
     $json  = array(
         'status' => $status,
         'message' => $message
+    );
+    echo json_encode($json);
+}
+
+//Return hotpoints and requests
+if (isset($post_json["hotpoints"])) {
+    $sql = "SELECT * from hotpoints";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $spot = new stdClass();
+            $spot->point_name = $row['point_name'];
+            $spot->lat = $row['lat'];
+            $spot->long = $row['lng'];
+            $spot->radius = $row['radius'];
+            $spot->frequency = $row['frequency'];
+            $spots[] = $spot;
+        }
+        
+        $sql = "SELECT * FROM requests";
+        $result = mysqli_query($db, $sql);
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $request = new stdClass();
+                $user_id = $row['user_id'];
+                $sql_user = "SELECT * from user WHERE user_id='$user_id'";
+                $result_user = mysqli_query($db, $sql_user);
+                $user = mysqli_fetch_assoc($result_user);
+                $request->username = $user['username'];
+                $request->request_time = $row['request_time'];
+                $request->lat = $row['lat'];
+                $request->long = $row['lng'];
+                $request->radius = $row['radius'];
+                $requests[] = $request;
+            }
+            $status = "0";
+            $message = "Returned hotpoints and requests";
+        }else{
+            $status = "2";
+            $message = "No requests";
+        }
+    }else{
+        $status = "1";
+        $message = "No hotpoints";
+    }
+
+
+    $json = array(
+        "status" => $status,
+        "message" => $message,
+        "hotpoints" => $spots,
+        "requests" => $requests
     );
     echo json_encode($json);
 }
