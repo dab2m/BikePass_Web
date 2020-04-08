@@ -224,9 +224,10 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                 $sql = "INSERT INTO data (user_id,bike_id,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
-                    $bike_using_time = $bike_using_time + $bike_time;
-                    $sql = "UPDATE user SET bike_using_time=$bike_using_time WHERE user_id=$user_id";
-                    $result = mysqli_query($db, $sql);
+					/*  Zaten bike.php'de var burası tekrar yapılmasına gerek yok!!!!!!!!!   */
+                    //$bike_using_time = $bike_using_time + $bike_time;
+                    //$sql = "UPDATE user SET bike_using_time=$bike_using_time WHERE user_id=$user_id";
+                    //$result = mysqli_query($db, $sql);
                     $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
                     $result = mysqli_query($db, $sql);
                     if ($result) {
