@@ -207,8 +207,8 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
         $user_id = $user['user_id'];
         $bike_id = $post_json["bike_id"];
         $bike_using_time = $user["bike_using_time"];
-		
-		$new_total_credit = $total_credit - $bike_using_time; //update credit 
+		$total_credit = $user["total_credit"];
+		$new_total_credit = $total_credit - $bike_time; //update credit 
 		$update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
 		$sql_status = mysql_query($db, $update_user_sql);
 		
