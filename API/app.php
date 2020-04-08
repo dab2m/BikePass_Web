@@ -199,15 +199,19 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
 
 //Data send
 if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"])) {
-    // User creditten düşürme ekle
     $username = $post_json["username"];
-    $sql = "SELECT user_id,bike_using_time from user WHERE username='$username'";
+    $sql = "SELECT user_id,bike_using_time, total_credit from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($result) == 1) {
+	if (mysqli_num_rows($result) == 1) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user['user_id'];
         $bike_id = $post_json["bike_id"];
         $bike_using_time = $user["bike_using_time"];
+		
+		$new_total_credit = $total_credit - $bike_using_time; //update credit 
+		$update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
+		$sql_status = mysql_query($db, $update_user_sql);
+		
         $sql = "SELECT status from bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) == 1) {
