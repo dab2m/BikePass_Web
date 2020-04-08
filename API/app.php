@@ -644,6 +644,39 @@ if(isset($post_json["usernamecredit"]) && isset($post_json["credit"])){
     echo json_encode($json);
 }
 
+//Request Bike
+if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_json["long"])){
+    $username = $post_json["usernamereq"];
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
+    $sql = "SELECT * from user WHERE username='$username'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $user_id = $row["user_id"];
+        date_default_timezone_set('Europe/Istanbul');
+        $timestamp = date("H:i");
+        $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES ('$user_id','$timestamp','$lat','$long')";
+        $result = mysqli_query($db,$sql);
+        if ($result) {
+            $status = "0";
+            $message = "Request created";
+        }else{
+            $status = "2";
+            $message = "Database error";
+        }
+    }else{
+        $status = "1";
+        $message = "No user found with usename " . $username;
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
 function create_response($status, $message, $bikes)
 {
     if (!empty($bikes))
@@ -651,4 +684,22 @@ function create_response($status, $message, $bikes)
     else
         $json = array("status" => $status, "message" => $message);
     echo json_encode($json, JSON_FORCE_OBJECT);
+}
+
+// Haversine Formulü implementi 
+// Kaynak https://www.it-swarm.dev/tr/php/php-ile-haversine-formulu/1071435883/
+function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius) {
+    $earth_radius = 6371;
+
+    $dLat = deg2rad($latitude2 - $latitude1);
+    $dLon = deg2rad($longitude2 - $longitude1);
+
+    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);
+    $c = 2 * asin(sqrt($a));
+    $d = $earth_radius * $c;
+
+    if( $d < $radius)
+        return true;
+    else
+        return false;
 }
