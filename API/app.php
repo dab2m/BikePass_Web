@@ -229,8 +229,12 @@ if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
 }
 
 //Data send
-if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"])) {
+if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post_json["bike_time"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
+    $credit = 0;
+    date_default_timezone_set('Europe/Istanbul');
     $username = $post_json["username"];
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
     $sql = "SELECT user_id,bike_using_time, total_credit from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
 	if (mysqli_num_rows($result) == 1) {
@@ -239,9 +243,6 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
         $bike_id = $post_json["bike_id"];
         $bike_using_time = $user["bike_using_time"];
 		$total_credit = $user["total_credit"];
-		$new_total_credit = $total_credit - $bike_time; //update credit 
-		$update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
-		$sql_status = mysql_query($db, $update_user_sql);
 		
         $sql = "SELECT status from bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
@@ -249,16 +250,48 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
             //Meşgul bike status kodu 2 olarak varsayılan yer
             $status = mysqli_fetch_assoc($result);
             if ($status["status"] == 2) {
-                date_default_timezone_set('Europe/Istanbul');
+                // tüm hotpointsleri tarayıp uygun olanların işlekliğini arttır
+                $sql = "SELECT * FROM hotpoints";
+                $result_h = mysqli_query($db, $sql);
+                if (mysqli_num_rows($result_h) > 0) {
+                    while ($row = mysqli_fetch_assoc($result_h)) {
+                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                            $hot_id = $row["id"];
+                            $freq = $row["frequency"];
+                            $freq_new = $freq + 1;
+                            $sql = "UPDATE hotpoints SET frequency=$freq_new WHERE id=$hot_id";
+                            $result = mysqli_query($db, $sql);
+                            $credit = 1000;
+                        }
+                    }
+                }
+
+                // talep noktaları geçerli ise kapat
+                $sql = "SELECT * FROM requests ORDER BY request_time ASC";
+                $result_r = mysqli_query($db, $sql);
+                if (mysqli_num_rows($result_r) > 0) {
+                    while ($row = mysqli_fetch_assoc($result_r)) {
+                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                            $request_time = $row["request_time"];
+                            $time = date('H:i');
+                            $credit_new = 2000 - (strtotime($time) - strtotime($request_time));
+                            $credit = $credit + $credit_new;
+                            $sql = "DELETE FROM requests WHERE id='$hot_id'";
+                            $result_r = mysqli_query($db, $sql);
+                            // En son açılanı sil gerisi
+                            break;
+                        }
+                    }
+                }
+                
                 $date = date('Y-m-d H:i');
                 $bike_time = $post_json['bike_time'];
                 $sql = "INSERT INTO data (user_id,bike_id,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
-					/*  Zaten bike.php'de var burası tekrar yapılmasına gerek yok!!!!!!!!!   */
-                    //$bike_using_time = $bike_using_time + $bike_time;
-                    //$sql = "UPDATE user SET bike_using_time=$bike_using_time WHERE user_id=$user_id";
-                    //$result = mysqli_query($db, $sql);
+                    $new_total_credit = ($total_credit - $bike_time) + $credit; //update credit 
+		            $update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
+		            $sql_status = mysqli_query($db, $update_user_sql);
                     $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
                     $result = mysqli_query($db, $sql);
                     if ($result) {
@@ -270,8 +303,7 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                     }
                 } else {
                     $status = "4";
-                    $message = $result;
-                    //$message = "Can't add bike using data!";
+                    $message = "Can't add bike using data!";
                 }
             } else {
                 $status = "3";
@@ -286,7 +318,13 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
         $message = "Can't find user with username " . $username;
     }
 
-    create_response($status, $message, null);
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'credit' => $credit
+    );
+
+    echo json_encode($json);
 }
 
 // Unlock bike

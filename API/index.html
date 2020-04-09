@@ -214,17 +214,19 @@
             <h2 class="json--header">
                 Send Bike Data           
             </h2>
-            <button class="copy" data-clipboard-text='{"username":"mustafa","bike_id":1,"bike_time":1200,"bike_km":5}'>Copy</button>
+            <button class="copy" data-clipboard-text='{"username":"mustafa","bike_id":101,"lat":39.9249,"long":32.8047,"bike_time":1200}'>Copy</button>
             <div class="json__code">
                 {
-                <p class="json__code--item">username<span class="semic">:</span> mustafa<span class="semic">,</span></p>
-                <p class="json__code--item">bike_id<span class="semic">:</span> 1<span class="semic">,</span></p>
-                <p class="json__code--item">bike_time<span class="semic">:</span> 1200</p>
+                <p class="json__code--item">"username"<span class="semic">:</span> mustafa<span class="semic">,</span></p>
+                <p class="json__code--item">"bike_id"<span class="semic">:</span> 101<span class="semic">,</span></p>
+                <p class="json__code--item">"lat"<span class="semic">:</span> 39.9249<span class="semic">,</span></p>
+                <p class="json__code--item">"long"<span class="semic">:</span> 32.8047<span class="semic">,</span></p>
+                <p class="json__code--item">"bike_time"<span class="semic">:</span> 1200</p>
                 }
             </div>
             <p class="json--text">
                 To add data of a bike usage, four parameters are required. <span class="code">username </span><span class="code">bike_id </span><span class="code">bike_time </span>and <span class="code">bike_km </span><br>
-                <span class="code">bike_time </span>should be in seconds
+                <span class="code">bike_time </span>should be in seconds. If bike is in area of a hotpoint return 1000 credits. If bike is in area of a request return credit scaled with current time and request time difference.
             </p>
         </div>
         <div class="response">
@@ -232,7 +234,8 @@
             <div class="json__code">
                 {
                 <p class="json__code--item">"status"<span class="semic">:</span> "0"<span class="semic">,</span></p>
-                <p class="json__code--item">"message"<span class="semic">:</span> "Data stored and bike1 is available again"</p>
+                <p class="json__code--item">"message"<span class="semic">:</span> "Data stored and bike1 is available again"<span class="semic">,</span></p>
+                <p class="json__code--item">"credit"<span class="semic">:</span> "1000"</p>
                 }
             </div>
             <h3 class="response--header">Status Codes</h3>
