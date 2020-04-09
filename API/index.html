@@ -251,15 +251,17 @@
             <h2 class="json--header">
                 Unlock bike            
             </h2>
-            <button class="copy" data-clipboard-text='{"bike_id":2,"username":"mustafa"}'>Copy</button>
+            <button class="copy" data-clipboard-text='{"bike_id":101,"lat":39.9249,"long":32.8047,"username":"mustafa"}'>Copy</button>
             <div class="json__code">
                 {
-                <p class="json__code--item">"bike_id"<span class="semic">:</span> 2<span class="semic">,</span></p>
+                <p class="json__code--item">"bike_id"<span class="semic">:</span> 101<span class="semic">,</span></p>
+                <p class="json__code--item">"lat"<span class="semic">:</span> 39.9249<span class="semic">,</span></p>
+                <p class="json__code--item">"long"<span class="semic">:</span> 32.8047<span class="semic">,</span></p>
                 <p class="json__code--item">"username"<span class="semic">:</span> "mustafa"</p>
                 }
             </div>
             <p class="json--text">
-                After scanning qr code, to update bike's status on database, provide two variables: <span class="code">bike_id</span> retrieved from qr code and <span class="code">username</span> to update current user of this bike.
+                After scanning qr code, to update bike's status on database, provide two variables: <span class="code">bike_id</span> retrieved from qr code and <span class="code">username</span> to update current user of this bike. Also updates hotpoints' frequencies. If given user has a request, also deletes that request
             </p>
         </div>
         <div class="response">

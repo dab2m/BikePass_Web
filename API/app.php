@@ -290,8 +290,10 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
 }
 
 // Unlock bike
-if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post_json["bike_time"])) {
+if (isset($post_json["bike_id"]) && isset($post_json["username"]) && isset($post_json["lat"]) && isset($post_json["long"]) && empty($post_json["bike_time"])) {
 
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
     $bike_id = $post_json["bike_id"];
     $username = $post_json["username"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
@@ -304,6 +306,24 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && empty($post
         if (mysqli_num_rows($result) > 0) {
             $status = mysqli_fetch_assoc($result);
             if ($status["status"] == "1") {
+                // tüm hotpointsleri tarayıp uygun olanların işlekliğini arttır
+                $sql = "SELECT * FROM hotpoints";
+                $result_h = mysqli_query($db, $sql);
+                if (mysqli_num_rows($result_h) > 0) {
+                    while ($row = mysqli_fetch_assoc($result_h)) {
+                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                            $hot_id = $row["id"];
+                            $freq = $row["frequency"];
+                            $freq_new = $freq + 1;
+                            $sql = "UPDATE hotpoints SET frequency=$freq_new WHERE id=$hot_id";
+                            $result = mysqli_query($db, $sql);
+                        }
+                    }
+                }
+                // Talep eden bisiklet kilidi açınca talebini sil
+                $sql = "DELETE FROM requests WHERE user_id='$user_id'";
+                $result_r = mysqli_query($db, $sql);
+
                 $sql = "UPDATE bikes SET status=2,user_id='$user_id' WHERE id=$bike_id";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
@@ -568,7 +588,7 @@ if (isset($post_json["username_today"])) {
 }
 
 //Return bike status
-if (isset($post_json["bike_id"]) && empty($post_json["bike_time"])) {
+if (isset($post_json["bike_id"]) && empty($post_json["bike_time"]) && empty($post_json["username"])) {
     $bike_id = $post_json["bike_id"];
     $sql = "SELECT * FROM bikes WHERE id='$bike_id'";
     $result = mysqli_query($db, $sql);
@@ -803,7 +823,7 @@ function create_response($status, $message, $bikes)
 // Kaynak https://www.it-swarm.dev/tr/php/php-ile-haversine-formulu/1071435883/
 function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius) {
     $earth_radius = 6371;
-
+    $radius = $radius / 1000;
     $dLat = deg2rad($latitude2 - $latitude1);
     $dLon = deg2rad($longitude2 - $longitude1);
 
