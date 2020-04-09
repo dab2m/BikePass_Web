@@ -744,17 +744,24 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
         $user_id = $row["user_id"];
-        date_default_timezone_set('Europe/Istanbul');
-        $timestamp = date("H:i");
-        $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES ('$user_id','$timestamp','$lat','$long')";
-        $result = mysqli_query($db,$sql);
-        if ($result) {
-            $status = "0";
-            $message = "Request created";
+        $sql = "SELECT * from requests WHERE user_id='$user_id'";
+        $result = mysqli_query($db, $sql);
+        if (mysqli_num_rows($result) > 0){
+            $status = "3";
+            $message = "Already have request!";
         }else{
-            $status = "2";
-            $message = "Database error";
-        }
+            date_default_timezone_set('Europe/Istanbul');
+            $timestamp = date("H:i");
+            $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES ('$user_id','$timestamp','$lat','$long')";
+            $result = mysqli_query($db,$sql);
+            if ($result) {
+                $status = "0";
+                $message = "Request created";
+            }else{
+                $status = "2";
+                $message = "Database error";
+            }
+        } 
     }else{
         $status = "1";
         $message = "No user found with usename " . $username;
@@ -798,12 +805,28 @@ if (isset($post_json["hotpoints"])) {
                 $request->radius = $row['radius'];
                 $requests[] = $request;
             }
-            $status = "0";
-            $message = "Returned hotpoints and requests";
+
+            $sql = "SELECT * FROM bikes WHERE status=1";
+            $result = mysqli_query($db, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $bike = new stdClass();
+                    $bike->name = 'bike' . $row['id'];
+                    $bike->lat = $row['lat'];
+                    $bike->long = $row['lng'];
+                    $bike->status = $row['status'];
+                    $bikes[] = $bike;
+                }
+                $status = "0";
+                $message = "Returned hotpoints, requests and available bikes";
+            }else{
+                $status = "3";
+                $message = "No available bikes";
+            }
         }else{
             $status = "2";
             $message = "No requests";
-        }
+        }  
     }else{
         $status = "1";
         $message = "No hotpoints";
@@ -814,7 +837,8 @@ if (isset($post_json["hotpoints"])) {
         "status" => $status,
         "message" => $message,
         "hotpoints" => $spots,
-        "requests" => $requests
+        "requests" => $requests,
+        "bikes" => $bikes
     );
     echo json_encode($json);
 }
