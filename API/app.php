@@ -803,6 +803,7 @@ if (isset($post_json["hotpoints"])) {
                 $request->lat = $row['lat'];
                 $request->long = $row['lng'];
                 $request->radius = $row['radius'];
+                $request->id = $row["id"];
                 $requests[] = $request;
             }
 
