@@ -92,12 +92,32 @@
                                     }
                                     
 
-                                        $lat = substr($lat, 0, -1);
-
-                                        $lng = substr($lng, 0, -1);
-                                        $icons = substr($icons, 0, -1);
+                                    $lat = substr($lat, 0, -1);
+                                    $lng = substr($lng, 0, -1);
+                                    $icons = substr($icons, 0, -1);
                                     
+                                    $hotpointquery = "SELECT * FROM hotpoints";
+                                    $hotpointres = mysqli_query($db, $hotpointquery);
+                                    $hotlat = "";
+                                    $hotlng = "";
+                                    $colors = "";
+                                    $radius = "";
+                                    $hotcount = mysqli_affected_rows($db);
+                                    while ($hotrow = mysqli_fetch_assoc($hotpointres))
+                                    {
+                                        $hotlat = $hotlat . "" . $hotrow['lat'] . ",";
+                                        $hotlng = $hotlng . "" . $hotrow['lng'] . ",";
+                                        $radius = $radius . "" . $hotrow['radius'] . ",";
+                                        if ($hotrow['frequency'] < 10)
+                                            $colors = $colors . "#0092ff,";
+                                        else
+                                            $colors = $colors . "#FF0000,";
+                                    }
                                     
+                                    $hotlat = substr($hotlat, 0, -1);
+                                    $hotlng = substr($hotlng, 0, -1);
+                                    $colors = substr($colors, 0, -1);
+                                    $radius = substr($radius, 0, -1);
 								?>
 								<script>
 
@@ -111,10 +131,11 @@
 
 										  icons = icons.split(",")
 										  var count = '<?php echo $count; ?>'
+										  var hotPointCount = '<?php echo $hotcount; ?>'  
 										  count = parseInt(count)
+										  hotPointCount = parseInt(hotPointCount)
 										  if(count != 0)
 										  {  
-    										  let infowindow
     										  var location = {lat: parseFloat(lat[0]), lng: parseFloat(lng[0])};
                                         	  var map = new google.maps.Map(document.getElementById("map"), {zoom: 4, center: location});
     										  var geolocation = 'Something'
@@ -141,11 +162,6 @@
                                             	location = {lat: parseFloat(lat[i]), lng: parseFloat(lng[i])};
                                         	  	let marker = new google.maps.Marker({position: location, map: map, title: 'Bike' + i, icon: icons[i]});
     
-                                          	  	
-        	                               	   
-                                          		infowindow = new google.maps.InfoWindow({
-                                          			content: '<strong>Bike</strong>' + (i+1)
-                                          		});
                                         	  	
                                           	  	google.maps.event.addListener(marker, 'click', function() {
                                               	  	
@@ -155,12 +171,44 @@
                                                   	  	alert('Your Location')
                                               	  	else
                                               	  		alert('Status: Working...')
-                                      				//infowindow.open(map,marker);
 													
 
                                       	  		});
                                         	  }
+
+
+                                        	  var hotlat = '<?php echo $hotlat; ?>'
+                                        	  hotlat = hotlat.split(",")
+    										  var hotlng = '<?php echo $hotlng; ?>'
+    										  hotlng = hotlng.split(",")
+    										  var colors = '<?php echo $colors; ?>'
+    										  colors = colors.split(",")
+    										  var radius = '<?php echo $radius; ?>'
+    										  radius = radius.split(",")
                                         	  
+                                        	  if (hotPointCount != 0)
+                                        	  {
+                                            	  
+                                            	  for(var i = 0 ; i < hotPointCount ; i++)
+                                            	  {
+                                                	  
+                                            		  	var hotloc = {lat: parseFloat(hotlat[i]), lng: parseFloat(hotlng[i])};
+                                            		  	let marker = new google.maps.Marker({position: hotloc, map: map, icon: 'http://maps.google.com/mapfiles/ms/icons/black-dot.png'});
+                                                  	    var sunCircle = {
+                                                	            strokeColor: "#c3fc49",
+                                                	            strokeOpacity: 0.8,
+                                                	            strokeWeight: 2,
+                                                	            fillColor: colors[i],
+                                                	            fillOpacity: 0.35,
+                                                	            map: map,
+                                                	            center: hotloc,
+                                                	            radius: parseInt(radius[i]) * 1000// in meters
+                                                	        };
+                                                	        cityCircle = new google.maps.Circle(sunCircle)
+                                                	        cityCircle.bindTo('center', marker, 'position');
+
+                                                	}
+                                            	}
                                     		}
 										  else
 										  {
@@ -303,11 +351,7 @@
 	</div>
 </div>
 <script async defer
-src="<?php 
-	$api_key = getenv("API_KEY");
-	echo 'https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&callback=initMap';
-	?>
-	">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyQO00ad0v9tZoovOw1j50K3x68OXaWUk&callback=initMap">
 </script>
 
 
