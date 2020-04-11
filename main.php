@@ -109,9 +109,15 @@
                                         $hotlng = $hotlng . "" . $hotrow['lng'] . ",";
                                         $radius = $radius . "" . $hotrow['radius'] . ",";
                                         if ($hotrow['frequency'] < 10)
-                                            $colors = $colors . "#0092ff,";
-                                        else
-                                            $colors = $colors . "#FF0000,";
+                                            $colors = $colors . "#EDA895,";
+										if ($hotrow['frequency'] > 9 && $hotrow['frequency'] < 20)
+                                            $colors = $colors . "#DE3F24,";
+										if ($hotrow['frequency'] > 19 && $hotrow['frequency'] < 30)
+                                            $colors = $colors . "#D51F06,";
+										if ($hotrow['frequency'] > 29 && $hotrow['frequency'] < 40)
+                                            $colors = $colors . "#A91401,";
+										if ($hotrow['frequency'] > 39)
+                                            $colors = $colors . "#820C02,";
                                     }
                                     
                                     $hotlat = substr($hotlat, 0, -1);
