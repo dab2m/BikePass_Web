@@ -351,7 +351,11 @@
 	</div>
 </div>
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyQO00ad0v9tZoovOw1j50K3x68OXaWUk&callback=initMap">
+src="<?php 
+	$api_key = getenv("API_KEY");
+	echo 'https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&callback=initMap';
+	?>
+	">
 </script>
 
 
