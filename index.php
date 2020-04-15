@@ -95,12 +95,6 @@ if (isset($_POST['signin'])) {
     $errors['username'] = 'Username must be a valid username';
   }
 
-  //check email
-  $email = $_POST['email'];
-  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors['email'] = 'Email must be a valid email address';
-  }
-
   //check password{
   $password = $_POST['password'];
   if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
@@ -118,15 +112,14 @@ if (isset($_POST['signin'])) {
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
 
-    $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
-    
-    $sql = "SELECT * from user where username='$username' and password='$hashedPwd'";
+    $sql = "SELECT * from user where username='$username'";
 
     $result = mysqli_query($db, $sql);
 
     $row = mysqli_fetch_assoc($result);
+    $pwdCheck = password_verify($password, $row['password']);
 
-    if (mysqli_affected_rows($db) == 1) {
+    if (mysqli_affected_rows($db) == 1 && pwdCheck) {
       session_start();
       $_SESSION['username'] = $username;
       $_SESSION['password'] = $password;
