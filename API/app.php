@@ -945,6 +945,7 @@ if(isset($post_json["messages"])){
             $msg->to = $row["to_user"];
             $msg->head = $row["head"];
             $msg->body = $row["body"];
+            $msg->unread = $row["unread"];
             $messages[] = $msg;
 
             $id = $row["id"];
