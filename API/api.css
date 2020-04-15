@@ -50,7 +50,7 @@ body {
     height: 100vh;
     position: fixed;
     width: 10vw;
-    padding: 10vh 0 0 2rem;
+    padding: 10vh 0 2rem 2rem;
     background-color: #ffde98;
     border-right: 20px dotted #ffedc6;
     overflow-y: hidden;

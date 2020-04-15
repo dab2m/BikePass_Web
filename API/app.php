@@ -13,6 +13,7 @@ $bikes = [];
 $spots = [];
 $requests = [];
 $bike_usage = [];
+$messages = [];
 $json = array();
 $post_json = json_decode(file_get_contents("php://input"), true);
 
@@ -869,6 +870,97 @@ if(isset($post_json["deletereq"])){
     $json  = array(
         'status' => $status,
         'message' => $message
+    );
+    echo json_encode($json);
+}
+
+//Send Message
+if(isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["head"]) && isset($post_json["body"])){
+    $from = $post_json["from"];
+    $to = $post_json["to"];
+    $sql = "SELECT user_id FROM user WHERE username='$from'";
+    $username_result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($username_result) == 1){
+        $user = mysqli_fetch_assoc($username_result);
+        $from_id = $user["user_id"];
+    }else{
+        $status = "1";
+        $message = "No sender with username " . $from;
+    }
+    $sql = "SELECT user_id FROM user WHERE username='$to'";
+    $username_result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($username_result) == 1){
+        $user = mysqli_fetch_assoc($username_result);
+        $to_id = $user["user_id"];
+    }else{
+        $status = "2";
+        $message = "No receiver with username " . $to;
+    }
+    $head = $post_json["head"];
+    $body = $post_json["body"];
+    $sql = "INSERT INTO messages(from_user,to_user,head,body) VALUES ('$from_id','$to_id','$head','$body')";
+    $result = mysqli_query($db, $sql);
+    if($result){
+        $status = "0";
+        $message = "Message sent to " . $to;
+    }else{
+        $status = "3";
+        $message= "Database error";
+    }
+
+    $json  = array(
+        'status' => $status,
+        'message' => $message
+    );
+    echo json_encode($json);
+}
+
+//Receive messages
+if(isset($post_json["messages"])){
+    $username = $post_json["messages"];
+    $all = false;
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
+    $username_result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($username_result) == 1){
+        $user = mysqli_fetch_assoc($username_result);
+        $user_id = $user["user_id"];
+    }else{
+        $status = "1";
+        $message = "No user with username " . $username;
+    }
+    if(isset($post_json["all"])){
+        $all = true;
+    }
+
+    if($all)
+        $sql = "SELECT * FROM messages WHERE to_user='$user_id'";
+    else   
+        // 0 okunmamış 1 okunmuş mesajlar
+        $sql = "SELECT * FROM messages WHERE to_user='$user_id' AND unread='0'";
+    $result_msg = mysqli_query($db,$sql);
+    if (mysqli_num_rows($result_msg) > 0) {
+        while ($row = mysqli_fetch_assoc($result_msg)) {
+            $msg = new stdClass();
+            $msg->from = $row["from_user"];
+            $msg->to = $row["to_user"];
+            $msg->head = $row["head"];
+            $msg->body = $row["body"];
+            $messages[] = $msg;
+
+            $id = $row["id"];
+            $read = "UPDATE messages SET unread=1 WHERE id='$id'";
+            $result = mysqli_query($db, $read);
+        }
+        $status = "0";
+        $message = "Returned messages";
+    }else{
+        $status = "1";
+        $message = "No messages for " . $username;
+    }
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'messages' => $messages
     );
     echo json_encode($json);
 }
