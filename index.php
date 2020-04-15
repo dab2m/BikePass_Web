@@ -4,7 +4,7 @@ include('db.php');
 
 $username = $email = $password = $question = $answer = '';
 $errors = array('username' => '', 'email' => '', 'password' => '', 'question' => '', 'answer' => '');
-if (isset($_POST['signup'])) {
+/*if (isset($_POST['signup'])) {
 
 
   //check username
@@ -80,7 +80,7 @@ if (isset($_POST['signup'])) {
       }
     }
   }
-}
+}*/
 
 
 $error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both' => '', 'email' => '');
@@ -88,13 +88,39 @@ $error = array('userloginerror' => '', 'username' => '', 'password' => '', 'both
 if (isset($_POST['signin'])) {
   $username = $_POST['username'];
   $password = $_POST['password'];
-  if ($username != '' && $password != '') {
+
+  //check username
+  $username = $_POST['username'];
+  if (!preg_match('/^[a-z\d_]{2,20}$/', $username)) {
+    $errors['username'] = 'Username must be a valid username';
+  }
+
+  //check email
+  $email = $_POST['email'];
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $errors['email'] = 'Email must be a valid email address';
+  }
+
+  //check password{
+  $password = $_POST['password'];
+  if (!preg_match('/^(?=.*\d)(?=.*[A-Za-z])[0-9A-Za-z!@#$%]{8,12}$/', $password)) {
+    $errors['password'] = 'The password does not meet the requirements!';
+    }
+
+  if (array_filter($errors)) {
+    echo "<script type='text/javascript'>
+      window.onload=function(){
+        document.getElementById('myModalLogin').style.display = 'block';
+      };
+      </script>";
+  }else {
+
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
 
-    $hashedpassword = substr(md5($password),0,20);
+    $hashedPwd = password_hash($password, PASSWORD_DEFAULT);
     
-    $sql = "SELECT * from user where username='$username' and password='$hashedpassword'";
+    $sql = "SELECT * from user where username='$username' and password='$hashedPwd'";
 
     $result = mysqli_query($db, $sql);
 
@@ -111,17 +137,6 @@ if (isset($_POST['signin'])) {
     } else {
       echo 'query error';
     }
-  } else if ($username != '') {
-    $error['password'] = 'Password cant be empty';
-  } else if ($password != '') {
-    $error['username'] = 'Username cant be empty';
-  }
-  if (array_filter($error)) {
-    echo "<script type='text/javascript'>
-      window.onload=function(){
-        document.getElementById('myModalLogIn').style.display = 'block';
-      };
-      </script>";
   }
 }
 
@@ -226,13 +241,13 @@ if (isset($_POST['forgotpassword'])) {
 <body>
 
   <script>
-    function showSıgnUp() {
+    /*function showSıgnUp() {
       document.getElementById("myModalLogIn").style.display = "none";
       document.getElementById("myModalSıgnUp").style.display = "block";
-    }
+    }*/
 
     function showLogIn() {
-      document.getElementById("myModalSıgnUp").style.display = "none";
+      //document.getElementById("myModalSıgnUp").style.display = "none";
       document.getElementById("myModalLogIn").style.display = "block";
     }
 
@@ -243,9 +258,9 @@ if (isset($_POST['forgotpassword'])) {
     
 
     window.onclick = function(event) {
-      if (event.target == document.getElementById("myModalSıgnUp")) {
+      /*if (event.target == document.getElementById("myModalSıgnUp")) {
         document.getElementById("myModalSıgnUp").style.display = "none";
-      }
+      }*/
       if (event.target == document.getElementById("myModalLogIn")) {
         document.getElementById("myModalLogIn").style.display = "none";
       }
