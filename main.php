@@ -230,7 +230,7 @@
                                 </script>
 							</div>
 							<div class="row margin-bottom-20">
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Profile</h3>
@@ -270,26 +270,7 @@
 									</div>
 								</div>
 
-								<div class="col-md-3">
-									<div class="space20">
-									</div>
-									<h3 class="form-section">Credit Card Info</h3>
-									<div class="well">
-										<address>
-    										<strong>
-    											<button type="button" class="btn blue" style="float:right;" onclick="location.href='edit_card.php';">Edit</button>
-    										</strong>
-										</address>
-										
-										<address>
-										<strong>Card Number:</strong>
-										<p><?php echo "**** **** **** " . $row["card_last4"] ?></p>
-										</address>
-
-									</div>
-								</div>
-								
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Top 10 Distance:</h3>
@@ -319,7 +300,7 @@
 									</div>
 								</div>
 
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Top 10 Using Time:</h3>

@@ -211,9 +211,9 @@ if (isset($_POST['forgotpassword'])) {
         <li class="nav-item">
           <a class="nav-link" href="#features">Features</a>
         </li>
-        <li class="nav-item">
+        <!--<li class="nav-item">
           <p class="nav-link likeButton" onclick="showSıgnUp()" href="">Sign up</p>
-        </li>
+        </li>-->
         <li class="nav-item">
           <p class="nav-link likeButton" onclick="showLogIn()" href="">Login</p>
         </li>
@@ -315,9 +315,9 @@ if (isset($_POST['forgotpassword'])) {
 
 
 
-  <!-- The Modal -->
+  <!--
   <div id="myModalSıgnUp" style="display:none;" class="modal">
-    <!-- Modal content -->
+
     <div class="modal-content">
       <div>
         <span class="close" onclick=closeModal("myModalSıgnUp")>&times;</span>
@@ -373,8 +373,8 @@ if (isset($_POST['forgotpassword'])) {
       <div>
       </div>
     </div>
-  </div>
-
+  </div> 
+        -->
 
 
   <!-- The Modal -->
@@ -405,8 +405,8 @@ if (isset($_POST['forgotpassword'])) {
           <div class="red-text"><?php echo $error['email']; ?></div>
           <div class="red-text"><?php echo $error['userloginerror']; ?></div>
           <div><input class=" signupButton" type="submit" name="signin" id="sign in" value="LOG IN" class="btn brand z-depth-0"><br />
-            <p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
-                  <p>
+            <!--<p class="infoLocale">Dont you have an account? <a class="signIn" onclick="showSıgnUp()">Sign up!<a>
+                  <p>-->
             <p class="infoLocale">Forgot Password? <a class="signIn" onclick="showForgotPassword()">Restore!<a>
                   <p>
           </div>
