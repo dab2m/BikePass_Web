@@ -139,13 +139,13 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 
 //Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["usernamebikes"])) {
-    $data = getAddress($post_json["lat"],$post_json["long"]);
+    $data = getAddress($post_json["lat"], $post_json["long"]);
     $address = $data["results"][0]["formatted_address"];
 
     $username = $post_json["usernamebikes"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if(mysqli_num_rows($result) > 0){
+    if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user["user_id"];
         $sql = "SELECT * FROM bikes ";
@@ -157,8 +157,8 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $bike->lat = $row['lat'];
                 $bike->long = $row['lng'];
                 $bike->status = $row['status'];
+                $bike->address = getAddress($row["lat"], $row["lng"]);
                 $bikes[] = $bike;
-
             }
 
             $sql = "SELECT * FROM requests WHERE user_id='$user_id'";
@@ -169,26 +169,25 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $long = $request["lng"];
                 $status = "0";
                 $message = "Returned array of bikes";
-            }else{
+            } else {
                 $status = "2";
                 $message = "Returned array of bikes with no request";
             }
         }
-    }else{
+    } else {
         $status = "1";
         $message = "No user found with name " . $username;
     }
 
     $json = array(
         "status" => $status,
-        "message" => "Returned array of bikes", 
+        "message" => "Returned array of bikes",
         "bikes" => $bikes,
         "lat" => $lat,
         "long" => $long,
         "address" => $address
     );
-    echo json_encode($json,JSON_UNESCAPED_UNICODE);
-
+    echo json_encode($json, JSON_UNESCAPED_UNICODE);
 }
 //Rezerve bike
 if (isset($post_json["bike_id"]) && isset($post_json["usernameres"])) {
@@ -241,13 +240,13 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
     $long = $post_json["long"];
     $sql = "SELECT user_id,bike_using_time, total_credit from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-	if (mysqli_num_rows($result) == 1) {
+    if (mysqli_num_rows($result) == 1) {
         $user = mysqli_fetch_assoc($result);
         $user_id = $user['user_id'];
         $bike_id = $post_json["bike_id"];
         $bike_using_time = $user["bike_using_time"];
-		$total_credit = $user["total_credit"];
-		
+        $total_credit = $user["total_credit"];
+
         $sql = "SELECT status from bikes WHERE id=$bike_id";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) == 1) {
@@ -259,7 +258,7 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                 $result_h = mysqli_query($db, $sql);
                 if (mysqli_num_rows($result_h) > 0) {
                     while ($row = mysqli_fetch_assoc($result_h)) {
-                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                        if (verifyArea($row["lat"], $row["lng"], $lat, $long, $row["radius"])) {
                             $hot_id = $row["id"];
                             $freq = $row["frequency"];
                             $freq_new = $freq + 1;
@@ -275,7 +274,7 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                 $result_r = mysqli_query($db, $sql);
                 if (mysqli_num_rows($result_r) > 0) {
                     while ($row = mysqli_fetch_assoc($result_r)) {
-                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                        if (verifyArea($row["lat"], $row["lng"], $lat, $long, $row["radius"])) {
                             $request_time = $row["request_time"];
                             $time = date('H:i');
                             $credit_new = 2000 - (strtotime($time) - strtotime($request_time));
@@ -287,15 +286,15 @@ if (isset($post_json["username"]) && isset($post_json["bike_id"]) && isset($post
                         }
                     }
                 }
-                
+
                 $date = date('Y-m-d H:i');
                 $bike_time = $post_json['bike_time'];
                 $sql = "INSERT INTO data (user_id,bike_id,bike_using_time,date) VALUES ($user_id,$bike_id,$bike_time,'$date')";
                 $result = mysqli_query($db, $sql);
                 if ($result) {
                     $new_total_credit = ($total_credit - $bike_time) + $credit; //update credit 
-		            $update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
-		            $sql_status = mysqli_query($db, $update_user_sql);
+                    $update_user_sql = "UPDATE user SET total_credit = '$new_total_credit' WHERE user_id = '$user_id'"; //update user table for credit
+                    $sql_status = mysqli_query($db, $update_user_sql);
                     $sql = "UPDATE bikes SET status=1 WHERE id=$bike_id";
                     $result = mysqli_query($db, $sql);
                     if ($result) {
@@ -353,7 +352,7 @@ if (isset($post_json["bike_id"]) && isset($post_json["username"]) && isset($post
                 $result_h = mysqli_query($db, $sql);
                 if (mysqli_num_rows($result_h) > 0) {
                     while ($row = mysqli_fetch_assoc($result_h)) {
-                        if(verifyArea($row["lat"],$row["lng"],$lat,$long,$row["radius"])){
+                        if (verifyArea($row["lat"], $row["lng"], $lat, $long, $row["radius"])) {
                             $hot_id = $row["id"];
                             $freq = $row["frequency"];
                             $freq_new = $freq + 1;
@@ -396,10 +395,10 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
 
     $isWeekly = true;
     $dayNames = true;
-    if(isset($post_json["all"])){
+    if (isset($post_json["all"])) {
         $isWeekly = false;
     }
-    if(isset($post_json["date"])){
+    if (isset($post_json["date"])) {
         $dayNames = false;
     }
 
@@ -412,18 +411,18 @@ if (isset($post_json["username"]) && isset($post_json["type"])) {
         $select = ($post_json["type"] == "time") ? 'bike_using_time' : 'bike_km';
         $start = date("Y-m-d", strtotime("this week"));
         $end = date("Y-m-d");
-        if($isWeekly){
+        if ($isWeekly) {
             $sql = "SELECT $select,date FROM data WHERE user_id='$user_id' AND date BETWEEN '$start' AND '$end'";
-        }else{
+        } else {
             $sql = "SELECT $select,date FROM data WHERE user_id='$user_id'";
         }
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $myObj = new stdClass();
-                if($dayNames){
+                if ($dayNames) {
                     $myObj->day = strftime('%A', strtotime($row['date']));
-                }else{
+                } else {
                     $myObj->day = strftime('%B %d %Y', strtotime($row['date']));
                 }
                 $myObj->$select = $row[$select];
@@ -631,20 +630,20 @@ if (isset($post_json["bike_id"]) && empty($post_json["bike_time"]) && empty($pos
 }
 
 // Location initalize
-if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernameloc"])){
+if (isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernameloc"])) {
     $lat = $post_json["lat"];
     $long = $post_json["long"];
     $username = $post_json["usernameloc"];
 
-    $data = getAddress($lat,$lng);
+    $data = getAddress($lat, $lng);
     $city =  $data["results"][0]["address_components"]["0"]["long_name"];
 
     $sql = "UPDATE user SET location='$city' WHERE username='$username'";
     $result = mysqli_query($db, $sql);
-    if($result){
+    if ($result) {
         $status = "0";
         $message = "Location set to " . $city;
-    }else{
+    } else {
         $status = "1";
         $message = "Unable to set location";
     }
@@ -656,7 +655,7 @@ if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernamel
 }
 
 //Return Credit
-if(isset($post_json["usernamecredit"]) && empty($post_json["credit"])){
+if (isset($post_json["usernamecredit"]) && empty($post_json["credit"])) {
     $username = $post_json["usernamecredit"];
     $sql = "SELECT * from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -664,7 +663,7 @@ if(isset($post_json["usernamecredit"]) && empty($post_json["credit"])){
         $row = mysqli_fetch_assoc($result);
         $status = "0";
         $message = $row["total_credit"];
-    }else{
+    } else {
         $status = "1";
         $message = "Database error";
     }
@@ -677,7 +676,7 @@ if(isset($post_json["usernamecredit"]) && empty($post_json["credit"])){
 }
 
 //Update Credit
-if(isset($post_json["usernamecredit"]) && isset($post_json["credit"])){
+if (isset($post_json["usernamecredit"]) && isset($post_json["credit"])) {
     $username = $post_json["usernamecredit"];
     $credit = $post_json["credit"];
     $sql = "UPDATE user SET total_credit='$credit' WHERE username='$username'";
@@ -685,7 +684,7 @@ if(isset($post_json["usernamecredit"]) && isset($post_json["credit"])){
     if ($result) {
         $status = "0";
         $message = "Updated Credit";
-    }else{
+    } else {
         $status = "1";
         $message = "Database error";
     }
@@ -698,12 +697,12 @@ if(isset($post_json["usernamecredit"]) && isset($post_json["credit"])){
 }
 
 //Request Bike
-if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_json["long"])){
+if (isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
     $username = $post_json["usernamereq"];
     $lat = $post_json["lat"];
     $long = $post_json["long"];
 
-    $data = getAddress($lat,$long);
+    $data = getAddress($lat, $long);
     $address = $data["results"][0]["formatted_address"];
 
     $sql = "SELECT * from user WHERE username='$username'";
@@ -713,23 +712,23 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
         $user_id = $row["user_id"];
         $sql = "SELECT * from requests WHERE user_id='$user_id'";
         $result = mysqli_query($db, $sql);
-        if (mysqli_num_rows($result) > 0){
+        if (mysqli_num_rows($result) > 0) {
             $status = "3";
             $message = "Already have request!";
-        }else{
+        } else {
             date_default_timezone_set('Europe/Istanbul');
             $timestamp = date("H:i");
             $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES ('$user_id','$timestamp','$lat','$long')";
-            $result = mysqli_query($db,$sql);
+            $result = mysqli_query($db, $sql);
             if ($result) {
                 $status = "0";
                 $message = "Request created";
-            }else{
+            } else {
                 $status = "2";
                 $message = "Database error";
             }
-        } 
-    }else{
+        }
+    } else {
         $status = "1";
         $message = "No user found with usename " . $username;
     }
@@ -739,13 +738,12 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
         'message' => $message,
         'address' => $address
     );
-    echo json_encode($json,JSON_UNESCAPED_UNICODE);
+    echo json_encode($json, JSON_UNESCAPED_UNICODE);
 }
 
 //Return hotpoints and requests
-if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
-    $data = getAddress($post_json["lat"],$post_json["long"]);
-    $address = $data["results"][0]["formatted_address"];
+if (isset($post_json["hotpoints"])) {
+
 
     $sql = "SELECT * from hotpoints";
     $result = mysqli_query($db, $sql);
@@ -759,7 +757,7 @@ if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_js
             $spot->frequency = $row['frequency'];
             $spots[] = $spot;
         }
-        
+
         $sql = "SELECT * FROM requests";
         $result = mysqli_query($db, $sql);
         if (mysqli_num_rows($result) > 0) {
@@ -775,6 +773,7 @@ if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_js
                 $request->long = $row['lng'];
                 $request->radius = $row['radius'];
                 $request->id = $row["id"];
+                $request->address = getAddress($row["lat"], $row["lng"]);
                 $requests[] = $request;
             }
 
@@ -787,19 +786,20 @@ if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_js
                     $bike->lat = $row['lat'];
                     $bike->long = $row['lng'];
                     $bike->status = $row['status'];
+                    $bike->address = getAddress($row["lat"], $row["lng"]);
                     $bikes[] = $bike;
                 }
                 $status = "0";
                 $message = "Returned hotpoints, requests and available bikes";
-            }else{
+            } else {
                 $status = "3";
                 $message = "No available bikes";
             }
-        }else{
+        } else {
             $status = "2";
             $message = "No requests";
-        }  
-    }else{
+        }
+    } else {
         $status = "1";
         $message = "No hotpoints";
     }
@@ -811,13 +811,13 @@ if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_js
         "hotpoints" => $spots,
         "requests" => $requests,
         "bikes" => $bikes,
-        "address" => $address
+
     );
-    echo json_encode($json,JSON_UNESCAPED_UNICODE);
+    echo json_encode($json, JSON_UNESCAPED_UNICODE);
 }
 
 // Delete Request
-if(isset($post_json["deletereq"])){
+if (isset($post_json["deletereq"])) {
     $username = $post_json["deletereq"];
     $sql = "SELECT user_id from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -826,14 +826,14 @@ if(isset($post_json["deletereq"])){
         $user_id = $row["user_id"];
         $sql = "DELETE FROM requests WHERE user_id='$user_id'";
         $result = mysqli_query($db, $sql);
-        if($result){
+        if ($result) {
             $status = "0";
             $message = "Removed request";
-        }else{
+        } else {
             $status = "2";
             $message = "Database error";
         }
-    }else{
+    } else {
         $status = "1";
         $message = "No user with username " . $username;
     }
@@ -846,24 +846,24 @@ if(isset($post_json["deletereq"])){
 }
 
 //Send Message
-if(isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["head"]) && isset($post_json["body"])){
+if (isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["head"]) && isset($post_json["body"])) {
     $from = $post_json["from"];
     $to = $post_json["to"];
     $sql = "SELECT user_id FROM user WHERE username='$from'";
     $username_result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($username_result) == 1){
+    if (mysqli_num_rows($username_result) == 1) {
         $user = mysqli_fetch_assoc($username_result);
         $from_id = $user["user_id"];
-    }else{
+    } else {
         $status = "1";
         $message = "No sender with username " . $from;
     }
     $sql = "SELECT user_id FROM user WHERE username='$to'";
     $username_result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($username_result) == 1){
+    if (mysqli_num_rows($username_result) == 1) {
         $user = mysqli_fetch_assoc($username_result);
         $to_id = $user["user_id"];
-    }else{
+    } else {
         $status = "2";
         $message = "No receiver with username " . $to;
     }
@@ -871,12 +871,12 @@ if(isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["hea
     $body = $post_json["body"];
     $sql = "INSERT INTO messages(from_user,to_user,head,body) VALUES ('$from_id','$to_id','$head','$body')";
     $result = mysqli_query($db, $sql);
-    if($result){
+    if ($result) {
         $status = "0";
         $message = "Message sent to " . $to;
-    }else{
+    } else {
         $status = "3";
-        $message= "Database error";
+        $message = "Database error";
     }
 
     $json  = array(
@@ -887,28 +887,28 @@ if(isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["hea
 }
 
 //Receive messages
-if(isset($post_json["messages"])){
+if (isset($post_json["messages"])) {
     $username = $post_json["messages"];
     $all = false;
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $username_result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($username_result) == 1){
+    if (mysqli_num_rows($username_result) == 1) {
         $user = mysqli_fetch_assoc($username_result);
         $user_id = $user["user_id"];
-    }else{
+    } else {
         $status = "1";
         $message = "No user with username " . $username;
     }
-    if(isset($post_json["all"])){
+    if (isset($post_json["all"])) {
         $all = true;
     }
 
-    if($all)
+    if ($all)
         $sql = "SELECT * FROM messages WHERE to_user='$user_id'";
-    else   
+    else
         // 0 okunmamış 1 okunmuş mesajlar
         $sql = "SELECT * FROM messages WHERE to_user='$user_id' AND unread='0'";
-    $result_msg = mysqli_query($db,$sql);
+    $result_msg = mysqli_query($db, $sql);
     if (mysqli_num_rows($result_msg) > 0) {
         while ($row = mysqli_fetch_assoc($result_msg)) {
             $msg = new stdClass();
@@ -925,7 +925,7 @@ if(isset($post_json["messages"])){
         }
         $status = "0";
         $message = "Returned messages";
-    }else{
+    } else {
         $status = "1";
         $message = "No messages for " . $username;
     }
@@ -948,26 +948,28 @@ function create_response($status, $message, $bikes)
 
 // Haversine Formulü implementi 
 // Kaynak https://www.it-swarm.dev/tr/php/php-ile-haversine-formulu/1071435883/
-function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius) {
+function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius)
+{
     $earth_radius = 6371;
     $radius = $radius / 1000;
     $dLat = deg2rad($latitude2 - $latitude1);
     $dLon = deg2rad($longitude2 - $longitude1);
 
-    $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);
+    $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon / 2) * sin($dLon / 2);
     $c = 2 * asin(sqrt($a));
     $d = $earth_radius * $c;
 
-    if( $d < $radius)
+    if ($d < $radius)
         return true;
     else
         return false;
 }
 
-function getAddress($lat,$lng){
+function getAddress($lat, $lng)
+{
     $api_key = getenv("API_KEY");
     $api_key = "AIzaSyBBylVHYC4gfgaXjR5pH-p4dDMY1EfDBVY";
     $parameters = "latlng=" . $lat . "," . $lng . "&sensor=true&key=" . $api_key . "&language=tr&region=tr";
     $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
-    return json_decode($location,true);
+    return json_decode($location, true);
 }
