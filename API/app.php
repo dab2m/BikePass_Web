@@ -158,7 +158,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $bike->long = $row['lng'];
                 $bike->status = $row['status'];
                 $address = getAddress($row["lat"], $row["lng"]);
-                $bike->$address["results"][0]["formatted_address"];
+                $bike->$address = ["results"][0]["formatted_address"];
                 $bikes[] = $bike;
             }
 
