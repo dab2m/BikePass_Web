@@ -41,37 +41,50 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["b
 		            $km += sqrt( pow( abs($old_lat - floatval($lat)), 2) + pow( abs($old_long - floatval($long)), 2) );
 		        $time = $user_row['bike_using_time'] + 1; /* Increment time 1 sec. */ 
 
-		        $update_user_sql = "UPDATE user SET bike_km = '$km', bike_using_time = '$time' WHERE user_id = $user_id"; /* UPDATE USER KM & TIME SQL */
+		        $update_user_sql = "UPDATE user SET bike_km = '$km', bike_using_time = '$time' WHERE user_id = $user_id"; /* UPDATE USER KM & TIME SQL FOR USER TABLE*/
 		        $sql_status = mysqli_query($db, $update_user_sql);
-				$update_user_sql_2 = "UPDATE data SET bike_km = '$km' WHERE user_id = $user_id"; 
+				$update_user_sql_2 = "UPDATE data SET bike_km = '$km' WHERE user_id = $user_id";  //UPDATE user_km for data table
 		        $sql_status_2 = mysqli_query($db, $update_user_sql_2);
 				
 				$user_bike_using_time = "SELECT bike_using_time,total_credit FROM user WHERE user_id = '$user_id'";
 				$result = mysqli_query($db, $user_bike_using_time);
-				$user = mysqli_fetch_assoc($result);
-				$bike_using_time = $user["bike_using_time"];
-				$total_credit = $user["total_credit"];
 				
+				/*Bonus for Top 3 users on Top-10 List */
+				$user = mysqli_fetch_assoc($result);
+				$bike_using_time = $user["bike_using_time"]; //user's bike_using_time
+				$total_credit = $user["total_credit"]; //user's total_credit
+				//find 1st on Top-10 list
 				$max_bike_using_time = "SELECT MAX(bike_using_time) FROM user"; 
 				$result_2 = mysqli_query($db, $max_bike_using_time);
 				$max_time = mysqli_fetch_assoc($result_2);
 				$max = $max_time["bike_using_time"];
-				
+				//find 2nd on Top-10 list
 				$max2nd_bike_using_time = "SELECT MAX(bike_using_time) FROM user WHERE bike_using_time < (SELECT MAX(bike_using_time) FROM user)"; 
 				$result_3 = mysqli_query($db, $max2nd_bike_using_time);
 				$max2nd_time = mysqli_fetch_assoc($result_3);
 				$max2nd = $max2nd_time["bike_using_time"];
+				//find 3rd on Top-10 list
+				$max3rd_bike_using_time = "SELECT MAX(bike_using_time) FROM user WHERE bike_using_time < ((SELECT MAX(bike_using_time) FROM user WHERE bike_using_time < (SELECT MAX(bike_using_time) FROM user))"; 
+				$result_4 = mysqli_query($db, $max3rd_bike_using_time);
+				$max3rd_time = mysqli_fetch_assoc($result_4);
+				$max3rd = $max3rd_time["bike_using_time"];
 
-				if($max == $bike_using_time){
-					$total_credit = $total_credit+600;
+				if($max == $bike_using_time){ //1st : Bonus 900 credit
+					$total_credit = $total_credit+900;
 					$update_user_sql_3 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
 					$sql_status_3 = mysqli_query($db, $update_user_sql_3);
 				}
-				if($max2nd == $bike_using_time){
-					$total_credit = $total_credit+300;
+				if($max2nd == $bike_using_time){ //2nd : Bonus 600 credit
+					$total_credit = $total_credit+600;
 					$update_user_sql_4 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
 					$sql_status_4 = mysqli_query($db, $update_user_sql_4);
-				}	
+				}
+				if($max3rd == $bike_using_time){ //3rd : Bonus 300 credit
+				$total_credit = $total_credit+300;
+				$update_user_sql_5 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
+				$sql_status_5 = mysqli_query($db, $update_user_sql_5);
+				}
+				
 		    }
 		}
 
