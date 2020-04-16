@@ -59,7 +59,7 @@ if(mysqli_num_rows($result_h) > 0){
         if(!$bikePresent){
             $sql = "SELECT * FROM requests WHERE used_id = 0";
             $result = mysqli_query($db,$sql);
-            if(mysqli_num_rows($result) == 0){
+            if(!mysqli_num_rows($result) > 0){
                 $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES(0,'$now_s',$h_lat,$h_lng)";
                 $result = mysqli_query($db,$sql);
             } 
