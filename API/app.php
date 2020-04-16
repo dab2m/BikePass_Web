@@ -157,7 +157,8 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $bike->lat = $row['lat'];
                 $bike->long = $row['lng'];
                 $bike->status = $row['status'];
-                $bike->address = getAddress($row["lat"], $row["lng"]);
+                $address = getAddress($row["lat"], $row["lng"]);
+                $bike->$address["results"][0]["formatted_address"];
                 $bikes[] = $bike;
             }
 
@@ -773,7 +774,8 @@ if (isset($post_json["hotpoints"])) {
                 $request->long = $row['lng'];
                 $request->radius = $row['radius'];
                 $request->id = $row["id"];
-                $request->address = getAddress($row["lat"], $row["lng"]);
+                $address = getAddress($row["lat"], $row["lng"]);
+                $request->address = $address["results"][0]["formatted_address"];
                 $requests[] = $request;
             }
 
@@ -786,7 +788,8 @@ if (isset($post_json["hotpoints"])) {
                     $bike->lat = $row['lat'];
                     $bike->long = $row['lng'];
                     $bike->status = $row['status'];
-                    $bike->address = getAddress($row["lat"], $row["lng"]);
+                    $address = getAddress($row["lat"], $row["lng"]);
+                    $bike->address = $address["results"][0]["formatted_address"];
                     $bikes[] = $bike;
                 }
                 $status = "0";
