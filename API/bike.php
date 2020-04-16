@@ -46,13 +46,18 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["b
 				$update_user_sql_2 = "UPDATE data SET bike_km = '$km' WHERE user_id = $user_id";  //UPDATE user_km for data table
 		        $sql_status_2 = mysqli_query($db, $update_user_sql_2);
 				
-				$user_bike_using_time = "SELECT bike_using_time,total_credit FROM user WHERE user_id = '$user_id'";
+				$user_bike_using_time = "SELECT bike_using_time,total_credit,bonusactivation FROM user WHERE user_id = '$user_id'";
 				$result = mysqli_query($db, $user_bike_using_time);
-				
-				/*Bonus for Top 3 users on Top-10 List */
 				$user = mysqli_fetch_assoc($result);
 				$bike_using_time = $user["bike_using_time"]; //user's bike_using_time
 				$total_credit = $user["total_credit"]; //user's total_credit
+				$bonusactivation = $user["bonusactivation"]; //user's bonusactivation
+				
+				if($bonusactivation < 5){ //kullanıcılar bonusu her kullanımda bir alabilir bunun için sayaç
+					$bonusactivation = $bonusactivation + 1;
+					$update_bonusactivation_sql = "UPDATE user SET bonusactivation = '$bonusactivation' WHERE user_id = $user_id";
+					$sql_status_6 = mysqli_query($db, $update_bonusactivation_sql);
+				}
 				//find 1st on Top-10 list
 				$max_bike_using_time = "SELECT MAX(bike_using_time) FROM user"; 
 				$result_2 = mysqli_query($db, $max_bike_using_time);
@@ -68,20 +73,23 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["b
 				$result_4 = mysqli_query($db, $max3rd_bike_using_time);
 				$max3rd_time = mysqli_fetch_assoc($result_4);
 				$max3rd = $max3rd_time["bike_using_time"];
-
-				if($max == $bike_using_time){ //1st : Bonus 900 credit
+				/*Bonus for Top 3 users on Top-10 List */
+				if($max == $bike_using_time && $bonusactivation == 5){ //1st : Bonus 900 credit
 					$total_credit = $total_credit+900;
-					$update_user_sql_3 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
+					$bonusactivation = 0;
+					$update_user_sql_3 = "UPDATE user SET total_credit = '$total_credit', bonusactivation = '$bonusactivation' WHERE user_id = '$user_id'";
 					$sql_status_3 = mysqli_query($db, $update_user_sql_3);
 				}
-				if($max2nd == $bike_using_time){ //2nd : Bonus 600 credit
+				if($max2nd == $bike_using_time && $bonusactivation == 5){ //2nd : Bonus 600 credit
 					$total_credit = $total_credit+600;
-					$update_user_sql_4 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
+					$bonusactivation = 0;
+					$update_user_sql_4 = "UPDATE user SET total_credit = '$total_credit', bonusactivation = '$bonusactivation' WHERE user_id = '$user_id'";
 					$sql_status_4 = mysqli_query($db, $update_user_sql_4);
 				}
-				if($max3rd == $bike_using_time){ //3rd : Bonus 300 credit
+				if($max3rd == $bike_using_time && $bonusactivation == 5){ //3rd : Bonus 300 credit
 				$total_credit = $total_credit+300;
-				$update_user_sql_5 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
+				$bonusactivation = 0;
+				$update_user_sql_5 = "UPDATE user SET total_credit = '$total_credit', bonusactivation = '$bonusactivation' WHERE user_id = '$user_id'";
 				$sql_status_5 = mysqli_query($db, $update_user_sql_5);
 				}
 				
