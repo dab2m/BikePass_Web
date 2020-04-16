@@ -43,9 +43,25 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["b
 
 		        $update_user_sql = "UPDATE user SET bike_km = '$km', bike_using_time = '$time' WHERE user_id = $user_id"; /* UPDATE USER KM & TIME SQL */
 		        $sql_status = mysqli_query($db, $update_user_sql);
-				
 				$update_user_sql_2 = "UPDATE data SET bike_km = '$km' WHERE user_id = $user_id"; 
 		        $sql_status_2 = mysqli_query($db, $update_user_sql_2);
+				
+				$user_bike_using_time = "SELECT bike_using_time,total_credit FROM user WHERE user_id = '$user_id'";
+				$result = mysqli_query($db, $user_bike_using_time);
+				$user = mysqli_fetch_assoc($result);
+				$bike_using_time = $user["bike_using_time"];
+				$total_credit = $user["total_credit"];
+				
+				$max_bike_using_time = "SELECT MAX(bike_using_time) FROM user"; 
+				$result_2 = mysqli_query($db, $max_bike_using_time);
+				$max_time = mysqli_fetch_assoc($result_2);
+				$max = $max_time["bike_using_time"];
+				
+				
+				if($max == $bike_using_time){
+					$total_credit = $total_credit+600;
+					$update_user_sql_3 = "UPDATE user SET total_credit = '$total_credit' WHERE user_id = '$user_id'";
+				}	
 		    }
 		}
 
