@@ -139,7 +139,9 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 
 //Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["usernamebikes"])) {
-    $lat = 0; $long = 0;
+    $data = getAddress($post_json["lat"],$post_json["long"]);
+    $address = $data["results"][0]["formatted_address"];
+
     $username = $post_json["usernamebikes"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -182,7 +184,8 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
         "message" => "Returned array of bikes", 
         "bikes" => $bikes,
         "lat" => $lat,
-        "long" => $long
+        "long" => $long,
+        "address" => $address
     );
     echo json_encode($json);
 
@@ -459,8 +462,6 @@ if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_js
         $password = $user["password"];
         $bike_using_time = $user['bike_using_time'];
         $total_credit = $user['total_credit'];
-        $card_hash = $user["card_hash"];
-        $card_last_digits = $user["card_last4"];
 
         $json  = array(
             'status' => 0,
@@ -469,9 +470,7 @@ if (isset($post_json["username"]) && empty($post_json["type"]) && empty($post_js
             'email' => $email,
             'password' => $password,
             'bike using time' => $bike_using_time,
-            'total_credit' => $total_credit,
-            'card digest' => $card_hash,
-            'card last four digits' => $card_last_digits
+            'total_credit' => $total_credit
         );
         echo json_encode($json);
     } else {
@@ -522,40 +521,7 @@ if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json
     create_response($status, $message, null);
 }
 
-//Credit Card details
-if (isset($post_json["id"]) && isset($post_json["card digest"]) && isset($post_json["last digits"])) {
-    $id = $post_json["id"];
-    $card_digest = $post_json["card digest"];
-    $card_last_digits = $post_json["last digits"];
-    $sql = "SELECT * FROM user WHERE user_id='$id'";
-    $result = mysqli_query($db, $sql);
-    if (mysqli_num_rows($result) > 0) {
-        $sql = "UPDATE user SET card_hash = '$card_digest', card_last4 = '$card_last_digits' WHERE user_id=$id";
-        $result = mysqli_query($db, $sql);
-        if ($result) {
-            $message = "Updated card details for user with id " . $id;
-            $status = "0";
-        } else {
-            $message = mysqli_error($db);
-            $status = "2";
-        }
-    } else {
-        $message = "Unknown user id";
-        $status = "1";
-    }
-    create_response($status, $message, null);
-}
-
-//Image
-if (isset($_FILES['myFile'])) {
-    $message = "successful";
-    $status = 1;
-
-    create_response($status, $message, null);
-}
-
 //Location
-
 if (isset($post_json["location"])) {
     $location = $post_json["location"];
     $sql = "SELECT * from user ORDER BY bike_using_time DESC";
@@ -666,15 +632,11 @@ if (isset($post_json["bike_id"]) && empty($post_json["bike_time"]) && empty($pos
 
 // Location initalize
 if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernameloc"])){
-    $api_key = getenv("API_KEY");
-
     $lat = $post_json["lat"];
     $long = $post_json["long"];
     $username = $post_json["usernameloc"];
 
-    $parameters = "latlng=" . $lat . "," . $long . "&sensor=true&key=" . $api_key . "&result_type=locality";
-    $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
-    $data = json_decode($location,true);
+    $data = getAddress($lat,$lng);
     $city =  $data["results"][0]["address_components"]["0"]["long_name"];
 
     $sql = "UPDATE user SET location='$city' WHERE username='$username'";
@@ -689,6 +651,29 @@ if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernamel
     $json  = array(
         'status' => $status,
         'message' => $message
+    );
+    echo json_encode($json);
+}
+
+//Get Address
+if(isset($post_json["latlng"])){
+    $api_key = getenv("API_KEY");
+    $latlng = $post_json["latlng"];
+    $parameters = "latlng=" . $latlng . "&sensor=true&key=" . $api_key;
+    $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
+    $data = json_decode($location,true);
+    if($data["status"]){
+        $status = "0";
+        $message = "Returned adress";
+        $address = $data["results"][0]["formatted_address"];
+    }else{
+        $status = "0";
+        $message = "Geocode Error";
+    }
+    $json  = array(
+        'status' => $status,
+        'message' => $message,
+        'address' => $address
     );
     echo json_encode($json);
 }
@@ -740,6 +725,10 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
     $username = $post_json["usernamereq"];
     $lat = $post_json["lat"];
     $long = $post_json["long"];
+
+    $data = getAddress($lat,$long);
+    $address = $data["results"][0]["formatted_address"];
+
     $sql = "SELECT * from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) > 0) {
@@ -770,7 +759,8 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
 
     $json  = array(
         'status' => $status,
-        'message' => $message
+        'message' => $message,
+        'address' => $address
     );
     echo json_encode($json);
 }
@@ -991,4 +981,11 @@ function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius) {
         return true;
     else
         return false;
+}
+
+function getAddress($lat,$lng){
+    $api_key = getenv("API_KEY");
+    $parameters = "latlng=" . $lat . "," . $long . "&sensor=true&key=" . $api_key . "&result_type=locality";
+    $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
+    return json_decode($location,true);
 }
