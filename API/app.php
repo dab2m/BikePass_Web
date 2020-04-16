@@ -521,6 +521,18 @@ if (isset($post_json["id"]) && isset($post_json["username"]) && isset($post_json
     create_response($status, $message, null);
 }
 
+<<<<<<< HEAD
+=======
+
+//Image
+if (isset($_FILES['myFile'])) {
+    $message = "successful";
+    $status = 1;
+
+    create_response($status, $message, null);
+}
+
+>>>>>>> 8a716b5992c467700c5585de58da3fc1a718db85
 //Location
 if (isset($post_json["location"])) {
     $location = $post_json["location"];
