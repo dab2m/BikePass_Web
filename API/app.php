@@ -187,7 +187,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
         "long" => $long,
         "address" => $address
     );
-    echo json_encode($json);
+    echo json_encode($json,JSON_UNESCAPED_UNICODE);
 
 }
 //Rezerve bike
@@ -655,29 +655,6 @@ if(isset($post_json["lat"]) && $post_json["long"] && isset($post_json["usernamel
     echo json_encode($json);
 }
 
-//Get Address
-if(isset($post_json["latlng"])){
-    $api_key = getenv("API_KEY");
-    $latlng = $post_json["latlng"];
-    $parameters = "latlng=" . $latlng . "&sensor=true&key=" . $api_key;
-    $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
-    $data = json_decode($location,true);
-    if($data["status"]){
-        $status = "0";
-        $message = "Returned adress";
-        $address = $data["results"][0]["formatted_address"];
-    }else{
-        $status = "0";
-        $message = "Geocode Error";
-    }
-    $json  = array(
-        'status' => $status,
-        'message' => $message,
-        'address' => $address
-    );
-    echo json_encode($json);
-}
-
 //Return Credit
 if(isset($post_json["usernamecredit"]) && empty($post_json["credit"])){
     $username = $post_json["usernamecredit"];
@@ -762,11 +739,14 @@ if(isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_j
         'message' => $message,
         'address' => $address
     );
-    echo json_encode($json);
+    echo json_encode($json,JSON_UNESCAPED_UNICODE);
 }
 
 //Return hotpoints and requests
-if (isset($post_json["hotpoints"])) {
+if (isset($post_json["hotpoints"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
+    $data = getAddress($post_json["lat"],$post_json["long"]);
+    $address = $data["results"][0]["formatted_address"];
+
     $sql = "SELECT * from hotpoints";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) > 0) {
@@ -830,9 +810,10 @@ if (isset($post_json["hotpoints"])) {
         "message" => $message,
         "hotpoints" => $spots,
         "requests" => $requests,
-        "bikes" => $bikes
+        "bikes" => $bikes,
+        "address" => $address
     );
-    echo json_encode($json);
+    echo json_encode($json,JSON_UNESCAPED_UNICODE);
 }
 
 // Delete Request
@@ -985,7 +966,8 @@ function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius) {
 
 function getAddress($lat,$lng){
     $api_key = getenv("API_KEY");
-    $parameters = "latlng=" . $lat . "," . $long . "&sensor=true&key=" . $api_key . "&result_type=locality";
+    $api_key = "AIzaSyBBylVHYC4gfgaXjR5pH-p4dDMY1EfDBVY";
+    $parameters = "latlng=" . $lat . "," . $lng . "&sensor=true&key=" . $api_key . "&language=tr&region=tr";
     $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
     return json_decode($location,true);
 }
