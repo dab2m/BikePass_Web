@@ -139,9 +139,8 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 
 //Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["usernamebikes"])) {
-    $data = getAddress($post_json["lat"], $post_json["long"]);
-    $address = $data["results"][0]["formatted_address"];
-
+    $address = getAddress($post_json["lat"], $post_json["long"]);
+    ["results"][0]["formatted_address"];
     $username = $post_json["usernamebikes"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -180,12 +179,13 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
     }
 
     $json = array(
+        "address" => $address,
         "status" => $status,
         "message" => "Returned array of bikes",
         "bikes" => $bikes,
         "lat" => $lat,
         "long" => $long,
-        "address" => $address
+
     );
     echo json_encode($json, JSON_UNESCAPED_UNICODE);
 }
