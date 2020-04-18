@@ -969,7 +969,6 @@ function verifyArea($latitude1, $longitude1, $latitude2, $longitude2, $radius)
 function getAddress($lat, $lng)
 {
     $api_key = getenv("API_KEY");
-    $api_key = "AIzaSyBBylVHYC4gfgaXjR5pH-p4dDMY1EfDBVY";
     $parameters = "latlng=" . $lat . "," . $lng . "&sensor=true&key=" . $api_key . "&language=tr&region=tr";
     $location = file_get_contents("https://maps.googleapis.com/maps/api/geocode/json?$parameters");
     return json_decode($location, true);
