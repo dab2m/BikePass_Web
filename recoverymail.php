@@ -69,3 +69,52 @@ if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"]
 	$json = array("status" => $status, "message" => $message);
 	echo json_encode($json, JSON_FORCE_OBJECT);
 }
+
+//Report Error
+if (isset($post_json["image_data"]) && isset($post_json["image_name"]) && isset($post_json["message"]) && isset($post_json["username"])) {
+	$image_data = $post_json["image_data"];
+	$image_name = $post_json["image_name"];
+	$image_path = "images/temporary/$image_name.png";
+	$username = $post_json["username"];
+	$server_url = "http://bikepass.herokuapp.com/$image_path";
+    $image_src = "data:image/jpg;base64," . $image_data;
+	file_put_contents($image_path,base64_decode($image_data));
+	
+	$mail = new PHPMailer(true);
+
+	try {
+		//Server settings
+		$mail->isSMTP();                                            // Send using SMTP
+		$mail->Host       = "smtp.gmail.com";                    // Set the SMTP server to send through
+		$mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+		$mail->Username   = "bikepass496@gmail.com";                     // SMTP username
+		$mail->Password   = "Abc123Cde456";                               // SMTP password
+		$mail->SMTPSecure = "tls";         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+		$mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+		$mail->SMTPOptions = array(
+			'ssl' => array(
+				'verify_peer' => false,
+				'verify_peer_name' => false,
+				'allow_self_signed' => true
+			)
+		);
+	
+		//Recipients
+		$mail->setFrom("reporterror@bikepass.com", "BikePass Auto Error Report");
+		$mail->addAddress("bikepass496@gmail.com", "BikePass");     // Add a recipient
+		$mail->addReplyTo('no-reply@bikepass.com', 'No reply');
+	
+		// Attachments
+		$mail->addAttachment($server_url);         // Add attachments
+
+		// Content
+		$mail->isHTML(true);                                  // Set email format to HTML
+		$mail->Subject = 'Report from ' . $username;
+		$mail->Body    = $post_json["message"];
+	
+		$mail->send();
+		echo 'Message has been sent';
+	} catch (Exception $e) {
+		echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+	}
+}
