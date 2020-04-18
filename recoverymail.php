@@ -76,7 +76,6 @@ if (isset($post_json["image_data"]) && isset($post_json["image_name"]) && isset(
 	$image_name = $post_json["image_name"];
 	$image_path = "images/temporary/$image_name.png";
 	$username = $post_json["username"];
-	$server_url = "http://bikepass.herokuapp.com/$image_path";
     $image_src = "data:image/jpg;base64," . $image_data;
 	file_put_contents($image_path,base64_decode($image_data));
 	
@@ -105,7 +104,7 @@ if (isset($post_json["image_data"]) && isset($post_json["image_name"]) && isset(
 		$mail->addReplyTo('no-reply@bikepass.com', 'No reply');
 	
 		// Attachments
-		$mail->addAttachment($server_url);         // Add attachments
+		$mail->addAttachment($image_path);         // Add attachments
 
 		// Content
 		$mail->isHTML(true);                                  // Set email format to HTML
