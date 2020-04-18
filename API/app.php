@@ -140,7 +140,7 @@ if (isset($post_json["username"]) && isset($post_json["password"]) && empty($pos
 //Sending Location and Getting bikes
 if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["usernamebikes"])) {
     $username = $post_json["usernamebikes"];
-    $useraddress = getAddress($post_json["lat"], $post_json["long"])["results"][0]["formatted_address"];
+    $useraddress = "Ankara"; //getAddress($post_json["lat"], $post_json["long"])["results"][0]["formatted_address"];
     $sql = "SELECT user_id FROM user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
     if (mysqli_num_rows($result) > 0) {
@@ -155,7 +155,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $bike->lat = $row['lat'];
                 $bike->long = $row['lng'];
                 $bike->status = $row['status'];
-                $bike->address = getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
+                $bike->address = "Ankara"; //getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
                 $bikes[] = $bike;
             }
 
@@ -165,7 +165,7 @@ if (isset($post_json["lat"]) && isset($post_json["long"]) && isset($post_json["u
                 $request = mysqli_fetch_assoc($result);
                 $lat = $request["lat"];
                 $long = $request["lng"];
-                $address = getAddress($request["lat"], $request["lng"])["results"][0]["formatted_address"];
+                $address = "Ankara"; //getAddress($request["lat"], $request["lng"])["results"][0]["formatted_address"];
                 $status = "0";
                 $message = "Returned array of bikes";
             } else {
@@ -636,8 +636,8 @@ if (isset($post_json["lat"]) && $post_json["long"] && isset($post_json["username
     $long = $post_json["long"];
     $username = $post_json["usernameloc"];
 
-    $data = getAddress($lat, $lng);
-    $city =  $data["results"][0]["address_components"]["0"]["long_name"];
+    $data = ""; //getAddress($lat, $lng);
+    $city =  "Ankara"; //$data["results"][0]["address_components"]["0"]["long_name"];
 
     $sql = "UPDATE user SET location='$city' WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -703,8 +703,8 @@ if (isset($post_json["usernamereq"]) && isset($post_json["lat"]) && isset($post_
     $lat = $post_json["lat"];
     $long = $post_json["long"];
 
-    $data = getAddress($lat, $long);
-    $address = $data["results"][0]["formatted_address"];
+    $data = //getAddress($lat, $long);
+        $address = "Ankara"; //$data["results"][0]["formatted_address"];
 
     $sql = "SELECT * from user WHERE username='$username'";
     $result = mysqli_query($db, $sql);
@@ -774,7 +774,7 @@ if (isset($post_json["hotpoints"])) {
                 $request->long = $row['lng'];
                 $request->radius = $row['radius'];
                 $request->id = $row["id"];
-                $request->address = getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
+                $request->address = "Ankara"; //getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
                 $requests[] = $request;
             }
 
@@ -787,7 +787,7 @@ if (isset($post_json["hotpoints"])) {
                     $bike->lat = $row['lat'];
                     $bike->long = $row['lng'];
                     $bike->status = $row['status'];
-                    $bike->address = getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
+                    $bike->address = "Ankara"; //getAddress($row["lat"], $row["lng"])["results"][0]["formatted_address"];
                     $bikes[] = $bike;
                 }
                 $status = "0";
