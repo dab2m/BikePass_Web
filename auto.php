@@ -56,11 +56,11 @@ if(mysqli_num_rows($result_h) > 0){
             }
         }
 
-        if(!$bikePresent){
-            $sql = "SELECT * FROM requests WHERE used_id = 0";
+        if(!$bikePresent && $h_id != 0){
+            $sql = "SELECT * FROM requests WHERE hotpoint_id = $h_id";
             $result = mysqli_query($db,$sql);
             if(!mysqli_num_rows($result) > 0){
-                $sql = "INSERT INTO requests(user_id,request_time,lat,lng) VALUES(0,'$now_s',$h_lat,$h_lng)";
+                $sql = "INSERT INTO requests(user_id,hotpoint_id,request_time,lat,lng) VALUES(0,$h_id,'$now_s',$h_lat,$h_lng)";
                 $result = mysqli_query($db,$sql);
             } 
         }
