@@ -114,8 +114,13 @@ if (isset($post_json["image_data"]) && isset($post_json["message"]) && isset($po
 		$mail->Body    = $post_json["message"];
 
 		$mail->send();
-		echo 'Message has been sent';
+		$status = 1;
+		$message = "Message has been sent";
 	} catch (Exception $e) {
-		echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+		$status = 0;
+		$message = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 	}
+
+	$json = array("status" => $status, "message" => $message);
+	echo json_encode($json, JSON_FORCE_OBJECT);
 }
