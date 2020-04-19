@@ -75,12 +75,12 @@ if (isset($post_json["image_data"]) && isset($post_json["message"]) && isset($po
 	$image_data = $post_json["image_data"];
 	$username = $post_json["username"];
 	date_default_timezone_set('Europe/Istanbul');
-    $timestamp = date("Y-m-d-H:i");
+	$timestamp = date("Y-m-d-H-i");
 	$image_name = $username . $timestamp;
 	$image_path = "images/temporary/$image_name.png";
-    $image_src = "data:image/jpg;base64," . $image_data;
-	file_put_contents($image_path,base64_decode($image_data));
-	
+	$image_src = "data:image/jpg;base64," . $image_data;
+	file_put_contents($image_path, base64_decode($image_data));
+
 	$mail = new PHPMailer(true);
 
 	try {
@@ -99,12 +99,12 @@ if (isset($post_json["image_data"]) && isset($post_json["message"]) && isset($po
 				'allow_self_signed' => true
 			)
 		);
-	
+
 		//Recipients
-		$mail->setFrom("reporterror@bikepass.com", "BikePass Auto Error Report");
+		$mail->setFrom("bikepass496@gmail.com", "BikePass Auto Error Report");
 		$mail->addAddress("bikepass496@gmail.com", "BikePass");     // Add a recipient
 		$mail->addReplyTo('no-reply@bikepass.com', 'No reply');
-	
+
 		// Attachments
 		$mail->addAttachment($image_path);         // Add attachments
 
@@ -112,7 +112,7 @@ if (isset($post_json["image_data"]) && isset($post_json["message"]) && isset($po
 		$mail->isHTML(true);                                  // Set email format to HTML
 		$mail->Subject = 'Report from ' . $username;
 		$mail->Body    = $post_json["message"];
-	
+
 		$mail->send();
 		echo 'Message has been sent';
 	} catch (Exception $e) {
