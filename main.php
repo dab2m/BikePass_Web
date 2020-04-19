@@ -208,7 +208,7 @@
                                                 	            fillOpacity: 0.35,
                                                 	            map: map,
                                                 	            center: hotloc,
-                                                	            radius: parseInt(radius[i]) * 1000// in meters
+                                                	            radius: parseInt(radius[i])
                                                 	        };
                                                 	        cityCircle = new google.maps.Circle(sunCircle)
                                                 	        cityCircle.bindTo('center', marker, 'position');
