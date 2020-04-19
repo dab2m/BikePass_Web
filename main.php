@@ -201,7 +201,7 @@
                                             		  	var hotloc = {lat: parseFloat(hotlat[i]), lng: parseFloat(hotlng[i])};
                                             		  	let marker = new google.maps.Marker({position: hotloc, map: map, icon: 'http://maps.google.com/mapfiles/ms/icons/black-dot.png'});
                                                   	    var sunCircle = {
-                                                	            strokeColor: "#c3fc49",
+                                                	            strokeColor: "#fc4949",
                                                 	            strokeOpacity: 0.8,
                                                 	            strokeWeight: 2,
                                                 	            fillColor: colors[i],
