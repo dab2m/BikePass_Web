@@ -925,8 +925,8 @@ if (isset($post_json["messages"])) {
             $messages[] = $msg;
 
             $id = $row["id"];
-            $read = "UPDATE messages SET unread=1 WHERE id='$id'";
-            $result = mysqli_query($db, $read);
+            //$read = "UPDATE messages SET unread=1 WHERE id='$id'";
+            //$result = mysqli_query($db, $read);
         }
         $status = "0";
         $message = "Returned messages";
@@ -943,7 +943,7 @@ if (isset($post_json["messages"])) {
 }
 
 //Update Request
-if(isset($post_json["usernamerequest"]) && isset($post_json["lat"]) && isset($post_json["long"])){
+if (isset($post_json["usernamerequest"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
     $username = $post_json["usernamerequest"];
     $lat = $post_json["lat"];
     $long = $post_json["long"];
