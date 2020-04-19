@@ -71,9 +71,11 @@ if (isset($post_json["recovery_email"]) && isset($post_json["recovery_username"]
 }
 
 //Report Error
-if (isset($post_json["image_data"]) && isset($post_json["image_name"]) && isset($post_json["message"]) && isset($post_json["username"])) {
+if (isset($post_json["image_data"]) && isset($post_json["message"]) && isset($post_json["username"])) {
 	$image_data = $post_json["image_data"];
-	$image_name = $post_json["image_name"];
+	date_default_timezone_set('Europe/Istanbul');
+    $timestamp = date("Y-m-d-H:i");
+	$image_name = $username . $timestamp;
 	$image_path = "images/temporary/$image_name.png";
 	$username = $post_json["username"];
     $image_src = "data:image/jpg;base64," . $image_data;
