@@ -459,6 +459,13 @@
       </div>
     </div>
 </div>
+<script async defer
+src="<?php 
+	$api_key = getenv("API_KEY");
+	echo 'https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&callback=initMap';
+	?>
+	">
+</script>
 
 
 <div class="page-footer">
