@@ -847,9 +847,11 @@ if (isset($post_json["deletereq"])) {
 }
 
 //Send Message
-if (isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["head"]) && isset($post_json["body"])) {
+if (isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["head"]) && isset($post_json["body"]) && isset($post_json["lat"]) && isset($post_json["long"])) {
     $from = $post_json["from"];
     $to = $post_json["to"];
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
     $sql = "SELECT user_id FROM user WHERE username='$from'";
     $username_result = mysqli_query($db, $sql);
     if (mysqli_num_rows($username_result) == 1) {
@@ -870,11 +872,11 @@ if (isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["he
     }
     $head = $post_json["head"];
     $body = $post_json["body"];
-    $sql = "INSERT INTO messages(from_user,to_user,head,body) VALUES ('$from_id','$to_id','$head','$body')";
+    $sql = "INSERT INTO messages(from_user,to_user,head,body,lat,lng) VALUES ('$from_id','$to_id','$head','$body','$lat','$long')";
     $result = mysqli_query($db, $sql);
     if ($result) {
         $status = "0";
-        $message = "Message sent to " . $to;
+        $message = "Message sent to " . $from_id;
     } else {
         $status = "3";
         $message = "Database error";
@@ -917,6 +919,8 @@ if (isset($post_json["messages"])) {
             $msg->to = $row["to_user"];
             $msg->head = $row["head"];
             $msg->body = $row["body"];
+            $msg->lat = $row["lat"];
+            $msg->long = $row["lng"];
             $msg->unread = $row["unread"];
             $messages[] = $msg;
 
@@ -936,6 +940,32 @@ if (isset($post_json["messages"])) {
         'messages' => $messages
     );
     echo json_encode($json);
+}
+
+//Update Request
+if(isset($post_json["usernamerequest"]) && isset($post_json["lat"]) && isset($post_json["long"])){
+    $username = $post_json["usernamerequest"];
+    $lat = $post_json["lat"];
+    $long = $post_json["long"];
+    $sql = "SELECT user_id FROM user WHERE username='$username'";
+    $username_result = mysqli_query($db, $sql);
+    if (mysqli_num_rows($username_result) == 1) {
+        $user = mysqli_fetch_assoc($username_result);
+        $user_id = $user["user_id"];
+    } else {
+        $status = "1";
+        $message = "No user with username " . $username;
+    }
+    $sql = "UPDATE requests SET lat = $lat, lng = $long WHERE user_id='$user_id'";
+    $result = mysqli_query($db, $sql);
+    if (mysqli_affected_rows($db) > 0) {
+        $status = "0";
+        $message = "Request updated";
+    } else {
+        $status = "2";
+        $message = "Request couldn't updated!";
+    }
+    create_response($status, $message, null);
 }
 
 function create_response($status, $message, $bikes)
