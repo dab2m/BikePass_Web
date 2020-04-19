@@ -229,23 +229,17 @@
                                   		  
                                 </script>
 							</div>
-							<div class="row margin-bottom-20">
+							<div class="row">
 								<div class="col-md-4">
 									<div class="space20">
 									</div>
 									<h3 class="form-section">Profile</h3>
 									<div class="well">
 										<address>
-    										<strong>
-    											<button type="button" class="btn blue" style="float:right;" onclick="location.href='edit_profile.php';">Edit</button>
-    										</strong>
-										</address>
-										
-										<address>
-										<strong>User Name:</strong>
+										<strong>User Name:</strong><button type="button" class="btn blue" style="float:right;" onclick="location.href='edit_profile.php';">Edit</button>
 										<p><?php echo $row['username'] ?></p>
 										</address>
-										
+
 										<address>
 										<strong>E-Mail:</strong><br>
 										<a href="mailto:#">
@@ -265,6 +259,11 @@
 										<address>
 										<strong>Total Credit:</strong><br>
 										<p> <?php echo $row['total_credit']; ?> </p>
+										</address>
+										
+										<address>
+										<button type="button" class="btn green" data-toggle='modal' data-target='#messageAllModal'>All Messages</button>
+										<button type="button" class="btn red" data-toggle='modal' data-target='#messageUnreadModal'>Unread Messages</button>
 										</address>
 										
 									</div>
@@ -330,12 +329,135 @@
 									</div>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<h3 class="form-section">Users:</h3>
+									<ol>
+										<?php 
+										    $topsql = "SELECT * FROM `user` ORDER BY `bike_using_time` DESC";
+										    $topres = mysqli_query($db, $topsql);
+										    while ($toprow = mysqli_fetch_assoc($topres))
+										    {
+										        if($toprow['username'] != $_SESSION['username']){
+										          echo "<div  class='col-md-3' style='margin-bottom: 5px;'><li><strong>" . $toprow['username'] .  "</strong>
+                                                        <button type='button' class='btn green' data-toggle='modal' data-target='#messageModal' data-whatever=".$toprow['username']."
+                                                        data-id='".$toprow['user_id']."' data-sendid='".$_SESSION['id']."' style='float:right;font-size: 10px;'>Send Message</button></li></div>";
+										        }
+										    }
+                                        ?>
+									</ol>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<!-- Modal Send Message-->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">New message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Head:</label>
+                <input type="text" class="form-control" id="head">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="col-form-label">Message:</label>
+                <textarea class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="send-massege">Send message</button>
+            <input type="hidden" class="user-id" name="userId">
+            <input type="hidden" class="send-id" name="sendId">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal All Message-->
+    <div class="modal fade" id="messageAllModal" tabindex="-1" role="dialog" aria-labelledby="messageAllModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageAllModalLabel">All Messages</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              	<?php 
+				    $topsql = "SELECT m.*,u.username FROM messages m,user u WHERE u.user_id = m.from_user AND m.to_user = ".$_SESSION['id']." ORDER BY m.id DESC ";
+				    $topres = mysqli_query($db, $topsql);
+				    while ($toprow = mysqli_fetch_assoc($topres))
+				    {
+				        echo "<div class='form-group'>";
+				        echo "<label for='recipient-name' class='col-form-label'><strong>From: </strong>".$toprow['username']."</label>";
+				        echo "<p><strong>Head: </strong>".$toprow['head']."</p>";
+				        echo "<p><strong>Body: </strong>".$toprow['body']."</p>";
+				        echo "</div>";
+				    }
+                ?>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Unread Message-->
+    <div class="modal fade" id="messageUnreadModal" tabindex="-1" role="dialog" aria-labelledby="messageUnreadModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageUnreadModalLabel">Unread Messages</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              	<?php 
+				    $topsql = "SELECT m.*,u.username FROM messages m,user u WHERE u.user_id = m.from_user AND unread = 0 AND m.to_user = ".$_SESSION['id']." ORDER BY m.id DESC ";
+				    $topres = mysqli_query($db, $topsql);
+				    if($topres->num_rows > 0){
+    				    while ($toprow = mysqli_fetch_assoc($topres))
+    				    {
+    				        echo "<div class='form-group'>";
+    				        echo "<label for='recipient-name' class='col-form-label'><strong>From: </strong>".$toprow['username']."</label>";
+    				        echo "<p><strong>Head: </strong>".$toprow['head']."</p>";
+    				        echo "<p><strong>Body: </strong>".$toprow['body']."</p>";
+    				        echo "</div>";
+    				        $sql = "UPDATE messages SET unread = 1 WHERE id = '".$toprow['id']."'";
+    				        mysqli_query($db, $sql);
+    				    }
+				    }
+				    else{
+				        echo "<div class='form-group'>";
+				        echo "<label for='recipient-name' class='col-form-label'>There are no unread messages</label>";
+				        echo "</div>";
+				    }
+                ?>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 <script async defer
 src="<?php 
@@ -378,6 +500,44 @@ jQuery(document).ready(function() {
 Layout.init(); // init current layout
 Demo.init(); // init demo features
    ContactUs.init();
+});
+
+$('#messageModal').on('show.bs.modal', function (event) {
+  	var button = $(event.relatedTarget);
+  	var recipient = button.data('whatever');
+  	var id = button.data('id'); 
+  	var sendId = button.data('sendid');   
+	var modal = $(this);
+	modal.find('.modal-title').text('New message to ' + recipient);
+	$('.user-id').val(id);
+	$('.send-id').val(sendId);
+});
+
+$(document).on('click', '#send-massege', function(e){
+    e.preventDefault();
+    var id = $('.user-id').val();
+    var sendId = $('.send-id').val();
+    var message = $('#message-text').val();
+    var head = $('#head').val();
+    $.ajax({
+        type: 'POST',
+        url: 'send_message.php',
+        data: {id:id,sendId:sendId,message:message,head:head},
+        dataType: 'json',
+        success: function(response){
+        	if(response == 'ok'){
+        		alert('Message send succesfully');
+        	}
+        	else{
+        		alert('Message send failed');
+        	}
+        	location.reload();
+        }
+    });
+});
+
+$('#messageUnreadModal').on('hidden.bs.modal', function () {
+	location.reload();
 });
 </script>
 </body>
