@@ -876,7 +876,7 @@ if (isset($post_json["from"]) && isset($post_json["to"]) && isset($post_json["he
     $result = mysqli_query($db, $sql);
     if ($result) {
         $status = "0";
-        $message = "Message sent to " . $from_id;
+        $message = "Message sent to " . $to;
     } else {
         $status = "3";
         $message = "Database error";
@@ -953,18 +953,26 @@ if (isset($post_json["usernamerequest"]) && isset($post_json["lat"]) && isset($p
         $user = mysqli_fetch_assoc($username_result);
         $user_id = $user["user_id"];
     } else {
-        $status = "1";
+        $status = "2";
         $message = "No user with username " . $username;
     }
-    $sql = "UPDATE requests SET lat = $lat, lng = $long WHERE user_id='$user_id'";
-    $result = mysqli_query($db, $sql);
-    if (mysqli_affected_rows($db) > 0) {
-        $status = "0";
-        $message = "Request updated";
-    } else {
-        $status = "2";
-        $message = "Request couldn't updated!";
+    if(isset($post_json["accept"])){
+        $sql = "UPDATE requests SET lat = $lat, lng = $long WHERE user_id='$user_id'";
+        $result = mysqli_query($db, $sql);
+        if (mysqli_affected_rows($db) > 0) {
+            $status = "0";
+            $message = "Request updated";
+        } else {
+            $status = "3";
+            $message = "Request couldn't updated!";
+        }
+    }else{
+        $status = "1";
+        $message = "Request rejected";
     }
+
+    $sql ="DELETE FROM messages WHERE lat != 0 AND lng != 0 AND to_user = '$user_id'";
+    $result = mysqli_query($db, $sql);
     create_response($status, $message, null);
 }
 
